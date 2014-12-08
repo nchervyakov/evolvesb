@@ -1,0 +1,2 @@
+[30-Oct-2014 02:41:14 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 77 bytes) in /var/www/el/modules/vulninjection/classes/VulnModule/VulnInjection/Service.php on line 390
+[01-Nov-2014 16:39:37 UTC] PHP Fatal error:  Allowed memory size of 134217728 bytes exhausted (tried to allocate 77 bytes) in /var/www/el/modules/vulninjection/classes/VulnModule/VulnInjection/Service.php on line 390

@@ -1,0 +1,58 @@
+{
+    "name": "phpixie/project",
+    "type": "project",
+    "description": "PHPixie skeleton project",
+    "license": "BSD",
+    "autoload": {
+        "psr-0": {
+            "": [
+                "classes/",
+                "modules/vulninjection/classes/"
+            ],
+            "PHPThumb": "vendor/project/phpthumb/src/",
+            "PHPThumb\\Tests": "vendor/project/phpthumb/tests/",
+            "Symfony\\Component\\Filesystem\\": "vendor/symfony/filesystem"
+        },
+        "classmap": [
+            "classes/",
+            "modules/vulninjection/classes/"
+        ]
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "project/phpthumb",
+                "version": "1.0.0",
+                "type": "library",
+                "license": "MIT",
+                "source": {
+                    "url" : "https://github.com/masterexploder/PHPThumb",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "psr-0": {
+                        "PHPThumb": "src/",
+                        "PHPThumb\\Tests": "tests/"
+                    }
+                }
+            }
+        }
+    ],
+    "require": {
+        "phpixie/core": "2.*@dev",
+        "phpixie/db": "2.*@dev",
+        "phpixie/orm": "2.*@dev",
+        "phpixie/auth": "2.*@dev",
+        "phpixie/email": "2.*@dev",
+        "phpixie/paginate":"2.*@dev",
+        "project/phpthumb": "1.*",
+        "symfony/filesystem": "2.3.*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.*-dev"
+        }
+    }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE `tbl_cart` ADD `message` text NOT NULL DEFAULT '' AFTER `total_price`;
