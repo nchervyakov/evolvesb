@@ -25,8 +25,8 @@
                 <a href="/" title="Evolve Skateboards Россия">
                     <img src="/images/logo.png" alt="Evolve Skateboards Россия" data-src="/images/logo.png" data-src-home="/images/logo_home.png" />
                 </a>
-                <a href="mailto:info@evolveskateboards.ru"><div class="fa fa-inbox fa-lg" style="font-size: 16px"> info@evolveskateboards.ru</div></a>
-                <div class="fa fa-phone fa-lg" style="font-size: 16px">  8-800-500-12-46 (бесплатно)</div>
+                <a href="mailto:info@evolveskateboards.ru"><div class="fa fa-inbox fa-lg" style="font-size: 16px; color:#FE642E"> info@evolveskateboards.ru</div></a>
+                <div class="fa fa-phone fa-lg" style="font-size: 16px; color:#FE642E">  8-800-500-12-46 (бесплатно)</div>
             </div>
 
             <div class="twelve columns nav mobile_hidden">

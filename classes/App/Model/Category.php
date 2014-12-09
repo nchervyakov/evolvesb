@@ -24,6 +24,7 @@ use PHPixie\ORM\Extension\Nested;
  * @property Category parentCategory
  * @property Category children
  * @property Nested $nested
+ * @property int $sort_order
  * @package App\Model
  */
 class Category extends BaseModel {
@@ -130,7 +131,10 @@ class Category extends BaseModel {
 
 
     public function getCategoriesSidebar(){
-        $categories = $this->pixie->orm->get('Category')->where('depth', 'IN', $this->pixie->db->expr('(0, 1, 2)'))->order_by('lpos', 'asc')->order_by('name','asc')->find_all()->as_array();
+        $categories = $this->pixie->orm->get('Category')->
+                        where('depth', 'IN', $this->pixie->db->expr('(0, 1, 2)'))->
+                        where('hidden', '=', '0')->
+                        order_by('sort_order','desc')->find_all()->as_array();
         return $this->generateTree($categories);
     }
 

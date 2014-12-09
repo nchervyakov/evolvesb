@@ -84,6 +84,10 @@
             <p class="credits">
                 &copy; 2014 http://evolveskateboards.ru/
             </p>
+            <p>ООО «ИВОЛВ РУС» ИНН 6671468126 ОГРН 1146671028063
+                г. Екатеринбург, ул. Куйбышева 55 - 509
+            </p>
+            
         </div>
 
         <div class="six columns credits_right">
