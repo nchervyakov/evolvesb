@@ -132,7 +132,7 @@ class User extends Page {
                     $this->pixie->email->send(
                         $emailData['to'],
                         $emailData['from'],
-                        'Вы успешно зарегистрировались на evolveskateboards.ru',
+                        'Вы успешно зарегистрировались на  evolveskateboards.ru',
                         $emailView->render()
                     );
 
