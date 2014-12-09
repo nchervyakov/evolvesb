@@ -33,7 +33,7 @@
 
                 <li><a href="/pages/compare-evolve-skateboard-models" title="Сравнить модели">Сравнить модели</a></li>
 
-                <li><a href="/pages/demo-locations" title="Демо">Демо</a></li>
+                <li><a href="/pages/demo-locations" title="Дилеры">Дилеры</a></li>
 
                 <li><a href="/pages/reviews" title="Обзоры">Обзоры</a></li>
 
@@ -47,13 +47,11 @@
 
         <div class="four columns">
             <ul class="social_icons">
-                <li><a href="https://twitter.com/EvolveSk8boards" title="Evolve Skateboards USA on Twitter" rel="me" target="_blank" class="icon-twitter"></a></li>
-                <li><a href="https://www.facebook.com/EvolveSkateboardsUSA" title="Evolve Skateboards USA on Facebook" rel="me" target="_blank" class="icon-facebook"></a></li>
-                <li><a href="https://www.youtube.com/user/evolveSkateboards" title="Evolve Skateboards USA on YouTube" rel="me" target="_blank" class="icon-youtube"></a></li>
-                <li><a href="https://vimeo.com/user14906646" title="Evolve Skateboards USA on Vimeo" rel="me" target="_blank" class="icon-vimeo-2"></a></li>
-                <li><a href="http://instagram.com/evolveskateboards" title="Evolve Skateboards USA on Instagram" rel="me" target="_blank" class="icon-instagram"></a></li>
-                <li><a href="mailto:Info@EvolveSkateboardsUSA.com" title="Email Evolve Skateboards USA" target="_blank" class="icon-mail"></a></li>
-
+                <li><a href="https://twitter.com/EvolveSk8boards" title="Evolve Skateboards Россия в Twitter" rel="me" target="_blank" class="icon-twitter"></a></li>
+                <li><a href="https://www.facebook.com/EvolveSkateboardsUSA" title="Evolve Skateboards Россия в Facebook" rel="me" target="_blank" class="icon-facebook"></a></li>
+                <li><a href="https://www.youtube.com/user/evolveSkateboards" title="Evolve Skateboards Россия на YouTube" rel="me" target="_blank" class="icon-youtube"></a></li>
+                <!--li><a href="https://vimeo.com/user14906646" title="Evolve Skateboards USA on Vimeo" rel="me" target="_blank" class="icon-vimeo-2"></a></li>
+                <li><a href="http://instagram.com/evolveskateboards" title="Evolve Skateboards USA on Instagram" rel="me" target="_blank" class="icon-instagram"></a></li-->
             </ul>
 
         </div>
@@ -84,10 +82,12 @@
             <p class="credits">
                 &copy; 2014 http://evolveskateboards.ru/
             </p>
-            <p>ООО «ИВОЛВ РУС» ИНН 6671468126 ОГРН 1146671028063
-                г. Екатеринбург, ул. Куйбышева 55 - 509
-            </p>
-            
+            <div>ООО «ИВОЛВ РУС» ИНН 6671468126 ОГРН 1146671028063
+                    Телефон/факс: 8-800-500-12-46 (бесплатно)
+                    г. Екатеринбург, ул. Куйбышева 55 - 509
+                    e-mail для связи: info@evolveskateboards.ru
+            </div>
+
         </div>
 
         <div class="six columns credits_right">

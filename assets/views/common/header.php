@@ -51,7 +51,7 @@
                         </div>
                     </li>
                     <li><a href="/pages/compare-evolve-skateboard-models" title="Сравнить модели" class="top-link ">Сравнить модели</a></li>
-                    <li><a href="/pages/demo-locations" title="Демо" class="top-link ">Дилеры</a></li>
+                    <li><a href="/pages/demo-locations" title="Дилеры" class="top-link ">Дилеры</a></li>
                     <li><a href="/pages/reviews" title="Обзоры" class="top-link ">Обзоры</a></li>
                     <li><a href="/pages/information" title="Информация" class="sub-menu  ">Информация                     
                             <span class="arrow">▾</span></a>
@@ -90,12 +90,11 @@
                                 <a href="#login-box" class="login-window cart-button">Войти / Зарегистрироваться</a>
                             <?php endif ?>
                         </li>
-                        <li><a href="https://twitter.com/EvolveSk8boards" title="Evolve Skateboards USA on Twitter" rel="me" target="_blank" class="icon-twitter"></a></li>
-                        <li><a href="https://www.facebook.com/EvolveSkateboardsUSA" title="Evolve Skateboards USA on Facebook" rel="me" target="_blank" class="icon-facebook"></a></li>
-                        <li><a href="https://www.youtube.com/user/evolveSkateboards" title="Evolve Skateboards USA on YouTube" rel="me" target="_blank" class="icon-youtube"></a></li>
-                        <li><a href="https://vimeo.com/user14906646" title="Evolve Skateboards USA on Vimeo" rel="me" target="_blank" class="icon-vimeo-2"></a></li>
-                        <li><a href="http://instagram.com/evolveskateboards" title="Evolve Skateboards USA on Instagram" rel="me" target="_blank" class="icon-instagram"></a></li>
-                        <li><a href="mailto:Info@EvolveSkateboardsUSA.com" title="Email Evolve Skateboards USA" target="_blank" class="icon-mail"></a></li>
+                        <li><a href="https://twitter.com/EvolveSk8boards" title="Evolve Skateboards Россия в Twitter" rel="me" target="_blank" class="icon-twitter"></a></li>
+                        <li><a href="https://www.facebook.com/EvolveSkateboardsUSA" title="Evolve Skateboards Россия в Facebook" rel="me" target="_blank" class="icon-facebook"></a></li>
+                        <li><a href="https://www.youtube.com/user/evolveSkateboards" title="Evolve Skateboards Россия на YouTube" rel="me" target="_blank" class="icon-youtube"></a></li>
+                        <!--li><a href="https://vimeo.com/user14906646" title="Evolve Skateboards USA on Vimeo" rel="me" target="_blank" class="icon-vimeo-2"></a></li>
+                        <li><a href="http://instagram.com/evolveskateboards" title="Evolve Skateboards USA on Instagram" rel="me" target="_blank" class="icon-instagram"></a></li-->
                         <li>
                             <a href="/search" title="Search" class="icon-search" id="search-toggle"></a>
                         </li>
