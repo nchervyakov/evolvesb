@@ -25,6 +25,8 @@
                 <a href="/" title="Evolve Skateboards Россия">
                     <img src="/images/logo.png" alt="Evolve Skateboards Россия" data-src="/images/logo.png" data-src-home="/images/logo_home.png" />
                 </a>
+                <a href="mailto:info@evolveskateboards.ru"><div class="fa fa-inbox fa-lg" style="font-size: 16px"> info@evolveskateboards.ru</div></a>
+                <div class="fa fa-phone fa-lg" style="font-size: 16px">  8-800-500-12-46 (бесплатно)</div>
             </div>
 
             <div class="twelve columns nav mobile_hidden">
@@ -35,16 +37,21 @@
                             <span class="arrow">▾</span></a>
                         <div class="dropdown ">
                             <ul>
+                                <?php foreach ($this->sidebar as $item): ?>
+                                <li><a href="/collections/<?=$item->hurl?>" title="Electric Skateboards"><?=$item->name?></a></li>
+                                <?php endforeach; ?>
+                                <!--
                                 <li><a href="/collections/electric-skateboards" title="Electric Skateboards">Electric Skateboards</a></li>
                                 <li><a href="/collections/wheels" title="Skateboard Wheels">Skateboard Wheels</a></li>
                                 <li><a href="/collections/apparel" title="Apparel">Apparel</a></li>
                                 <li><a href="/collections/accessories" title="Accessories">Accessories</a></li>
                                 <li><a href="/collections/spare-parts" title="Spare Parts">Spare Parts</a></li>
+                                -->
                             </ul>
                         </div>
                     </li>
                     <li><a href="/pages/compare-evolve-skateboard-models" title="Сравнить модели" class="top-link ">Сравнить модели</a></li>
-                    <li><a href="/pages/demo-locations" title="Демо" class="top-link ">Демо</a></li>
+                    <li><a href="/pages/demo-locations" title="Демо" class="top-link ">Дилеры</a></li>
                     <li><a href="/pages/reviews" title="Обзоры" class="top-link ">Обзоры</a></li>
                     <li><a href="/pages/information" title="Информация" class="sub-menu  ">Информация                     
                             <span class="arrow">▾</span></a>
@@ -53,10 +60,10 @@
                                 <li><a href="/pages/videos" title="Видео">Видео</a></li>
                                 <li><a href="/blogs/news" title="Новости">Новости</a></li>
                                 <li><a href="/pages/testimonials" title="Отзывы">Отзывы</a></li>
-                                <li><a href="/pages/shipping" title="Shipping & Transit Times">Shipping & Transit Times</a></li>
-                                <li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li>
-                                <li><a href="/pages/rider-tips-maintenance" title="Tips & Maintenance">Tips & Maintenance</a></li>
-                                <li><a href="/pages/troubleshooting" title="Troubleshooting">Troubleshooting</a></li>
+                                <li><a href="/pages/shipping" title="Shipping & Transit Times">Оплата и доставка</a></li>
+                                <!--li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li-->
+                                <li><a href="/pages/rider-tips-maintenance" title="Tips & Maintenance">Советы</a></li>
+                                <li><a href="/pages/troubleshooting" title="Troubleshooting">Устранение проблем</a></li>
                             </ul>
                         </div>
                     </li>
