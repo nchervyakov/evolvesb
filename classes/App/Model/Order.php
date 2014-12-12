@@ -1,17 +1,38 @@
 <?php
 
 namespace App\Model;
-use PHPixie\ORM\Model;
 
 /**
  * Class Order
  * @package App\Model
- * @property Model $orderAddress
+ * @property OrderAddress[]|OrderAddress $orderAddress
+ * @property OrderItems[]|OrderItems $orderItems
+ * @property User $customer
+ * @property Payment $payment
+ * @property int $id
  * @property int $customer_id
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $customer_firstname
+ * @property string $customer_lastname
+ * @property string $customer_email
+ * @property string $status
+ * @property string $comment
+ * @property string $payment_method
+ * @property string $shipping_method
+ * @property number $amount
+ * @property string $uid
+ * @property int $success_notified
  */
 class Order extends BaseModel
 {
     const INCREMENT_BASE = 10000000;
+
+    const STATUS_NEW = 'new';
+    const STATUS_WAITING_PAYMENT = 'waiting_payment';
+    const STATUS_SHIPPING = 'shipping';
+    const STATUS_COMPLETED = 'completed';
+    const STATUS_CANCELLED = 'cancelled';
 
     public $table = 'tbl_orders';
     public $id_field = 'id';
@@ -32,6 +53,13 @@ class Order extends BaseModel
             'model' => 'User',
             'key' => 'customer_id'
         ]
+    ];
+
+    protected $has_one = [
+        'payment' => [
+            'model' => 'Payment',
+            'key' => 'order_id'
+        ],
     ];
 
     public function getMyOrders()
@@ -63,16 +91,45 @@ class Order extends BaseModel
      */
     public function getByIncrement($incrementId)
     {
-        $id = $incrementId - self::INCREMENT_BASE;
-        if ($id <= 0) {
-            throw new \InvalidArgumentException('Invalid order number: ' . $incrementId);
-        }
-
-        return $this->where('id', $id)->find();
+        return $this->where('uid', $incrementId)->find();
     }
 
     public static function getOrderStatuses()
     {
         return ['new', 'pending', 'shipped', 'complete'];
+    }
+
+    public function getItemsDescription()
+    {
+        /** @var OrderItems[] $items */
+        $items = $this->orderItems->find_all()->as_array();
+        $description = [];
+        foreach ($items as $item) {
+            $description[] = $item->name . " x " . $item->qty . ', ' . number_format($item->price, 2);
+        }
+
+        return implode(PHP_EOL, $description);
+    }
+
+    /**
+     * @param int|string $uid
+     * @return Order|null
+     */
+    public function getByUid($uid)
+    {
+        /** @var Order $order */
+        $order = $this->pixie->orm->get('Order')->where('uid', $uid)->find();
+        return $order && $order->loaded() ? $order : null;
+    }
+
+    public function isPayed()
+    {
+        if (in_array($this->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
+            return false;
+        }
+
+        if (!$this->payment || !$this->payment->loaded() || $this->payment->isAuthorizedOrPayed()) {
+
+        }
     }
 }

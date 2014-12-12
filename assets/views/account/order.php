@@ -3,7 +3,7 @@
         <span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/" title="Главная" itemprop="url"><span itemprop="title">Главная</span></a></span> &nbsp; / &nbsp;
         <span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/account#my-orders" title="Личный кабинет" itemprop="url"><span itemprop="title">Личный кабинет</span></a></span> &nbsp; / &nbsp;
         <span itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb"><a href="/account/orders" title="Заказы" itemprop="url"><span itemprop="title">Заказы</span></a></span> &nbsp; / &nbsp;
-        Заказ №<?php echo $order->increment_id; ?>
+        Заказ №<?php echo $order->uid; ?>
     </div>
     <div class="sixteen columns clearfix collection_nav">
         <h1 class="collection_title">Заказы</h1>
@@ -19,7 +19,11 @@
                     <dd><?php echo date('Y.m.d', strtotime($order->created_at)); ?></dd>
 
                     <dt>Статус</dt>
-                    <dd><?php echo $_order_status($order->status); ?></dd>
+                    <dd><?php echo $_order_status($order->status); ?>
+                        <?php if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT):?>
+                            <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-sm btn-default">Оплатить</a>
+                        <?php endif; ?>
+                    </dd>
 
                     <dt>Итого</dt>
                     <dd><span class="label label-danger">$<?php echo $order->orderItems->getItemsTotal(); ?></span></dd>

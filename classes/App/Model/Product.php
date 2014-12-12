@@ -213,7 +213,8 @@ class Product extends BaseModel {
             'thumbnail' => $product->thumbnail,
             'customers_votes' => $product->customer_votes,
             'customers_rating'  => $product->customers_rating,
-            'picture' => $product->picture
+            'picture' => $product->picture,
+            'alias' => $product->hurl
         );
     }
 

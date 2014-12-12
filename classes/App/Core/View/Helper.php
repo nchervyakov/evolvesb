@@ -9,6 +9,7 @@
 
 namespace App\Core\View;
 use App\Core\BaseController;
+use App\Model\Order;
 use App\Page;
 use App\Pixie;
 use PHPixie\Paginate\Pager\ORM as ORMPager;
@@ -24,7 +25,11 @@ use VulnModule\VulnInjection;
 class Helper extends \PHPixie\View\Helper
 {
     protected $orderStatusLabelMapping = [
-        'complete' => 'label-success'
+        Order::STATUS_NEW => 'label-default',
+        Order::STATUS_COMPLETED => 'label-success',
+        Order::STATUS_WAITING_PAYMENT => 'label-warning',
+        Order::STATUS_SHIPPING => 'label-primary',
+        Order::STATUS_CANCELLED => 'label-danger'
     ];
 
     /**
@@ -46,6 +51,11 @@ class Helper extends \PHPixie\View\Helper
         '_format_price' => 'formatPrice',
         '_hl_search' => 'highliteSearchResults',
     );
+
+    /**
+     * @var string Current currency of products
+     */
+    protected $currency;
 
     /**
      * @inheritdoc
@@ -122,7 +132,7 @@ class Helper extends \PHPixie\View\Helper
         $canonicalStatus = strtolower(trim($status));
         $label = isset($this->orderStatusLabelMapping[$canonicalStatus])
             ? $this->orderStatusLabelMapping[$canonicalStatus] : 'label-default';
-        return '<span class="label ' . $label . '">' . htmlspecialchars($status, ENT_COMPAT, 'UTF-8') . '</span>';
+        return '<span class="label ' . $label . '">' . htmlspecialchars($this->formatOrderStatus($status), ENT_COMPAT, 'UTF-8') . '</span>';
     }
 
     /**
@@ -335,9 +345,44 @@ class Helper extends \PHPixie\View\Helper
         return $hasActive;
     }
 
-    public function formatPrice($price)
+    /**
+     * @param $price
+     * @param null $template
+     * @param string $currency
+     * @return string
+     */
+    public function formatPrice($price, $template = null, $currency = null)
     {
-        return number_format((float)$price, 2, '.', ',');
+        if (!$currency) {
+            if ($this->currency) {
+                $currency = $this->currency;
+
+            } else {
+                $currency = $this->pixie->config->get('payment.currency');
+                $this->currency = $currency;
+            }
+        }
+
+        $priceCanonical = number_format((float)$price, 2, '.', ',');
+        $replaces = [
+            '%PRICE%' => $priceCanonical,
+            '%CURRENCY%' => $currency
+        ];
+
+        if ($currency == 'RUR') {
+            $replaces['%SYMBOL%'] = 'руб.';
+            $replaces['%SYMBOL_PRICE%'] = trim($replaces['%PRICE%'] . ' ' . $replaces['%SYMBOL%']);
+
+        } else if ($currency == 'USD') {
+            $replaces['%SYMBOL%'] = '$';
+            $replaces['%SYMBOL_PRICE%'] = trim($replaces['%SYMBOL%'] . $replaces['%PRICE%']);
+
+        } else {
+            $replaces['%SYMBOL%'] = '';
+            $replaces['%SYMBOL_PRICE%'] = $replaces['%PRICE%'];
+        }
+        $template = $template ?: '%SYMBOL_PRICE%';
+        return trim(str_replace(array_keys($replaces), array_values($replaces), $template));
     }
 
     public function highliteSearchResults($text, array $words)
@@ -349,5 +394,26 @@ class Helper extends \PHPixie\View\Helper
         $patterns = implode('|', $patterns);
         $text = preg_replace('/('.$patterns.')/ims', '<strong class="highlight">$1</strong>', $text);
         return $text;
+    }
+
+    /**
+     * @param string $status Original order status
+     * @return string Formatted status
+     */
+    public function formatOrderStatus($status)
+    {
+        $names = [
+            Order::STATUS_NEW => 'новый',
+            Order::STATUS_WAITING_PAYMENT => 'ожидание оплаты',
+            Order::STATUS_SHIPPING => 'доставляется',
+            Order::STATUS_COMPLETED => 'завершён',
+            Order::STATUS_CANCELLED => 'отменён'
+        ];
+
+        if (isset($names[$status])) {
+            return $names[$status];
+        } else {
+            return 'Неизвестен';
+        }
     }
 }

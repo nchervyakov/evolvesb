@@ -16,7 +16,7 @@
         </div>
         <div class="info">
             <span class="title"><?php $_($product->name); ?></span>
-            <span class="price "><?php echo $_format_price($product->Price);?> руб.</span>
+            <span class="price "><?php echo $_format_price($product->Price);?></span>
         </div>
     </a>
 </div>

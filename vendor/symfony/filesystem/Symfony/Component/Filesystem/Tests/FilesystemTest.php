@@ -195,7 +195,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     {
         $basePath = $this->workspace.DIRECTORY_SEPARATOR;
         $directories = array(
-            $basePath.'1', $basePath.'2', $basePath.'3'
+            $basePath.'1', $basePath.'2', $basePath.'3',
         );
 
         $this->filesystem->mkdir($directories);
@@ -209,7 +209,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     {
         $basePath = $this->workspace.DIRECTORY_SEPARATOR;
         $directories = new \ArrayObject(array(
-            $basePath.'1', $basePath.'2', $basePath.'3'
+            $basePath.'1', $basePath.'2', $basePath.'3',
         ));
 
         $this->filesystem->mkdir($directories);
@@ -255,7 +255,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     {
         $basePath = $this->workspace.DIRECTORY_SEPARATOR;
         $files = array(
-            $basePath.'1', $basePath.'2', $basePath.'3'
+            $basePath.'1', $basePath.'2', $basePath.'3',
         );
 
         $this->filesystem->touch($files);
@@ -269,7 +269,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
     {
         $basePath = $this->workspace.DIRECTORY_SEPARATOR;
         $files = new \ArrayObject(array(
-            $basePath.'1', $basePath.'2', $basePath.'3'
+            $basePath.'1', $basePath.'2', $basePath.'3',
         ));
 
         $this->filesystem->touch($files);
@@ -300,7 +300,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         touch($basePath.'file');
 
         $files = array(
-            $basePath.'dir', $basePath.'file'
+            $basePath.'dir', $basePath.'file',
         );
 
         $this->filesystem->remove($files);
@@ -317,7 +317,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         touch($basePath.'file');
 
         $files = new \ArrayObject(array(
-            $basePath.'dir', $basePath.'file'
+            $basePath.'dir', $basePath.'file',
         ));
 
         $this->filesystem->remove($files);
@@ -333,7 +333,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         mkdir($basePath.'dir');
 
         $files = array(
-            $basePath.'dir', $basePath.'file'
+            $basePath.'dir', $basePath.'file',
         );
 
         $this->filesystem->remove($files);
@@ -377,7 +377,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         touch($basePath.'file');
 
         $files = new \ArrayObject(array(
-            $basePath.'dir', $basePath.'file'
+            $basePath.'dir', $basePath.'file',
         ));
 
         $this->assertTrue($this->filesystem->exists($files));
@@ -392,7 +392,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         touch($basePath.'file2');
 
         $files = new \ArrayObject(array(
-            $basePath.'dir', $basePath.'file', $basePath.'file2'
+            $basePath.'dir', $basePath.'file', $basePath.'file2',
         ));
 
         unlink($basePath.'file');
@@ -845,6 +845,21 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->filesystem->exists($targetPath.'directory'.DIRECTORY_SEPARATOR.'file1'));
     }
 
+    public function testMirrorCreatesEmptyDirectory()
+    {
+        $sourcePath = $this->workspace.DIRECTORY_SEPARATOR.'source'.DIRECTORY_SEPARATOR;
+
+        mkdir($sourcePath);
+
+        $targetPath = $this->workspace.DIRECTORY_SEPARATOR.'target'.DIRECTORY_SEPARATOR;
+
+        $this->filesystem->mirror($sourcePath, $targetPath);
+
+        $this->assertTrue(is_dir($targetPath));
+
+        $this->filesystem->remove($sourcePath);
+    }
+
     public function testMirrorCopiesLinks()
     {
         $this->markAsSkippedIfSymlinkIsMissing();
@@ -906,7 +921,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
             array('var/lib', false),
             array('../var/lib', false),
             array('', false),
-            array(null, false)
+            array(null, false),
         );
     }
 
@@ -922,6 +937,21 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         // skip mode check on Windows
         if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
             $this->assertEquals(753, $this->getFilePermissions($filename));
+        }
+    }
+
+    public function testDumpFileWithNullMode()
+    {
+        $filename = $this->workspace.DIRECTORY_SEPARATOR.'foo'.DIRECTORY_SEPARATOR.'baz.txt';
+
+        $this->filesystem->dumpFile($filename, 'bar', null);
+
+        $this->assertFileExists($filename);
+        $this->assertSame('bar', file_get_contents($filename));
+
+        // skip mode check on Windows
+        if (!defined('PHP_WINDOWS_VERSION_MAJOR')) {
+            $this->assertEquals(600, $this->getFilePermissions($filename));
         }
     }
 
@@ -941,7 +971,7 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $filePath
      *
-     * @return integer
+     * @return int
      */
     private function getFilePermissions($filePath)
     {
@@ -966,6 +996,8 @@ class FilesystemTest extends \PHPUnit_Framework_TestCase
         if ($datas = posix_getgrgid($infos['gid'])) {
             return $datas['name'];
         }
+
+        $this->markTestSkipped('Unable to retrieve file group name');
     }
 
     private function markAsSkippedIfSymlinkIsMissing()

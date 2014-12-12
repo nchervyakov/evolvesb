@@ -12,6 +12,11 @@ use PHPixie\View;
  * @property \App\Model\User model
  */
 class User extends Page {
+    public function before()
+    {
+        $this->secure();
+        parent::before();
+    }
 
     public function action_login() {
         $this->view->pageTitle = "Вход на сайт";

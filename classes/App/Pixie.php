@@ -13,6 +13,7 @@ use App\Exception\HttpException;
 use App\Exception\NotFoundException;
 use App\Helpers\Thumber;
 use App\Installation\Installer;
+use App\Payment\PaymentService;
 use PHPixie\Controller;
 use PHPixie\Cookie;
 use PHPixie\Exception\PageNotFound;
@@ -40,6 +41,8 @@ use VulnModule\VulnInjection;
  * @property-read Config $config
  * @property-read Installer $installer
  * @property-read Thumber $thumb
+ * @property-read HTTPService $http
+ * @property-read PaymentService $payments
  * @method Controller|Rest\Controller controller
  */
 class Pixie extends \PHPixie\Pixie {
@@ -70,10 +73,10 @@ class Pixie extends \PHPixie\Pixie {
         $this->instance_classes['response'] = '\\App\\Core\\Response';
         $this->instance_classes['modelInfoRepository'] = '\\VulnModule\\Config\\ModelInfoRepository';
         $this->instance_classes['dispatcher'] = '\\App\\EventDispatcher\\EventDispatcher';
-        //$this->instance_classes['restRouteMatcher'] = '\\App\\Rest\\RouteMatcher';
-        //$this->instance_classes['restService'] = '\\App\\Rest\\RestService';
         $this->instance_classes['installer'] = '\\App\\Installation\\Installer';
         $this->instance_classes['thumb'] = '\\App\\Helpers\\Thumber';
+        $this->instance_classes['http'] = '\\App\\Network\\HTTPService';
+        $this->instance_classes['payments'] = '\\App\\Payment\\PaymentService';
     }
 
     /**

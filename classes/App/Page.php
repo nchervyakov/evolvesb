@@ -121,4 +121,13 @@ class Page extends BaseController
         }
         return $ids;
     }
+
+    public function secure()
+    {
+        if ($this->request->server('HTTPS') != 'on') {
+            header('Strict-Transport-Security: max-age=31536000');
+            header('Location: https://' . $this->request->server('HTTP_HOST') . $this->request->server('REQUEST_URI'));
+            exit;
+        }
+    }
 }

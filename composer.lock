@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "96b087c79b3e518e6599108ea4893fd4",
+    "hash": "6a9753097e97085e7078e868f1bcbc14",
     "packages": [
         {
             "name": "phpixie/auth",
@@ -291,6 +291,25 @@
             "time": "2014-04-06 09:33:02"
         },
         {
+            "name": "project/phpthumb",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/masterexploder/PHPThumb",
+                "reference": "master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPThumb": "src/",
+                    "PHPThumb\\Tests": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ]
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v4.3.1",
             "source": {
@@ -340,14 +359,57 @@
                 "mailer"
             ],
             "time": "2013-04-11 10:22:09"
+        },
+        {
+            "name": "symfony/filesystem",
+            "version": "v2.3.23",
+            "target-dir": "Symfony/Component/Filesystem",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Filesystem.git",
+                "reference": "9cfe8b5cefb4dbe90148f38bcd0683c6804009a0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Filesystem/zipball/9cfe8b5cefb4dbe90148f38bcd0683c6804009a0",
+                "reference": "9cfe8b5cefb4dbe90148f38bcd0683c6804009a0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Symfony Filesystem Component",
+            "homepage": "http://symfony.com",
+            "time": "2014-11-30 13:33:44"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "phpixie/core": 20,
@@ -358,10 +420,6 @@
         "phpixie/paginate": 20
     },
     "prefer-stable": false,
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "platform": [],
+    "platform-dev": []
 }

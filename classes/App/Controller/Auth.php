@@ -1,9 +1,15 @@
 <?php
 namespace App\Controller;
 
-class Auth extends \App\Page {
+use App\Page;
 
-
+class Auth extends Page
+{
+    public function before()
+    {
+        $this->secure();
+        parent::before();
+    }
 
     public function action_login() {
         if ($this->request->method == 'POST') {

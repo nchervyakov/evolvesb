@@ -10,11 +10,12 @@
                 url:'/checkout/placeOrder',
                 data: { _csrf_checkout_step4: el.data('token') },
                 type:"POST",
+                dataType: "json",
                 success: function(data) {
                     if (data.success) {
-                        window.location.href = "/checkout/order";
+                        window.location.href = "/checkout/payment/" + data.order_uid;
                     } else {
-                        alert( "error" );
+                        alert("При проведении оплаты возникла ошибка. Пожалуйста, обратитесь к администратору интернет-магазина.");
                     }
                 },
                 fail: function() {
@@ -52,7 +53,7 @@
                                 <?php echo $_($shippingAddress->country_id, 'country_id'); ?><br />
                                 <?php echo $_($shippingAddress->phone, 'phone'); ?><br />
                             </div>
-                            <div class="blockShadow bg-info">
+                            <?php /*<div class="blockShadow bg-info">
                                 <?php $billingAddress = $cart->getBillingAddress()?>
                                 <h3>Адрес оплаты</h3>
                                 <b><?php echo $_($billingAddress->full_name, 'full_name'); ?></b><br />
@@ -61,7 +62,7 @@
                             <?php echo $_($billingAddress->city, 'city') . ' ' . $_($billingAddress->region, 'region') . ' ' . $_($billingAddress->zip, 'zip'); ?><br />
                             <?php echo $_($billingAddress->country_id, 'country_id'); ?><br />
                             <?php echo $_($billingAddress->phone, 'phone'); ?><br />
-                                </div>
+                                </div> */ ?>
                         </td>
                     </tr>
                     </thead>
@@ -88,7 +89,7 @@
                     <td class="product-image"><a href="/product/view?id=<?php echo $item->product->id();?>"><img class="img-thumbnail img-rounded" src="/products_pictures/<?php $_($item->product->picture); ?>" alt=""/></a></td>
                     <td><?php echo $item->name ?></td>
                     <td class="text-center"><?php echo $item->qty ?></td>
-                    <td class="text-right"><?php echo $item->price * $item->qty ?> руб.</td>
+                    <td class="text-right"><?php echo $_format_price($item->price * $item->qty); ?></td>
                 </tr>
                 <?php endforeach;?>
                 </tbody>
@@ -103,7 +104,7 @@
                     <td align="right" colspan="2">$0</td>
                 </tr-->
                 <tr class="danger">
-                    <td align="right" colspan="4"><strong><?php echo $cart->getCartItemsModel()->getItemsTotal();?> руб.</strong></td>
+                    <td align="right" colspan="4"><strong><?php echo $_format_price($cart->getCartItemsModel()->getItemsTotal());?></strong></td>
                 </tr>
                 <tfoot>
             </table>
@@ -118,10 +119,11 @@
 
     <div class="row">
         <div class="col-xs-6">
-            <button class="btn btn-default" data-target="#step2" data-toggle="tab" onclick="window.location.href='/checkout/billing'"><span class="glyphicon glyphicon-chevron-left"></span> Адрес оплаты</button>
+            <!--button class="btn btn-default" data-target="#step2" data-toggle="tab" onclick="window.location.href='/checkout/billing'"><span class="glyphicon glyphicon-chevron-left"></span> Адрес оплаты</button-->
+            <button class="btn btn-default" data-target="#step2" data-toggle="tab" onclick="window.location.href='/checkout/shipping'"><span class="glyphicon glyphicon-chevron-left"></span> Адрес доставки</button>
         </div>
         <div class="col-xs-6">
-            <button class="btn pull-right ladda-button" data-target="#step4" data-toggle="tab" id="place_order" data-token="<?php echo $this->getToken('checkout_step4'); ?>" data-style="expand-left">Разместить заказ <span class="glyphicon glyphicon-chevron-right"></span></button>
+            <button class="btn pull-right ladda-button" data-target="#step4" data-toggle="tab" id="place_order" data-token="<?php echo $this->getToken('checkout_step4'); ?>" data-style="expand-left">Разместить заказ и перейти к оплате <span class="glyphicon glyphicon-chevron-right"></span></button>
         </div>
     </div>
 

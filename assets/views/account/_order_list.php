@@ -22,11 +22,15 @@ if (count($myOrders) == 0) {
     <tbody>
     <?php foreach($myOrders as $order) : ?>
     <tr>
-        <td><a href="/account/orders/<?php $_($order->increment_id);?>"><?php $_($order->increment_id);?></a></td>
+        <td><a href="/account/orders/<?php $_($order->uid);?>"><?php $_($order->uid);?></a></td>
         <td><?php echo date('Y.m.d', strtotime($order->created_at));?></td>
         <!--td><?php $_($order->payment_method);?> </td>
         <td><?php $_($order->shipping_method);?> </td-->
-        <td><?php echo $_order_status($order->status);?></td>
+        <td><?php echo $_order_status($order->status);?>
+            <?php if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT):?>
+                <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-sm btn-default">Оплатить</a>
+            <?php endif; ?>
+        </td>
     </tr>
     <?php endforeach; ?>
     </tbody>

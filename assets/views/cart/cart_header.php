@@ -8,19 +8,22 @@
     $menuTabs = array(
     	'overview' => array('/cart/view' => '1</span> <em>Корзина</em>'),
     	'shipping' => array('/checkout/shipping' => '2</span> <em>Адрес доставки</em>'),
-    	'billing' => array('/checkout/billing' => '3</span> <em>Адрес оплаты</em>'),
-    	'confirmation' => array('/checkout/confirmation' => '4</span> <em>Подтверждение</em>'),
+    	//'billing' => array('/checkout/billing' => '3</span> <em>Адрес оплаты</em>'),
+    	'confirmation' => array('/checkout/confirmation' => '3</span> <em>Подтверждение</em>'),
+        'payment' => array('/checkout/payment' => '4</span> <em>Оплата</em>'),
     	'order' => array('/checkout/order' => '5</span> <em>Заказ</em>'),
     );?>
     <div class="sixteen columns page">
         <ul class="nav nav-pills nav-justified hw-steps-nav">
             <?php
             $disabled = false;
+            $finalSteps = ['payment', 'order'];
             foreach ($menuTabs as $key => $tab) {
                 $class = $disabled ? 'grey' : '';
                 if ($key == $this->tab) {
                     $class = 'active';
                 }
+                $disabled = in_array($this->step, $finalSteps) && !in_array($key, $finalSteps) ? true : $disabled;
                 foreach ($tab as $href => $caption) {
                     if ($class == 'active' || $disabled) {
                         echo '<li class="' . $class . '"><a href="#" onclick="return false"><span class="badge badge-info">' . $caption . '</a></li>';

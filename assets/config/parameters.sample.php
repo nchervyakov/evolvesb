@@ -32,5 +32,7 @@ return array(
             'format' => 'jpg'
         ]
     ],
-    'thumb_path' => __DIR__.'/../../web/cache/thumb/'
+    'thumb_path' => __DIR__.'/../../web/cache/thumb/',
+    'allow_install' => false,
+    'use_ssl' => true,
 );

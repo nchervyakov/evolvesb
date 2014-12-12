@@ -32,7 +32,7 @@
                                     echo $_hl_search($item->name, $searchValues); ?></a></p>
 
                             <div class="info">
-                                <span class="price">$<?php echo $_format_price($item->Price); ?></span>
+                                <span class="price"><?php echo $_format_price($item->Price); ?></span>
                             </div>
                             <p><?php $_trim($_hl_search(strip_tags($item->description), $searchValues), 256); ?></p>
                         </div>

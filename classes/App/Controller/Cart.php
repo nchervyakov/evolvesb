@@ -26,6 +26,7 @@ class Cart extends Page {
         $qty = $this->request->post('qty', 1);
         $productId = $this->request->post('product_id');
         $result = $this->pixie->orm->get('CartItems')->addItems($productId, $qty);
+        $this->pixie->orm->get('Cart')->forceSetLastStep(CartModel::STEP_OVERVIEW);
 
         if ($this->request->is_ajax()) {
             $this->jsonResponse([
@@ -81,6 +82,7 @@ class Cart extends Page {
         $this->pixie->orm->get('CartItems')->updateItems($itemId, $qty);
         $cart = $this->pixie->orm->get('Cart')->getCart();
         $item->refresh();
+        $this->pixie->orm->get('Cart')->forceSetLastStep(CartModel::STEP_OVERVIEW);
 
         $res = [
             'items_qty' => $cart->items_qty,

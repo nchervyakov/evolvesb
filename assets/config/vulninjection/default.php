@@ -13,7 +13,7 @@ return [
         ],
 
         'referrer' => [
-            'enabled' => false,
+            'enabled' => true,
             'hosts' => [$_SERVER['HTTP_HOST']],
             'protocols' => ['http', 'https'],
             'methods' => ['POST'],

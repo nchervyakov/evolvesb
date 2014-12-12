@@ -18,8 +18,9 @@ class Cart extends BaseModel {
     private $_cart;
     const STEP_OVERVIEW  = 1;
     const STEP_SHIPPING  = 2;
-    const STEP_BILLING   = 3;
-    const STEP_CONFIRM   = 4;
+    //const STEP_BILLING   = 3;
+    const STEP_CONFIRM   = 3;
+    const STEP_PAYMENT   = 4;
     const STEP_ORDER     = 5;
 
     protected $has_one=array(
@@ -102,7 +103,7 @@ class Cart extends BaseModel {
         $cart = $this->getCart();
         $cart->{$type . '_address_id'} = $addressId;
         $cart->save();
-        $step = $type == 'shipping' ? self::STEP_BILLING : self::STEP_CONFIRM;
+        $step = /*$type == 'shipping' ? self::STEP_BILLING : */self::STEP_CONFIRM;
         $this->updateLastStep($step);
     }
 
@@ -120,22 +121,38 @@ class Cart extends BaseModel {
     }
 
     /**
+     * Sets last confirmed step to whatever needed by app logic.
+     * @param int $step
+     */
+    public function forceSetLastStep($step)
+    {
+        $cart = $this->getCart();
+        $cart->last_step = $step;
+        $cart->save();
+    }
+
+    /**
      * return label by last step
      * @return string
      */
-    public function getStepLabel()
+    public function getStepLabel($step = null)
     {
-        $cart = $this->getCart();
-        $step = $cart->last_step;
+        if ($step === null) {
+            $cart = $this->getCart();
+            $step = $cart->last_step;
+        }
+
         switch ($step) {
             case self::STEP_OVERVIEW :
                 return 'overview';
             case self::STEP_SHIPPING :
                 return 'shipping';
-            case self::STEP_BILLING :
-                return 'billing';
+//            case self::STEP_BILLING :
+//                return 'billing';
             case self::STEP_CONFIRM :
                 return 'confirmation';
+            case self::STEP_PAYMENT :
+                return 'payment';
             case self::STEP_ORDER :
                 return 'order';
             default :
@@ -167,6 +184,9 @@ class Cart extends BaseModel {
         return array();
     }
 
+    /**
+     * @return CartItems
+     */
     public function getCartItemsModel()
     {
         return $this->pixie->orm->get('CartItems');
@@ -186,54 +206,72 @@ class Cart extends BaseModel {
 
     /**
      * create order, order_addresses, order_items
+     * @return Order|null   Created order or null
      */
     public function placeOrder()
     {
-        //$this->pixie->db->get()->execute("BEGIN TRANSACTION");//start transaction
+        /** @var \PDO $conn */
+        $conn = $this->pixie->db->get()->conn;
 
-        $order = $this->pixie->orm->get('Order');//set order
-        $customer = $this->pixie->orm->get('User')->where('id',$this->pixie->auth->user()->id)->find();
-        $order->created_at = date('Y-m-d H:i:s');
-        $order->customer_firstname = $customer->username;
-        $order->customer_email = $customer->email;
-        $order->customer_id = $customer->id;
-        $order->payment_method = $this->getCart()->payment_method;
-        $order->shipping_method = $this->getCart()->shipping_method;
-        $order->status = 'complete';
-        $order->save();
+        try {
+            $conn->beginTransaction();
 
-        $items = $this->getCartItemsModel()->getAllItems();
-        foreach ($items as $item) {
-            $orderItems = $this->pixie->orm->get('OrderItems');//set order items
-            $orderItems->cart_id = $item->cart_id;
-            $orderItems->created_at = date('Y-m-d H:i:s');
-            $orderItems->product_id = $item->product_id;
-            $orderItems->qty = $item->qty;
-            $orderItems->price = $item->price;
-            $orderItems->name= $item->name;
-            $orderItems->order_id = $order->id;
-            $orderItems->save();
+            /** @var Order $order */
+            $order = $this->pixie->orm->get('Order');//set order
+            $customer = $this->pixie->orm->get('User')->where('id', $this->pixie->auth->user()->id)->find();
+            $order->created_at = date('Y-m-d H:i:s');
+            $order->customer_firstname = $customer->username;
+            $order->customer_email = $customer->email;
+            $order->customer_id = $customer->id;
+            $order->payment_method = 'credit_card'; //$this->getCart()->payment_method;
+            $order->shipping_method = 'post'; //$this->getCart()->shipping_method;
+            $order->status = Order::STATUS_WAITING_PAYMENT;
+            $order->amount = $this->getCartItemsModel()->getItemsTotal();
+            $order->save();
+            $order->uid = Order::INCREMENT_BASE + $order->id();
+            $order->save();
+
+            $items = $this->getCartItemsModel()->getAllItems();
+            foreach ($items as $item) {
+                $orderItems = $this->pixie->orm->get('OrderItems');//set order items
+                $orderItems->cart_id = $item->cart_id;
+                $orderItems->created_at = date('Y-m-d H:i:s');
+                $orderItems->product_id = $item->product_id;
+                $orderItems->qty = $item->qty;
+                $orderItems->price = $item->price;
+                $orderItems->name = $item->name;
+                $orderItems->order_id = $order->id;
+                $orderItems->save();
+            }
+
+            $addresses = array(
+                'shipping' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->shipping_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find(),
+                //'billing' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->billing_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find()
+            );
+            foreach ($addresses as $type => $address) {//set order addresses
+                $orderAddress = $this->pixie->orm->get('OrderAddress');
+                $orderAddress->full_name = $address->full_name;
+                $orderAddress->address_line_1 = $address->address_line_1;
+                $orderAddress->address_line_2 = $address->address_line_2;
+                $orderAddress->city = $address->city;
+                $orderAddress->region = $address->region;
+                $orderAddress->zip = $address->zip;
+                $orderAddress->country_id = $address->country_id;
+                $orderAddress->phone = $address->phone;
+                $orderAddress->customer_id = $this->pixie->auth->user()->id;
+                $orderAddress->address_type = $type;
+                $orderAddress->order_id = $order->id;
+                $orderAddress->save();
+            }
+            $this->updateLastStep(self::STEP_PAYMENT);
+
+            $conn->commit();
+
+        } catch (\Exception $e) {
+            $conn->rollBack();
+            $order = null;
         }
-        $addresses = array(
-            'shipping' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->shipping_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find(),
-            'billing' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->billing_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find()
-        );
-        foreach ($addresses as $type => $address) {//set order addresses
-            $orderAddress = $this->pixie->orm->get('OrderAddress');
-            $orderAddress->full_name = $address->full_name;
-            $orderAddress->address_line_1 = $address->address_line_1;
-            $orderAddress->address_line_2 = $address->address_line_2;
-            $orderAddress->city = $address->city;
-            $orderAddress->region = $address->region;
-            $orderAddress->zip = $address->zip;
-            $orderAddress->country_id = $address->country_id;
-            $orderAddress->phone = $address->phone;
-            $orderAddress->customer_id = $this->pixie->auth->user()->id;
-            $orderAddress->address_type = $type;
-            $orderAddress->order_id = $order->id;
-            $orderAddress->save();
-        }
-        $this->updateLastStep(self::STEP_ORDER);
-        //$this->pixie->db->get()->execute("COMMIT");//end transaction
+
+        return $order;
     }
 }

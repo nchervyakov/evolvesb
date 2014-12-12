@@ -91,14 +91,14 @@
                 <h1 itemprop="name" class="product_name"><?php $_($product->name); ?></h1>
 
                 <p itemtype="http://data-vocabulary.org/Offer" itemscope="" itemprop="offerDetails" class="modal_price">
-                    <meta content="USD" itemprop="currency">
+                    <meta content="RUR" itemprop="currency">
                     <meta content="Evolve Skateboards" itemprop="seller">
                     <meta content="in_stock" itemprop="availability">
 
                     <span class="sold_out"></span>
-                     <span class="" content="<?php echo $_format_price($product->Price); ?>" itemprop="price">
+                     <span class="" content="<?php echo $_format_price($product->Price, '%PRICE%'); ?>" itemprop="price">
                         <span class="current_price">
-                          <?php echo $_format_price($product->Price); ?> руб.
+                          <?php echo $_format_price($product->Price); ?>
                         </span>
                      </span>
                      <span class="was_price"></span>
@@ -110,7 +110,7 @@
                     <?php echo $product->description; ?>
                 </div>
 
-                <form id="product-form-<?php $_($product->id()); ?>" data-option-index="0" data-shop-currency="USD" data-money-format="${{amount}}" class="clearfix product_form" method="post" action="/cart/add">
+                <form id="product-form-<?php $_($product->id()); ?>" data-option-index="0" data-shop-currency="RUR" data-money-format="${{amount}}" class="clearfix product_form" method="post" action="/cart/add">
                     <input type="hidden" value="<?php $_($product->id()); ?>" name="product_id">
                     <input type="hidden" value="1" name="qty">
                     <div class="purchase clearfix ">

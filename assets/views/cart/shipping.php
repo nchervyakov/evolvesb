@@ -32,7 +32,7 @@
                 type:"POST",
                 data: $("#shippingForm").serialize(),
                 success: function(data){
-                    window.location.href="/checkout/billing";
+                    window.location.href="/checkout/confirmation";
                 },
                 fail: function() {
                     l.ladda('stop');
@@ -111,7 +111,7 @@
                 data: {address_id: $(this).attr('data-id'), _csrf_checkout_step2: $(this).data('token') },
                 timeout: 10000,
                 success: function(){
-                    window.location.href="/checkout/billing";
+                    window.location.href="/checkout/confirmation";
                 },
                 fail: function() {
                     alert( "error" );
@@ -235,8 +235,10 @@
             <button class="btn btn-default" onclick="window.location.href='/cart/view'"><span class="glyphicon glyphicon-chevron-left"></span> Корзина</button>
         </div>
         <div class="col-xs-6">
+            <!--button id="btn_shipping" class="btn pull-right ladda-button" data-target="#step3" data-toggle="tab"
+                    data-style="expand-left"><span class="ladda-label">Адрес оплаты <span class="glyphicon glyphicon-chevron-right icon-white"></span></span></button-->
             <button id="btn_shipping" class="btn pull-right ladda-button" data-target="#step3" data-toggle="tab"
-                    data-style="expand-left"><span class="ladda-label">Адрес оплаты <span class="glyphicon glyphicon-chevron-right icon-white"></span></span></button>
+                    data-style="expand-left"><span class="ladda-label">Подтверждение <span class="glyphicon glyphicon-chevron-right icon-white"></span></span></button>
         </div>
     </div>
 </div>

@@ -123,7 +123,7 @@
                     <div class="cart-product-item" data-price="<?php $_($item->price); ?>" data-id="<?php $_($item->id()); ?>" id="tr_item_<?php $_($item->id()); ?>">
                         <div class="five columns alpha">
                             <a title="<?php $_($product['name']); ?>."
-                               href="/products/all-terrain-carbon-series-electric-skateboard" class="cart_page_image">
+                               href="/products/<?php echo $product['alias']; ?>" class="cart_page_image">
                                 <img alt="<?php $_($product['name']); ?>."
                                     data-src-retina="/products_pictures/<?php $_($item->product->picture); ?>"
                                     data-src="/products_pictures/<?php $_($item->product->picture); ?>"
@@ -134,11 +134,11 @@
                         <div class="five columns omega">
                             <p>
                                 <a title="<?php $_($product['name']); ?>"
-                                   href="/products/all-terrain-carbon-series-electric-skateboard"><?php $_($product['name']); ?></a>
+                                   href="/products/<?php echo $product['alias']; ?>"><?php $_($product['name']); ?></a>
                             </p>
 
 
-                            <p class="price_total">$<span class="price-total-span"><?php echo $_format_price($item->price * $item->qty); ?></span> USD</p>
+                            <p class="price_total"><?php echo $_format_price($item->price * $item->qty, '<span class="price-total-span">%PRICE%</span> %SYMBOL%'); ?></p>
 
                             <p id="quantity_1">
                                 <label class="quantity_label" for="updates_<?php $_($item->id()); ?>">Количество:</label>
@@ -163,7 +163,7 @@
                 </h4>
 
                 <p class="subtotal_amount">
-                    <strong><span id="total_price_span"><?php echo $_format_price($totalPrice); ?></span> руб.</strong>
+                    <strong><?php echo $_format_price($totalPrice, '<span id="total_price_span">%PRICE%</span> %SYMBOL%'); ?></strong>
                     <small style="display:none" id="estimated-shipping">+ <em>$0.00 - примерная стоимость доставки</em></small>
                     <small class="excluding_tax"><em>Без учета доставки</em></small>
                 </p>

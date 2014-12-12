@@ -1,15 +1,20 @@
 <?php
 namespace App\Controller;
+
+use App\Exception\NotFoundException;
 use App\Model\Cart as CartModel;
 use App\Model\Cart;
+use App\Model\Order;
+use App\Page;
 
-class Checkout extends \App\Page {
+class Checkout extends Page {
 
     /**
      * require auth
      */
     public function before()
     {
+        $this->secure();
         if (is_null($this->pixie->auth->user())) {
             $this->redirect('/user/login?return_url=' . rawurlencode($this->request->server('REQUEST_URI')));
         }
@@ -71,38 +76,38 @@ class Checkout extends \App\Page {
         }
     }
 
-    /**
-     * if ajax create/update customer addresses
-     * default show billing step
-     */
-    public function action_billing() {
-        $this->restrictActions(CartModel::STEP_BILLING);
-        $customerAddresses = $this->pixie->orm->get('CustomerAddress')->getAll();
-
-        if ($this->request->is_ajax()) {
-            $this->checkCsrfToken('checkout_step3', null, false);
-
-            $post = $this->request->post();
-            $addressId = isset($post['address_id']) ? $post['address_id'] : 0;
-            if (!$addressId) {
-                $addressId = $this->pixie->orm->get('CustomerAddress')->create($post);
-            }
-            $this->pixie->orm->get('Cart')->updateAddress($addressId, 'billing');
-            $this->execute = false;
-
-        } else {
-            /** @var Cart $cartModel */
-            $cartModel = $this->pixie->orm->get('Cart');
-            $cart = $cartModel->getCart();
-
-            $this->view->subview = 'cart/billing';
-            $this->view->tab = 'billing';
-            $this->view->step = $this->pixie->orm->get('Cart')->getStepLabel();//last step
-            $currentAddress = $cart->getBillingAddress();
-            $this->view->billingAddress = is_array($currentAddress) ? [] : $currentAddress->as_array();
-            $this->view->customerAddresses = $customerAddresses;
-        }
-    }
+//    /**
+//     * if ajax create/update customer addresses
+//     * default show billing step
+//     */
+//    public function action_billing() {
+//        $this->restrictActions(CartModel::STEP_BILLING);
+//        $customerAddresses = $this->pixie->orm->get('CustomerAddress')->getAll();
+//
+//        if ($this->request->is_ajax()) {
+//            $this->checkCsrfToken('checkout_step3', null, false);
+//
+//            $post = $this->request->post();
+//            $addressId = isset($post['address_id']) ? $post['address_id'] : 0;
+//            if (!$addressId) {
+//                $addressId = $this->pixie->orm->get('CustomerAddress')->create($post);
+//            }
+//            $this->pixie->orm->get('Cart')->updateAddress($addressId, 'billing');
+//            $this->execute = false;
+//
+//        } else {
+//            /** @var Cart $cartModel */
+//            $cartModel = $this->pixie->orm->get('Cart');
+//            $cart = $cartModel->getCart();
+//
+//            $this->view->subview = 'cart/billing';
+//            $this->view->tab = 'billing';
+//            $this->view->step = $this->pixie->orm->get('Cart')->getStepLabel();//last step
+//            $currentAddress = $cart->getBillingAddress();
+//            $this->view->billingAddress = is_array($currentAddress) ? [] : $currentAddress->as_array();
+//            $this->view->customerAddresses = $customerAddresses;
+//        }
+//    }
 
     /**
      * ajax action return CustomerAddress json by address id
@@ -145,8 +150,53 @@ class Checkout extends \App\Page {
     {
         $this->checkCsrfToken('checkout_step4', null, false);
         $this->restrictActions(CartModel::STEP_ORDER);
-        $this->pixie->orm->get('Cart')->placeOrder();
+
+        /** @var Order $order */
+        $order = $this->pixie->orm->get('Cart')->placeOrder();
+
+        $result = [];
+
+        if ($order && $order->loaded()) {
+            $this->pixie->orm->get('Cart')->getCart()->delete();
+
+            $result['order_uid'] = $order->uid;
+            $result['success'] = 1;
+            if ($this->request->is_ajax()) {
+                $this->jsonResponse($result);
+            } else {
+                $this->redirect("/checkout/payment/" . $order->uid);
+            }
+
+        } else {
+            $result['error'] = 1;
+            if ($this->request->is_ajax()) {
+                $this->jsonResponse($result);
+            } else {
+                $this->redirect("/checkout/confirmation");
+            }
+        }
+
         $this->execute = false;
+    }
+
+    public function action_payment()
+    {
+        $orderUid = $this->request->param('id');
+        if (!$orderUid) {
+            throw new NotFoundException();
+        }
+
+        /** @var Order $order */
+        $order = $this->pixie->orm->get('Order')->getByUid($orderUid);
+        if (!$order) {
+            throw new NotFoundException();
+        }
+
+        $this->view->flash = $this->pixie->session->flash('payment_error');
+        $this->view->subview = 'cart/payment';
+        $this->view->tab = 'payment';
+        $this->view->step = $this->pixie->orm->get('Cart')->getStepLabel(CartModel::STEP_PAYMENT);
+        $this->view->orderUid = $order->uid;
     }
 
     /**
@@ -154,12 +204,30 @@ class Checkout extends \App\Page {
      */
     public function action_order()
     {
-        $this->restrictActions(CartModel::STEP_ORDER);
+        $orderUid = $this->request->get('id');
+        if (!$orderUid) {
+            throw new NotFoundException();
+        }
+
+        /** @var Order $order */
+        $order = $this->pixie->orm->get('Order')->getByUid($orderUid);
+        if (!$order) {
+            throw new NotFoundException();
+        }
+
+        if (in_array($order->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
+            $this->redirect('/checkout/payment/' . $order->uid);
+        }
+
+        if ($order->success_notified) {
+            $this->redirect('/account/order/' . $order->uid);
+            exit;
+        }
+
+        //$this->restrictActions(CartModel::STEP_ORDER);
         $this->view->subview = 'cart/order';
         $this->view->tab = 'order';
-        $this->view->step = $this->pixie->orm->get('Cart')->getStepLabel();//last step
-        $this->view->cart = $this->pixie->orm->get('Cart')->getCart();
-        $this->pixie->orm->get('Cart')->getCart()->delete();
+        $this->view->step = $this->pixie->orm->get('Cart')->getStepLabel(CartModel::STEP_ORDER);
     }
 
     /**

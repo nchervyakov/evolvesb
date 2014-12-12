@@ -14,13 +14,13 @@
                          alt="<?php $_($cProduct->name); ?>">
                 </div>
                 <div><strong><?php echo $item->qty; ?> x</strong> <?php $_($cProduct->name); ?></div>
-                <strong class="price">$<?php echo $_format_price($item->price * $item->qty); ?></strong>
+                <strong class="price"><?php echo $_format_price($item->price * $item->qty); ?></strong>
             </a>
         </li>
     <?php endforeach; ?>
 
     <li class="mm-selected">
-        <em class="mm-counter"><span class="total-price"><?php echo $_format_price($cart->total_price); ?></span> руб.</em>
+        <em class="mm-counter"><?php echo $_format_price($cart->total_price, '<span class="total-price">%PRICE%</span> %SYMBOL%'); ?></em>
         <a href="/cart">
             <strong>Итого</strong>
         </a>

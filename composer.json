@@ -7,7 +7,8 @@
         "psr-0": {
             "": [
                 "classes/",
-                "modules/vulninjection/classes/"
+                "modules/vulninjection/classes/",
+                "classes/PDOV"
             ],
             "PHPThumb": "vendor/project/phpthumb/src/",
             "PHPThumb\\Tests": "vendor/project/phpthumb/tests/",
@@ -47,8 +48,8 @@
         "phpixie/auth": "2.*@dev",
         "phpixie/email": "2.*@dev",
         "phpixie/paginate":"2.*@dev",
-        "project/phpthumb": "1.*",
-        "symfony/filesystem": "2.3.*"
+        "project/phpthumb": "1.0.0",
+        "symfony/filesystem": "2.3.23"
     },
     "extra": {
         "branch-alias": {

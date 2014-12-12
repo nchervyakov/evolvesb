@@ -1,11 +1,22 @@
 <?php
 namespace App\Controller;
 
-class Install extends \App\Page {
+use App\Exception\NotFoundException;
+use App\Page;
+
+class Install extends Page {
     /**
      * show overview page
      */
     public function action_index() {
+
+        // Check if the user can perform installation
+        $isInstallAllowed = $this->pixie->config->get('parameters.allow_install');
+
+        if (!$isInstallAllowed) {
+            throw new NotFoundException();
+        }
+
         $this->initView('installation');
         $this->view->headCSS = '<link href="/css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />';
         $result = $this->pixie->installer->init($this->view)->runWizard($this->request);
@@ -48,23 +59,23 @@ class Install extends \App\Page {
         }
     }
 
-    /**
-     * Step 1
-     */
-	public function action_step1() {
-		$this->view->subview = 'install/step1';
-		$this->view->tab = 'step1';
-		$this->view->step = 'Step 1';
-    }
-
-    /**
-     * Step 2
-     */
-	public function action_step2() {
-		$this->view->subview = 'install/step2';
-		$this->view->tab = 'step2';
-		$this->view->step = 'Step 2';
-    }
+//    /**
+//     * Step 1
+//     */
+//	public function action_step1() {
+//		$this->view->subview = 'install/step1';
+//		$this->view->tab = 'step1';
+//		$this->view->step = 'Step 1';
+//    }
+//
+//    /**
+//     * Step 2
+//     */
+//	public function action_step2() {
+//		$this->view->subview = 'install/step2';
+//		$this->view->tab = 'step2';
+//		$this->view->step = 'Step 2';
+//    }
 
 
 }

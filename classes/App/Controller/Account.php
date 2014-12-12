@@ -17,6 +17,7 @@ class Account extends \App\Page {
      * require auth
      */
     public function before() {
+        $this->secure();
         if (is_null($this->pixie->auth->user())) {
             $this->redirect('/user/login?return_url=' . rawurlencode($this->request->server('REQUEST_URI')));
         }
