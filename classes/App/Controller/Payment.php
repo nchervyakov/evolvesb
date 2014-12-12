@@ -39,10 +39,11 @@ class Payment extends Page
             if ($this->order) {
                 $this->pixie->session->flash("payment_error", "При оплате произошла ошибка. Попробуйте снова.");
                 $this->redirect("/checkout/payment/" . $this->order->uid);
-                exit;
+                $this->execute = false;
+                return;
 
             } else {
-                throw $e;
+                throw new ForbiddenException('', 0, $e);
             }
         }
 
@@ -91,7 +92,7 @@ class Payment extends Page
     public function respondPay(Order $order, $data)
     {
         $operation = $order->payment->payment_operation;
-        if (!!$operation || !$operation->loaded()) {
+        if (!$operation || !$operation->loaded()) {
             throw new ForbiddenException();
         }
 

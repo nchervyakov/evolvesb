@@ -143,6 +143,7 @@ class PaymentService
         $operation->setStatus(PaymentOperation::STATUS_IN_PROGRESS);
         $operation->save();
         $request = $this->createRequestFromPaymentOperation($operation);
+        $request->setPSign($this->calculateRequestMAC($request));
         $url = $this->gatewayUrl . '?' . http_build_query($request->getParametersArray());
         header('Location: ' . $url);
         exit;
