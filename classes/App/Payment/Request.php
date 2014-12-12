@@ -29,8 +29,8 @@ class Request
     {
         $this->parameters = new ParameterSet();
         $this->parameters['TIMESTAMP'] = gmdate('YmdHis');
-        $this->parameters['TIMESTAMP'] = gmdate('YmdHis');
-        $this->parameters['PAYMENT_TO'] = 'sdfsd';
+        //$this->parameters['TIMESTAMP'] = gmdate('YmdHis');
+        //$this->parameters['PAYMENT_TO'] = 'sdfsd';
     }
 
     public function getRequiredFields()
