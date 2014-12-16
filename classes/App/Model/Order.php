@@ -30,9 +30,11 @@ class Order extends BaseModel
 
     const STATUS_NEW = 'new';
     const STATUS_WAITING_PAYMENT = 'waiting_payment';
+    const STATUS_PROCESSING = 'processing';
     const STATUS_SHIPPING = 'shipping';
     const STATUS_COMPLETED = 'completed';
     const STATUS_CANCELLED = 'cancelled';
+    const STATUS_REFUNDED = 'refunded';
 
     public $table = 'tbl_orders';
     public $id_field = 'id';
@@ -96,7 +98,15 @@ class Order extends BaseModel
 
     public static function getOrderStatuses()
     {
-        return ['new', 'pending', 'shipped', 'complete'];
+        return [
+            self::STATUS_NEW,
+            self::STATUS_WAITING_PAYMENT,
+            self::STATUS_PROCESSING,
+            self::STATUS_SHIPPING,
+            self::STATUS_COMPLETED,
+            self::STATUS_CANCELLED,
+            self::STATUS_REFUNDED
+        ];
     }
 
     public function getItemsDescription()
@@ -105,8 +115,11 @@ class Order extends BaseModel
         $items = $this->orderItems->find_all()->as_array();
         $description = [];
         foreach ($items as $item) {
-            $description[] = $item->name . " x " . $item->qty . ', ' . number_format($item->price, 2);
+            $description[] = $item->name . " x " . $item->qty . ', ' . number_format($item->qty * $item->price, 2) . ' руб.';
         }
+
+        $description[] = '';
+        $description[] = "Итого: " . number_format($this->amount, 2) . ' руб.';
 
         return implode(PHP_EOL, $description);
     }
@@ -122,14 +135,13 @@ class Order extends BaseModel
         return $order && $order->loaded() ? $order : null;
     }
 
-    public function isPayed()
+    public function isPayable()
     {
-        if (in_array($this->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
-            return false;
-        }
+        return $this->loaded() && in_array($this->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT]);
+    }
 
-        if (!$this->payment || !$this->payment->loaded() || $this->payment->isAuthorizedOrPayed()) {
-
-        }
+    public function isRefundable()
+    {
+        return in_array($this->status, [self::STATUS_SHIPPING, self::STATUS_PROCESSING, self::STATUS_COMPLETED]);
     }
 }

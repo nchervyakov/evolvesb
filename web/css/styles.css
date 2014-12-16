@@ -4812,5 +4812,12 @@ a.list-group-item.active > .badge,
 }
 
 .checkout-final-notice {
-  min-height: 100px;line-height: 1;
+  min-height: 100px;
+  line-height: 1;
+}
+.checkout-payment .checkout-final-notice {
+  background-color: #ffcd90;
+}
+.main > .breadcrumb {
+  box-sizing: border-box;
 }

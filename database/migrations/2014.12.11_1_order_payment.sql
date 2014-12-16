@@ -1,4 +1,4 @@
-ALTER TABLE `tbl_orders` ADD `amount` decimal NOT NULL DEFAULT '0', COMMENT='';
+ALTER TABLE `tbl_orders` ADD `amount` decimal(10,2) NOT NULL DEFAULT '0', COMMENT='';
 ALTER TABLE `tbl_orders` ADD `uid` varchar(20) NOT NULL, COMMENT='';
 ALTER TABLE `tbl_orders` ADD `success_notified` tinyint(1) unsigned NOT NULL DEFAULT '0', COMMENT='';
 
@@ -65,3 +65,5 @@ ALTER TABLE `tbl_payment_operations`
 ADD `rc` int NULL AFTER `rrn`,
 ADD `action` int NULL AFTER `rc`,
 COMMENT='';
+
+ALTER TABLE `tbl_payment_operations` ADD `int_ref` varchar(16) NOT NULL DEFAULT('') AFTER `action`, COMMENT='';

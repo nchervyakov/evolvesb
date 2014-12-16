@@ -2,6 +2,7 @@
 /.svn
 /assets/config/db.php
 /assets/config/parameters.php
+/assets/config/payment.php
 /assets/config/email.php
 /assets/config/bak/*
 /web/log.txt

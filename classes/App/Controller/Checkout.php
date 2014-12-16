@@ -192,6 +192,10 @@ class Checkout extends Page {
             throw new NotFoundException();
         }
 
+        if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
+            $this->redirect('/checkout/order/' . $order->uid);
+        }
+
         $this->view->flash = $this->pixie->session->flash('payment_error');
         $this->view->subview = 'cart/payment';
         $this->view->tab = 'payment';
@@ -204,7 +208,7 @@ class Checkout extends Page {
      */
     public function action_order()
     {
-        $orderUid = $this->request->get('id');
+        $orderUid = $this->request->param('id');
         if (!$orderUid) {
             throw new NotFoundException();
         }
@@ -215,14 +219,16 @@ class Checkout extends Page {
             throw new NotFoundException();
         }
 
-        if (in_array($order->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
+        if ($order->isPayable()) {
             $this->redirect('/checkout/payment/' . $order->uid);
+
+        } else if ($order->success_notified) {
+            $this->redirect('/account/orders/' . $order->uid);
+            return;
         }
 
-        if ($order->success_notified) {
-            $this->redirect('/account/order/' . $order->uid);
-            exit;
-        }
+        $order->success_notified = 1;
+        $order->save();
 
         //$this->restrictActions(CartModel::STEP_ORDER);
         $this->view->subview = 'cart/order';

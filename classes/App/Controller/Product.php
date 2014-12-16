@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Exception\NotFoundException;
 use \App\Model\SpecialOffers;
 use \App\Model\Category;
+use App\Page;
 use PHPixie\DB\PDOV\Result;
 
 /**
@@ -12,8 +13,14 @@ use PHPixie\DB\PDOV\Result;
  * @property \App\Model\Product model
  * @package App\Controller
  */
-class Product extends \App\Page
+class Product extends Page
 {
+    public function before()
+    {
+        parent::before();
+        $this->view->host = $this->request->getSiteUrl();
+    }
+
     public function action_view()
     {
         $productAlias = $this->request->param('alias');//$this->request->param('id');

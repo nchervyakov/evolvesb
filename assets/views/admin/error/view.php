@@ -9,7 +9,7 @@
                     <h3 class="panel-title"><?php echo $pageTitle; ?></h3>
                 </div>
                 <div class="panel-body">
-                    <p>Please try to change your request.</p>
+                    <p>Попробуйте изменить ваш запрос.</p>
                 </div>
             </div>
         </div>

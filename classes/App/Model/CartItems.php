@@ -123,7 +123,7 @@ class CartItems extends BaseModel {
     public function getItemsTotal()
     {
         $items = $this->getAllItems();
-        $total = 0;
+        $total = 0.0;
         foreach ($items as $item) {
             $total += $item->price * $item->qty;
         }

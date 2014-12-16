@@ -1,13 +1,29 @@
 <?php
 
 namespace App\Model;
+use App\Exception\ForbiddenException;
 
 /**
  * Class Cart
  * @package App\Model
- * @property int $items_qty
- * @property number $total_price
+ *
+ * @property int $id
+ * @property string $created_at
+ * @property string $updated_at
+ * @property int|null $items_count
+ * @property int|null $items_qty
+ * @property number|null $total_price
  * @property string $message
+ * @property string|null $uid
+ * @property int|null $customer_id
+ * @property string|null $customer_email
+ * @property int|null $customer_is_guest
+ * @property string|null $payment_method
+ * @property string|null $shipping_method
+ * @property int|null $shipping_address_id
+ * @property int|null $billing_address_id
+ * @property int|null $last_step
+ *
  * @property CartItems $items
  * @property Product $products Products residing in cart.
  */
@@ -15,6 +31,8 @@ class Cart extends BaseModel {
 
     public $table = 'tbl_cart';
     public $id_field = 'id';
+
+    /** @var Cart */
     private $_cart;
     const STEP_OVERVIEW  = 1;
     const STEP_SHIPPING  = 2;
@@ -90,6 +108,7 @@ class Cart extends BaseModel {
      */
     private function getCartByUID($uid)
     {
+        /** @var Cart $cart */
         $cart = $this->pixie->orm->get('Cart')->where('uid',$uid)->find();
         return $cart->loaded() ? $cart : false;
     }
@@ -133,6 +152,7 @@ class Cart extends BaseModel {
 
     /**
      * return label by last step
+     * @param null $step
      * @return string
      */
     public function getStepLabel($step = null)
@@ -165,7 +185,12 @@ class Cart extends BaseModel {
      */
     public function getShippingAddress()
     {
-        $row = $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->shipping_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find();
+        if (!$this->pixie->auth->user()) {
+            return array();
+        }
+        /** @var CustomerAddress $row */
+        $row = $this->pixie->orm->get('CustomerAddress')->where('and',
+            array('id', '=', $this->shipping_address_id), array('customer_id', '=', $this->pixie->auth->user()->id()))->find();
         if ($row->loaded()) {
             return $row;
         }
@@ -173,11 +198,17 @@ class Cart extends BaseModel {
     }
 
     /**
-     * @return array|CustomerAddress
+     * @return CustomerAddress|array
+     * @throws \App\Exception\ForbiddenException
      */
     public function getBillingAddress()
     {
-        $row = $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->billing_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find();
+        if (!$this->pixie->auth->user()) {
+            return array();
+        }
+        /** @var CustomerAddress $row */
+        $row = $this->pixie->orm->get('CustomerAddress')->where('and',
+            array('id', '=', $this->billing_address_id), array('customer_id', '=', $this->pixie->auth->user()->id()))->find();
         if ($row->loaded()) {
             return $row;
         }
@@ -197,8 +228,11 @@ class Cart extends BaseModel {
      */
     public function setCustomer()
     {
-        $this->getCart()->customer_id = $this->pixie->auth->user()->id;
-        $customer = $this->pixie->orm->get('User')->where('id',$this->pixie->auth->user()->id)->find();
+        if (!$this->pixie->auth->user()) {
+            throw new ForbiddenException();
+        }
+        $this->getCart()->customer_id = $this->pixie->auth->user()->id();
+        $customer = $this->pixie->orm->get('User')->where('id',$this->pixie->auth->user()->id())->find();
         $this->getCart()->customer_email = $customer->email;
         $this->getCart()->customer_is_guest = 1;
         $this->getCart()->save();
@@ -206,19 +240,25 @@ class Cart extends BaseModel {
 
     /**
      * create order, order_addresses, order_items
-     * @return Order|null   Created order or null
+     * @return Order|null Created order or null
+     * @throws \App\Exception\ForbiddenException
      */
     public function placeOrder()
     {
-        /** @var \PDO $conn */
-        $conn = $this->pixie->db->get()->conn;
+        if (!$this->pixie->auth->user()) {
+            throw new ForbiddenException();
+        }
+
+        /** @var \PHPixie\DB\PDOV\Connection $db */
+        $db = $this->pixie->db->get();
+        $conn = $db->conn;
 
         try {
             $conn->beginTransaction();
 
             /** @var Order $order */
             $order = $this->pixie->orm->get('Order');//set order
-            $customer = $this->pixie->orm->get('User')->where('id', $this->pixie->auth->user()->id)->find();
+            $customer = $this->pixie->orm->get('User')->where('id', $this->pixie->auth->user()->id())->find();
             $order->created_at = date('Y-m-d H:i:s');
             $order->customer_firstname = $customer->username;
             $order->customer_email = $customer->email;
@@ -233,6 +273,7 @@ class Cart extends BaseModel {
 
             $items = $this->getCartItemsModel()->getAllItems();
             foreach ($items as $item) {
+                /** @var OrderItems $orderItems */
                 $orderItems = $this->pixie->orm->get('OrderItems');//set order items
                 $orderItems->cart_id = $item->cart_id;
                 $orderItems->created_at = date('Y-m-d H:i:s');
@@ -245,10 +286,11 @@ class Cart extends BaseModel {
             }
 
             $addresses = array(
-                'shipping' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->shipping_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find(),
+                'shipping' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->shipping_address_id), array('customer_id', '=', $this->pixie->auth->user()->id()))->find(),
                 //'billing' => $this->pixie->orm->get('CustomerAddress')->where('and', array('id', '=', $this->getCart()->billing_address_id), array('customer_id', '=', $this->pixie->auth->user()->id))->find()
             );
             foreach ($addresses as $type => $address) {//set order addresses
+                /** @var OrderAddress $orderAddress */
                 $orderAddress = $this->pixie->orm->get('OrderAddress');
                 $orderAddress->full_name = $address->full_name;
                 $orderAddress->address_line_1 = $address->address_line_1;
@@ -258,7 +300,7 @@ class Cart extends BaseModel {
                 $orderAddress->zip = $address->zip;
                 $orderAddress->country_id = $address->country_id;
                 $orderAddress->phone = $address->phone;
-                $orderAddress->customer_id = $this->pixie->auth->user()->id;
+                $orderAddress->customer_id = $this->pixie->auth->user()->id();
                 $orderAddress->address_type = $type;
                 $orderAddress->order_id = $order->id;
                 $orderAddress->save();

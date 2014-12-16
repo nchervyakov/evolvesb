@@ -32,6 +32,7 @@ namespace App\Model;
  * @property PaymentOperation $confirm_operation
  * @property PaymentOperation $cancel_operation
  * @property PaymentOperation $refund_operation
+ * @property PaymentOperation|PaymentOperation[] $operations
  */
 class Payment extends BaseModel
 {
@@ -47,38 +48,51 @@ class Payment extends BaseModel
     public $table = 'tbl_payments';
 
     protected $has_one = [
-        'payment_operation' => [
-            'model' => 'PaymentOperation',
-            'foreignKey' => 'payment_operation_id',
-            'key' => 'id'
-        ],
-        'auth_operation' => [
-            'model' => 'PaymentOperation',
-            'foreignKey' => 'auth_operation_id',
-            'key' => 'id'
-        ],
-        'confirm_operation' => [
-            'model' => 'PaymentOperation',
-            'foreignKey' => 'confirm_operation_id',
-            'key' => 'id'
-        ],
-        'cancel_operation' => [
-            'model' => 'PaymentOperation',
-            'foreignKey' => 'cancel_operation_id',
-            'key' => 'id'
-        ],
-        'refund_operation' => [
-            'model' => 'PaymentOperation',
-            'foreignKey' => 'refund_operation_id',
-            'key' => 'id'
-        ],
+
     ];
 
     protected $belongs_to = [
         'order' => [
             'model' => 'Order',
             'key' => 'order_id'
-        ]
+        ],
+        'payment_operation' => [
+            'model' => 'PaymentOperation',
+            'key' => 'payment_operation_id',
+        ],
+        'auth_operation' => [
+            'model' => 'PaymentOperation',
+            'key' => 'auth_operation_id',
+        ],
+        'confirm_operation' => [
+            'model' => 'PaymentOperation',
+            'key' => 'confirm_operation_id',
+        ],
+        'cancel_operation' => [
+            'model' => 'PaymentOperation',
+            'key' => 'cancel_operation_id',
+        ],
+        'refund_operation' => [
+            'model' => 'PaymentOperation',
+            'key' => 'refund_operation_id',
+        ],
     ];
 
+    protected $has_many = array(
+        'operations' => array(
+            'model' => 'PaymentOperation',
+            'key' => 'payment_id'
+        ),
+    );
+
+    public function isPayable()
+    {
+        return $this->type == self::TYPE_IMMEDIATE && $this->status == self::STATUS_NEW
+            || $this->type == self::TYPE_AUTHORIZED && $this->status == self::STATUS_AUTHORIZED;
+    }
+
+    public function isRefundable()
+    {
+        return $this->status == Payment::STATUS_PAYED;
+    }
 }

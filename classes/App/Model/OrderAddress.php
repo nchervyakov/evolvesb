@@ -2,7 +2,24 @@
 
 namespace App\Model;
 
-class OrderAddress extends \PHPixie\ORM\Model {
+/**
+ * Class OrderAddress
+ * @package App\Model
+ *
+ * @property int $id
+ * @property string $full_name
+ * @property string $address_line_1
+ * @property string $address_line_2
+ * @property string $city
+ * @property string $region
+ * @property string $zip
+ * @property string $country_id
+ * @property string $phone
+ * @property int $customer_id
+ * @property string $address_type
+ * @property int $order_id
+ */
+class OrderAddress extends BaseModel {
 
     public $table = 'tbl_order_address';
     public $id_field = 'id';

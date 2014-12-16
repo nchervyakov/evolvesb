@@ -10,6 +10,7 @@
 namespace App\Core\View;
 use App\Core\BaseController;
 use App\Model\Order;
+use App\Model\PaymentOperation;
 use App\Page;
 use App\Pixie;
 use PHPixie\Paginate\Pager\ORM as ORMPager;
@@ -28,8 +29,18 @@ class Helper extends \PHPixie\View\Helper
         Order::STATUS_NEW => 'label-default',
         Order::STATUS_COMPLETED => 'label-success',
         Order::STATUS_WAITING_PAYMENT => 'label-warning',
+        Order::STATUS_PROCESSING => 'label-primary',
         Order::STATUS_SHIPPING => 'label-primary',
-        Order::STATUS_CANCELLED => 'label-danger'
+        Order::STATUS_CANCELLED => 'label-danger',
+        Order::STATUS_REFUNDED => 'label-danger'
+    ];
+
+    protected $paymentOpTypes = [
+        PaymentOperation::TR_TYPE_AUTHORIZED_PAYMENT => "Авторизованный платёж",
+        PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT => "Мгновенный платёж",
+        PaymentOperation::TR_TYPE_PAYMENT_COMPLETION => "Завершение платёжа",
+        PaymentOperation::TR_TYPE_AUTH_CANCELLATION => "Отмена платёжа",
+        PaymentOperation::TR_TYPE_REFUND => "Возврат денег",
     ];
 
     /**
@@ -43,6 +54,7 @@ class Helper extends \PHPixie\View\Helper
         '_token' => 'token',
         '_dump' => 'dump',
         '_order_status' => 'order_status',
+        '_format_order_status' => 'formatOrderStatus',
         '_pager' => 'pager',
         '_addToCartLink' => 'addToCartLink',
         '_trim' => 'trim',
@@ -50,6 +62,7 @@ class Helper extends \PHPixie\View\Helper
         '_sidebar_menu' => 'sidebarMenu',
         '_format_price' => 'formatPrice',
         '_hl_search' => 'highliteSearchResults',
+        '_format_payment_op' => 'formatPaymentOperation',
     );
 
     /**
@@ -407,7 +420,9 @@ class Helper extends \PHPixie\View\Helper
             Order::STATUS_WAITING_PAYMENT => 'ожидание оплаты',
             Order::STATUS_SHIPPING => 'доставляется',
             Order::STATUS_COMPLETED => 'завершён',
-            Order::STATUS_CANCELLED => 'отменён'
+            Order::STATUS_CANCELLED => 'отменён',
+            Order::STATUS_PROCESSING => 'в обработке',
+            Order::STATUS_REFUNDED => 'платёж возвращён'
         ];
 
         if (isset($names[$status])) {
@@ -415,5 +430,10 @@ class Helper extends \PHPixie\View\Helper
         } else {
             return 'Неизвестен';
         }
+    }
+
+    public function formatPaymentOperation($operationType)
+    {
+        return $this->paymentOpTypes[$operationType];
     }
 }

@@ -14,6 +14,11 @@ use PHPixie\Paginate\Pager\ORM;
  */
 class Category extends Page
 {
+    public function before()
+    {
+        parent::before();
+        $this->view->host = $this->request->getSiteUrl();
+    }
 
     public function action_view()
     {

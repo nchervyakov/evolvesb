@@ -15,19 +15,31 @@
             </div>
             <div class="panel-body">
                 <dl class="dl-horizontal">
+                    <dt>Номер: </dt>
+                    <dd><?php echo $order->uid; ?></dd>
+
                     <dt>Дата</dt>
                     <dd><?php echo date('Y.m.d', strtotime($order->created_at)); ?></dd>
 
                     <dt>Статус</dt>
-                    <dd><?php echo $_order_status($order->status); ?>
-                        <?php if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT):?>
-                            <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-sm btn-default">Оплатить</a>
-                        <?php endif; ?>
-                    </dd>
+                    <dd><?php echo $_order_status($order->status); ?></dd>
 
                     <dt>Итого</dt>
-                    <dd><span class="label label-danger">$<?php echo $order->orderItems->getItemsTotal(); ?></span></dd>
+                    <dd><span class="label label-danger"><?php echo $_format_price($order->orderItems->getItemsTotal()); ?></span></dd>
                 </dl>
+
+                <?php if ($order->status == \App\Model\Order::STATUS_PROCESSING) { ?>
+                    <br/>
+                    <form action="/payment/refund" method="post">
+                        <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
+                        <input type="submit" class="btn btn-default" value="Отменить заказ" />
+                    </form>
+
+                <?php } else if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT) { ?>
+                    <br/>
+                    <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
+
+                <?php } ?>
             </div>
         </div>
 
@@ -49,9 +61,9 @@
                                     <a href="/product/view?id=<?php echo $item->product->id(); ?>"><img src="/products_pictures/<?php $_($item->product->picture); ?>" alt=""/></a>
                                 </div>
                             </td>
-                            <td><a href="/product/view?id=<?php echo $item->product_id; ?>"><?php echo $item->name ?></a></td>
+                            <td><a href="/product/view?id=<?php echo $item->product_id; ?>"><?php echo $item->name; ?></a></td>
                             <td align="center"><?php echo $item->qty ?></td>
-                            <td align="right">$<?php echo $item->price * $item->qty ?></td>
+                            <td align="right"><?php echo $_format_price($item->price * $item->qty); ?></td>
                         </tr>
                     <?php endforeach; ?>
                 <?php endif; ?>
@@ -67,7 +79,7 @@
                     <td align="right" colspan="2">$0</td>
                 </tr-->
                 <tr class="danger">
-                    <td align="right" colspan="4"><strong>$<?php echo $order->orderItems->getItemsTotal(); ?></strong></td>
+                    <td align="right" colspan="4"><strong><?php echo $_format_price($order->orderItems->getItemsTotal()); ?></strong></td>
                 </tr>
             </tbody>
         </table>

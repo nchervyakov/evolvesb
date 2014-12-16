@@ -10,7 +10,7 @@
         <li class="cart_item">
             <a href="/products/<?php $_($cProduct->hurl); ?>">
                 <div class="cart_image">
-                    <img src="/products_pictures/<?php $_($pImg->file_name); ?>"
+                    <img src="/products_pictures/<?php $_(isset($pImg->file_name) ? $pImg->file_name : ''); ?>"
                          alt="<?php $_($cProduct->name); ?>">
                 </div>
                 <div><strong><?php echo $item->qty; ?> x</strong> <?php $_($cProduct->name); ?></div>

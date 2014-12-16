@@ -12,14 +12,12 @@ namespace App\Payment;
 
 use App\Model\PaymentOperation;
 
+/**
+ * Payment Gateway Request data store
+ * @package App\Payment
+ */
 class Request
 {
-    const TR_TYPE_AUTHORIZED_PAYMENT = 0;
-    const TR_TYPE_IMMEDIATE_PAYMENT = 1;
-    const TR_TYPE_PAYMENT_COMPLETION = 21;
-    const TR_TYPE_AUTH_CANCELLATION = 22;
-    const TR_TYPE_REFUND = 24;
-
     /**
      * @var ParameterSet
      */
@@ -29,8 +27,6 @@ class Request
     {
         $this->parameters = new ParameterSet();
         $this->parameters['TIMESTAMP'] = gmdate('YmdHis');
-        //$this->parameters['TIMESTAMP'] = gmdate('YmdHis');
-        //$this->parameters['PAYMENT_TO'] = 'sdfsd';
     }
 
     public function getRequiredFields()
@@ -437,6 +433,58 @@ class Request
     }
 
     /**
+     * @param string $rrn
+     */
+    public function setRRN($rrn)
+    {
+        $this->parameters['RRN'] = $rrn;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRRN()
+    {
+        return $this->parameters['RRN'];
+    }
+
+    /**
+     * @param number|string $amount
+     */
+    public function setOriginalAmount($amount)
+    {
+        if (!is_numeric($amount) || $amount <= 0) {
+            throw new \InvalidArgumentException("Amount must be greater than zero. Provided: $amount");
+        }
+
+        $this->parameters['ORG_AMOUNT'] = number_format((float) $amount, 2, '.', '');
+    }
+
+    /**
+     * @return number|string
+     */
+    public function getOriginalAmount()
+    {
+        return $this->parameters['ORG_AMOUNT'];
+    }
+
+    /**
+     * @param string $intRef
+     */
+    public function setInternalReference($intRef)
+    {
+        $this->parameters['INT_REF'] = $intRef;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInternalReference()
+    {
+        return $this->parameters['INT_REF'];
+    }
+
+    /**
      * @return string Raw mac source string
      */
     public function calculateMACSourceString()
@@ -451,7 +499,7 @@ class Request
             $length = strlen($this->parameters[$field]);
             $macSource[] = $length ? $length . $this->parameters[$field] : '-';
         }
-          //var_dump($macSource);
+
         return implode('', $macSource);
     }
 
@@ -477,35 +525,17 @@ class Request
      */
     public static function getRequestTypes()
     {
-        return [
-            self::TR_TYPE_IMMEDIATE_PAYMENT,
-            self::TR_TYPE_AUTHORIZED_PAYMENT,
-            self::TR_TYPE_AUTH_CANCELLATION,
-            self::TR_TYPE_PAYMENT_COMPLETION,
-            self::TR_TYPE_REFUND
-        ];
+        return PaymentOperation::getTypes();
     }
 
     public static function createFromPaymentOperation(PaymentOperation $operation)
     {
-        if ($operation->transaction_type == Request::TR_TYPE_IMMEDIATE_PAYMENT) {
-            $request = new PaymentRequest();
-
-        } else {
-            throw new \InvalidArgumentException("Incorrect operation type: " . $operation->transaction_type);
-        }
+        $request = self::createPaymentRequestOfType($operation->transaction_type);
+        $request->initFromOperation($operation);
 
         $request->setAmount($operation->amount);
-        $request->setBackReference($operation->back_reference);
-        $request->setBrands($operation->brands);
-        $request->setCountry($operation->country);
         $request->setCurrency($operation->currency);
-        $request->setCustomerEmail($operation->email);
-        $request->setDescription($operation->description);
-        $request->setMerchant($operation->merchant);
-        $request->setMerchantGMTTimezoneOffset($operation->merchant_gmt);
-        $request->setMerchantName($operation->merchant_name);
-        $request->setMerchantUrl($operation->merchant_url);
+        $request->setBackReference($operation->back_reference);
         $request->setNonce($operation->nonce);
         $request->setOrder($operation->order);
         $request->setTerminal($operation->terminal);
@@ -513,5 +543,27 @@ class Request
         $request->setTransactionType($operation->transaction_type);
 
         return $request;
+    }
+
+    /**
+     * @param int $type Transaction type
+     * @return PaymentRequest|RefundRequest
+     */
+    protected static function createPaymentRequestOfType($type) {
+        if ($type == PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT) {
+            $request = new PaymentRequest();
+
+        } else if ($type == PaymentOperation::TR_TYPE_REFUND) {
+            $request = new RefundRequest();
+
+        } else {
+            throw new \InvalidArgumentException("Incorrect operation type: " . $type);
+        }
+
+        return $request;
+    }
+
+    public function initFromOperation(PaymentOperation $operation)
+    {
     }
 }

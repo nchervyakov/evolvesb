@@ -38,6 +38,8 @@
 
 <?php
 $columns = [];
+$order = [];
+$ci = 0;  // iteration index
 foreach ($listFields as $field => $data){
     $columns[] = [
         'className' => $data['column_classes'],
@@ -46,14 +48,22 @@ foreach ($listFields as $field => $data){
         'orderable' => $data['orderable'],
         'searching' => $data['searching'],
     ];
-} ?>
+    if ($data['order']) {
+        $order[] = [$ci, $data['order']];
+    }
+    $ci++;
+}
+
+
+?>
 <script type="text/javascript">
     jQuery(function () {
         $('#itemList').dataTable({
             ajax: '/admin/<?php echo strtolower($alias); ?>/',
             serverSide: true,
             pageLength: 25,
-            columns:  JSON.parse('<?php echo json_encode($columns); ?>')
+            columns:  JSON.parse('<?php echo json_encode($columns); ?>'),
+            order: JSON.parse('<?php echo json_encode($order); ?>')
         });
     });
 </script>

@@ -7,7 +7,7 @@
         </div>
         <div class="col-xs-12 col-sm-5 bg-warning text-center checkout-final-notice">
             <h2>Доставка</h2>
-            <p>С экспресс-оплатой ваш заказ будет доставлен в течение 24 часов.</p>
+            <p>С экспресс-оплатой ваш заказ будет доставлен в течение 24&nbsp;часов.</p>
         </div>
     </div>
     <br><br><br>

@@ -216,9 +216,7 @@ class Product extends CRUDController
 
         if ($this->request->method == 'POST') {
             $data = $this->request->post();
-            $product->values(array_merge($product->filterValues($data), [
-                'created_on' => $data['created_on'] ?: date('Y-m-d H:i:s')
-            ]));
+            $product->values($product->filterValues($data));
             $product->save();
 
             if ($product->loaded()) {

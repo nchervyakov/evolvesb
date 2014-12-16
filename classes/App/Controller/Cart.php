@@ -5,6 +5,10 @@ use App\Model\Cart as CartModel;
 use App\Model\CartItems;
 use App\Page;
 
+/**
+ * Class Cart
+ * @package App\Controller
+ */
 class Cart extends Page {
 
     /**

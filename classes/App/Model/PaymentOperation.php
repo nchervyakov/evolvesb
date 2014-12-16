@@ -35,12 +35,19 @@ use App\Payment\Request;
  * @property string $timestamp
  * @property string $nonce
  * @property string $brands
+ * @property string|null $int_ref
  */
 class PaymentOperation extends BaseModel
 {
     const STATUS_NEW = 'new';
-    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_PENDING = 'pending';
     const STATUS_COMPLETED = 'completed';
+
+    const TR_TYPE_AUTHORIZED_PAYMENT = 0;
+    const TR_TYPE_IMMEDIATE_PAYMENT = 1;
+    const TR_TYPE_PAYMENT_COMPLETION = 21;
+    const TR_TYPE_AUTH_CANCELLATION = 22;
+    const TR_TYPE_REFUND = 24;
 
     public $table = 'tbl_payment_operations';
 
@@ -54,7 +61,7 @@ class PaymentOperation extends BaseModel
     public static function getStatuses()
     {
         return [
-            self::STATUS_NEW, self::STATUS_IN_PROGRESS, self::STATUS_COMPLETED
+            self::STATUS_NEW, self::STATUS_PENDING, self::STATUS_COMPLETED
         ];
     }
 
@@ -423,5 +430,131 @@ class PaymentOperation extends BaseModel
                 . implode(', ', self::getStatuses()));
         }
         $this->status = $status;
+    }
+
+    /**
+     * @return array Payment operation types
+     */
+    public static function getTypes()
+    {
+        return [
+            self::TR_TYPE_IMMEDIATE_PAYMENT,
+            self::TR_TYPE_AUTHORIZED_PAYMENT,
+            self::TR_TYPE_AUTH_CANCELLATION,
+            self::TR_TYPE_PAYMENT_COMPLETION,
+            self::TR_TYPE_REFUND
+        ];
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRrn()
+    {
+        return $this->rrn;
+    }
+
+    /**
+     * @param null|string $rrn
+     */
+    public function setRrn($rrn)
+    {
+        $this->rrn = $rrn;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getRc()
+    {
+        return $this->rc;
+    }
+
+    /**
+     * @param int|null $rc
+     */
+    public function setRc($rc)
+    {
+        $this->rc = $rc;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param int|null $action
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPaymentId()
+    {
+        return $this->payment_id;
+    }
+
+    /**
+     * @param int $payment_id
+     */
+    public function setPaymentId($payment_id)
+    {
+        $this->payment_id = $payment_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantGmt()
+    {
+        return $this->merchant_gmt;
+    }
+
+    /**
+     * @param string $merchant_gmt
+     */
+    public function setMerchantGmt($merchant_gmt)
+    {
+        $this->merchant_gmt = $merchant_gmt;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getInternalReference()
+    {
+        return $this->int_ref;
+    }
+
+    /**
+     * @param string $intRef
+     */
+    public function setInternalReference($intRef)
+    {
+        $this->int_ref = $intRef;
     }
 }

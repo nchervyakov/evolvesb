@@ -8,6 +8,7 @@ use App\Core\Response;
 use App\Core\View;
 use App\EventDispatcher\EventDispatcher;
 use App\EventDispatcher\Events;
+use App\Events\Events as AppEvents;
 use App\Events\GetResponseEvent;
 use App\Exception\HttpException;
 use App\Exception\NotFoundException;
@@ -41,7 +42,6 @@ use VulnModule\VulnInjection;
  * @property-read Config $config
  * @property-read Installer $installer
  * @property-read Thumber $thumb
- * @property-read HTTPService $http
  * @property-read PaymentService $payments
  * @method Controller|Rest\Controller controller
  */
@@ -103,6 +103,15 @@ class Pixie extends \PHPixie\Pixie {
         $this->dispatcher->addListener(Events::KERNEL_PRE_HANDLE_EXCEPTION, '\\App\\Admin\\EventListeners::redirectUnauthorized');
 
         $this->dispatcher->addListener('PRE_REMOVE_ENTITY', '\\App\\Model\\Role::roleRemoveListener');
+
+        $this->dispatcher->addListener(AppEvents::PAYMENT_OPERATION_COMPLETED, '\\App\\Events\\PaymentListeners::onOperationCompleted');
+        $this->dispatcher->addListener(AppEvents::PAYMENT_OPERATION_SUCCEEDED, '\\App\\Events\\PaymentListeners::onOperationSucceeded');
+        $this->dispatcher->addListener(AppEvents::PAYMENT_OPERATION_FAILED, '\\App\\Events\\PaymentListeners::onOperationFailed');
+        $this->dispatcher->addListener(AppEvents::PAYMENT_PAYED, '\\App\\Events\\PaymentListeners::onPaymentPayed');
+        $this->dispatcher->addListener(AppEvents::PAYMENT_PAYED, '\\App\\Events\\PaymentListeners::onPaymentRefunded');
+        $this->dispatcher->addListener(AppEvents::ORDER_PAYED, '\\App\\Events\\PaymentListeners::onOrderPayed');
+        $this->dispatcher->addListener(AppEvents::ORDER_REFUNDED, '\\App\\Events\\PaymentListeners::onOrderRefunded');
+        $this->dispatcher->addListener(AppEvents::ORDER_STATUS_CHANGED, '\\App\\Events\\PaymentListeners::onOrderStatusChanged');
 	}
 
     /**

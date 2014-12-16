@@ -114,23 +114,24 @@ class PaymentService
 
     /**
      * @param int $orderId
-     * @param null $errorCallback
      * @throws \RuntimeException
      */
-    public function sendPayOrderRequest($orderId, $errorCallback = null)
+    public function sendPayOrderRequest($orderId)
     {
         $order = $this->getOrder($orderId);
 
-        if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
-            if (is_callable($errorCallback)) {
-                call_user_func($errorCallback, $order);
-                return;
-            }
+        if (!$order->isPayable()) {
+            throw new \RuntimeException("Order {$order->uid} cannot be payed.");
         }
 
         $payment = $order->payment;
         if (!$payment || !$payment->loaded()) {
             $payment = $this->createOrderPayment($order);
+            $order->refresh();
+        }
+
+        if (!$payment->isPayable()) {
+            throw new \RuntimeException("Payment for order {$order->uid} cannot be performed.");
         }
 
         $operation = $payment->payment_operation;
@@ -140,7 +141,36 @@ class PaymentService
             $payment->save();
         }
 
-        $operation->setStatus(PaymentOperation::STATUS_IN_PROGRESS);
+        $this->sendOperationRequest($operation);
+    }
+
+    public function sendRefundOrderRequest($orderId)
+    {
+        $order = $this->getOrder($orderId);
+        $payment = $order->payment;
+
+        if (!$order->isRefundable() || !$payment || !$payment->loaded()) {
+            throw new \RuntimeException("Заказ № {$order->uid} невозможно возвратить.");
+        }
+
+        if (!$payment->isRefundable()) {
+            throw new \RuntimeException("Платёж для заказа № {$order->uid} невозможно возвратить.");
+        }
+
+        $operation = $payment->refund_operation;
+
+        if (!$operation || !$operation->loaded() || $operation->status != PaymentOperation::STATUS_COMPLETED) {
+            $operation = $this->createRefundOperation($payment);
+            $payment->refund_operation_id = $operation->id();
+            $payment->save();
+        }
+
+        $this->sendOperationRequest($operation);
+    }
+
+    protected function sendOperationRequest(PaymentOperation $operation)
+    {
+        $operation->setStatus(PaymentOperation::STATUS_PENDING);
         $operation->save();
         $request = $this->createRequestFromPaymentOperation($operation);
         $request->setPSign($this->calculateRequestMAC($request));
@@ -202,7 +232,7 @@ class PaymentService
         $payment->amount = $order->amount;
         $payment->order_number = $order->uid;
         $payment->currency = $this->currency;
-        $payment->type = 'immediate';
+        $payment->type = Payment::TYPE_IMMEDIATE;
         $payment->status = Payment::STATUS_NEW;
         $payment->order_id = $order->id();
         $payment->save();
@@ -211,6 +241,20 @@ class PaymentService
     }
 
     private function createImmediatePaymentOperation(Payment $payment)
+    {
+        return $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT);
+    }
+
+    private function createRefundOperation(Payment $payment)
+    {
+        $operation = $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_REFUND);
+        $operation->setRrn($payment->payment_operation->rrn);
+        $operation->setInternalReference($payment->payment_operation->int_ref);
+        $operation->save();
+        return $operation;
+    }
+
+    protected function createTypedOperation(Payment $payment, $type)
     {
         if (!$payment->loaded()) {
             throw new \InvalidArgumentException("The payment must be a persistent object.");
@@ -221,7 +265,7 @@ class PaymentService
         $this->fillPaymentOperationWithStandardValues($operation);
         $this->fillPaymentOperationWithOrderData($operation, $payment->order);
 
-        $operation->setTransactionType(Request::TR_TYPE_IMMEDIATE_PAYMENT);
+        $operation->setTransactionType($type);
         $operation->save();
 
         return $operation;
