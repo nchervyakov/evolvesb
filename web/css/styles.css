@@ -4821,3 +4821,13 @@ a.list-group-item.active > .badge,
 .main > .breadcrumb {
   box-sizing: border-box;
 }
+
+.checkout-final-notice .btn {
+    color: #fff;
+  background-color: #af1f31;
+}
+
+.checkout-final-notice .btn:hover {
+  color: #fff;
+  background-color: #c61f38;
+}

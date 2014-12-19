@@ -41,6 +41,7 @@ CREATE TABLE `tbl_payment_operations` (
   `status` varchar(16) NOT NULL DEFAULT 'new',
   `timestamp` varchar(14) NOT NULL,
   `nonce` varchar(64) NOT NULL,
+  `brands` varchar(80) NOT NULL,
   FOREIGN KEY (`payment_id`) REFERENCES `tbl_payment` (`payID`) ON DELETE RESTRICT
 ) COMMENT='' ENGINE='InnoDB' COLLATE 'utf8_general_ci';
 
@@ -66,4 +67,6 @@ ADD `rc` int NULL AFTER `rrn`,
 ADD `action` int NULL AFTER `rc`,
 COMMENT='';
 
-ALTER TABLE `tbl_payment_operations` ADD `int_ref` varchar(16) NOT NULL DEFAULT('') AFTER `action`, COMMENT='';
+ALTER TABLE `tbl_payment_operations`
+ADD `int_ref` varchar(16) NOT NULL DEFAULT '' AFTER `action`,
+COMMENT='';
