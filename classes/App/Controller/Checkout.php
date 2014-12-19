@@ -5,6 +5,7 @@ use App\Exception\NotFoundException;
 use App\Model\Cart as CartModel;
 use App\Model\Cart;
 use App\Model\Order;
+use App\Model\PaymentOperation;
 use App\Page;
 
 class Checkout extends Page {
@@ -196,6 +197,43 @@ class Checkout extends Page {
             $this->redirect('/checkout/order/' . $order->uid);
         }
 
+
+
+        $paymentConfig = $this->pixie->config->get('payment');
+        $usePost = $paymentConfig['use_post_for_request'];
+
+        if ($usePost) {
+            if (!$order->isPayable()) {
+                throw new \RuntimeException("Order {$order->uid} cannot be payed.");
+            }
+
+            $payment = $order->payment;
+            if (!$payment || !$payment->loaded()) {
+                $payment = $this->pixie->payments->createOrderPayment($order);
+                $order->refresh();
+            }
+
+            if (!$payment->isPayable()) {
+                throw new \RuntimeException("Payment for order {$order->uid} cannot be performed.");
+            }
+
+            $operation = $payment->payment_operation;
+            if (!$operation || !$operation->loaded() || $operation->status != PaymentOperation::STATUS_COMPLETED) {
+                $operation = $this->pixie->payments->createImmediatePaymentOperation($payment);
+                $payment->payment_operation_id = $operation->id();
+                $payment->save();
+            }
+            $operation->setStatus(PaymentOperation::STATUS_PENDING);
+            $operation->save();
+            $request = $this->pixie->payments->createRequestFromPaymentOperation($operation);
+            $request->setPSign($this->pixie->payments->calculateRequestMAC($request));
+
+            $this->view->gatewayParameters = $request->getParametersArray();
+            $this->view->gatewayUrl = $paymentConfig['gateway_url'];
+        }
+
+
+        $this->view->usePost = $usePost;
         $this->view->flash = $this->pixie->session->flash('payment_error');
         $this->view->subview = 'cart/payment';
         $this->view->tab = 'payment';

@@ -12,5 +12,6 @@ return [
     'merchant_gmt' => '+3',
     'currency' => 'RUR',
     'country' => 'RU',
-    'brands' => 'VISA,MASTERCARD'
+    'brands' => 'VISA,MASTERCARD',
+    'use_post_for_request' => false
 ];

@@ -371,7 +371,8 @@ class Helper extends \PHPixie\View\Helper
                 $currency = $this->currency;
 
             } else {
-                $currency = $this->pixie->config->get('payment.currency');
+                $paymentConfig = $this->pixie->config->get('payment');
+                $currency = $paymentConfig['currency'];
                 $this->currency = $currency;
             }
         }

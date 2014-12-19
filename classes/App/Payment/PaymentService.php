@@ -240,7 +240,7 @@ class PaymentService
         return $payment;
     }
 
-    private function createImmediatePaymentOperation(Payment $payment)
+    public function createImmediatePaymentOperation(Payment $payment)
     {
         return $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT);
     }

@@ -33,6 +33,7 @@ class Controller extends BaseController
 
     public function before()
     {
+        $this->secure();
         parent::before();
 
         $user = $this->pixie->auth->user();

@@ -52,16 +52,17 @@
               /css/lte-ie7.js
             <![endif]-->
         <?php if (isset($headCSS)) { echo $headCSS; } ?>
+        <?php $protocol = $_SERVER['HTTPS'] == 'on' ? 'https' : 'http'; ?>
 
         <!-- Icons -->
         <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.png">
         <link rel="canonical" href="http://evolveskateboards.ru/" />
 
         <!-- Custom Fonts -->
-        <link href='http://fonts.googleapis.com/css?family=.|Lato:light,normal,bold|Lato:light,normal,bold|PT+Sans+Narrow:light,normal,bold|Merriweather:light,normal,bold' rel='stylesheet' type='text/css'>
+        <link href='<?php echo $protocol; ?>://fonts.googleapis.com/css?family=.|Lato:light,normal,bold|Lato:light,normal,bold|PT+Sans+Narrow:light,normal,bold|Merriweather:light,normal,bold' rel='stylesheet' type='text/css'>
 
         <!-- jQuery and jQuery fallback -->
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="<?php echo $protocol; ?>://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
         <script>window.jQuery || document.write("<script src='/js/jquery.min.js'>\x3C/script>")</script>
 
         <script src="/js/jquery-migrate-1.2.1.js"></script>
