@@ -210,6 +210,7 @@ class ConfirmationStep extends AbstractStep
         }
 
         $this->createOverriddenConfig('parameters');
+        $this->createOverriddenConfig('payment');
 
         // Update DB settings
         $dbConfig = $this->pixie->config->get('db');

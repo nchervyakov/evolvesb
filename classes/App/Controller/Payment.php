@@ -67,7 +67,7 @@ class Payment extends Page
      */
     public function processResponse()
     {
-        if (!$this->request->method == 'POST') {
+        if ($this->request->method != 'POST') {
             throw new HttpException("Request type must be POST");
         }
 
@@ -76,7 +76,7 @@ class Payment extends Page
         $transactionType = (int) $data['TRTYPE'];
 
         if (!$orderUid) {
-            throw new HttpException("Order uid is missing.");
+            throw new HttpException("Отсутствует идентификатор заказа.");
         }
 
         /** @var Order $orderModel */
@@ -84,7 +84,7 @@ class Payment extends Page
         $order = $orderModel->getByUid($orderUid);
 
         if (!$order || !$order->payment || !$order->payment->loaded()) {
-            throw new NotFoundException("Order or payment are missing.");
+            throw new NotFoundException("Заказ или платёж отсутствует.");
         }
 
         $this->order = $order;
