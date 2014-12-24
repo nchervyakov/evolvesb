@@ -18,6 +18,25 @@
         <input type="text" name="user_phone" id="user_phone" class="form-control input-lg" placeholder="Телефон" tabindex="3" value="<?php $_($user_phone, 'user_phone'); ?>">
     </div>
 
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+            <p>Изменить пароль:</p>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="form-group">
+                <input type="password" maxlength="100" name="password" id="password"
+                       class="form-control input-lg" placeholder="Password" tabindex="5" value="<?php $_($password, 'password'); ?>">
+            </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="form-group">
+                <input type="password" maxlength="100" name="password_confirmation"
+                       id="password_confirmation" class="form-control input-lg" placeholder="Confirm Password"
+                       tabindex="6" value="<?php $_($password_confirmation, 'password_confirmation'); ?>">
+            </div>
+        </div>
+    </div>
+
     <?php if (isset($photo) && $photo): ?>
         <div class="form-group">
             <img src="<?php echo $baseImgPath; $_($photo); ?>" alt="" class="profile-picture" /> <br>
