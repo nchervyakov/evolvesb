@@ -13,10 +13,8 @@ return array(
             ),
             'facebook' => array(
                 //Facebook App ID and Secret
-                'app_id' => '1524599041117229',
-                'app_secret' => '3ad0a21285754823ed3c976fff78b277',
-//                'app_id' => '725422934182477',
-//                'app_secret' => '533fff80993f05d1ec606a93d13b1436',
+                'app_id' => '765305316890718',
+                'app_secret' => '3974bb95167be2929c09a2b9c93729b3',
                 //Permissions to request from the user
                 'permissions' => array('user_about_me'),
                 //'fbid_field' => 'fb_id',
