@@ -193,7 +193,11 @@ class Checkout extends Page {
             throw new NotFoundException();
         }
 
-        if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])) {
+        $isTesting = $this->pixie->config->get('payment.testing');
+
+        if (!in_array($order->status, [Order::STATUS_NEW, Order::STATUS_WAITING_PAYMENT])
+            && !$isTesting
+        ) {
             $this->redirect('/checkout/order/' . $order->uid);
         }
 
@@ -201,7 +205,7 @@ class Checkout extends Page {
         $usePost = $paymentConfig['use_post_for_request'];
 
         if ($usePost) {
-            if (!$order->isPayable()) {
+            if (!$order->isPayable() && !$isTesting) {
                 $this->redirect('/account/orders/' . $order->uid);
                 return;
                 //throw new \RuntimeException("Order {$order->uid} cannot be payed.");
@@ -213,16 +217,16 @@ class Checkout extends Page {
                 $order->refresh();
             }
 
-            if (!$payment->isPayable()) {
+            if (!$payment->isPayable() && !$isTesting) {
                 throw new \RuntimeException("Payment for order {$order->uid} cannot be performed.");
             }
 
-            $operation = $payment->payment_operation;
-            if (!$operation || !$operation->loaded() || $operation->status != PaymentOperation::STATUS_COMPLETED) {
+            //$operation = $payment->payment_operation;
+            //if (!$operation || !$operation->loaded() || $operation->status != PaymentOperation::STATUS_COMPLETED) {
                 $operation = $this->pixie->payments->createImmediatePaymentOperation($payment);
                 $payment->payment_operation_id = $operation->id();
                 $payment->save();
-            }
+            //}
             $operation->setStatus(PaymentOperation::STATUS_PENDING);
             $operation->save();
             $request = $this->pixie->payments->createRequestFromPaymentOperation($operation);
@@ -231,7 +235,6 @@ class Checkout extends Page {
             $this->view->gatewayParameters = $request->getParametersArray();
             $this->view->gatewayUrl = $paymentConfig['gateway_url'];
         }
-
 
         $this->view->usePost = $usePost;
         $this->view->flash = $this->pixie->session->flash('payment_error');

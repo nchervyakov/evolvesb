@@ -28,14 +28,16 @@
                     <dd><span class="label label-danger"><?php echo $_format_price($order->amount); ?></span></dd>
                 </dl>
 
-                <?php if ($order->status == \App\Model\Order::STATUS_PROCESSING) { ?>
+                <?php if ($order->status == \App\Model\Order::STATUS_PROCESSING || ($this->pixie->config->get('payment.testing') && $order->status == \App\Model\Order::STATUS_PROCESSING)) { ?>
                     <br/>
                     <form action="/payment/refund" method="post">
                         <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
                         <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
                     </form>
 
-                <?php } else if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT) { ?>
+                <?php }
+
+                if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT || $this->pixie->config->get('payment.testing')) { ?>
                     <br/>
                     <a href="/checkout/payment/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
 

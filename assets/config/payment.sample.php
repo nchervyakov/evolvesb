@@ -14,5 +14,6 @@ return [
     'country' => 'RU',
     'brands' => 'VISA,MASTERCARD',
     'use_post_for_request' => false,
-    'debug_payment_gateway_response' => false
+    'debug_payment_gateway_response' => false,
+    'testing' => true,
 ];
