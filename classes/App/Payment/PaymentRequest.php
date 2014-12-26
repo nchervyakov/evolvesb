@@ -25,12 +25,6 @@ class PaymentRequest extends Request
     {
         parent::initFromOperation($operation);
         $this->setBrands($operation->brands);
-        $this->setCountry($operation->country);
-        $this->setCustomerEmail($operation->email);
         $this->setDescription($operation->description);
-        $this->setMerchant($operation->merchant);
-        $this->setMerchantGMTTimezoneOffset($operation->merchant_gmt);
-        $this->setMerchantName($operation->merchant_name);
-        $this->setMerchantUrl($operation->merchant_url);
     }
 }

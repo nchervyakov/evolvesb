@@ -220,7 +220,9 @@ class Payment extends Page
             throw new NotFoundException("Заказа с номером '$orderUid' не существует.");
         }
 
-        if ($order->status != Order::STATUS_PROCESSING) {
+        $isTesting = $this->pixie->config->get('payment.testing');
+
+        if ($order->status != Order::STATUS_PROCESSING && !$isTesting) {
             throw new HttpException("Для заказа №" . $order->uid . " невозможно выполнить возврат платежа.");
         }
 

@@ -565,5 +565,11 @@ class Request
 
     public function initFromOperation(PaymentOperation $operation)
     {
+        $this->setCountry($operation->country);
+        $this->setCustomerEmail($operation->email);
+        $this->setMerchantUrl($operation->merchant_url);
+        $this->setMerchant($operation->merchant);
+        $this->setMerchantGMTTimezoneOffset($operation->merchant_gmt);
+        $this->setMerchantName($operation->merchant_name);
     }
 }

@@ -149,11 +149,13 @@ class PaymentService
         $order = $this->getOrder($orderId);
         $payment = $order->payment;
 
-        if (!$order->isRefundable() || !$payment || !$payment->loaded()) {
+        $isTesting = $this->pixie->config->get('payment.testing');
+
+        if ((!$order->isRefundable() && !$isTesting) || !$payment || !$payment->loaded()) {
             throw new \RuntimeException("Заказ № {$order->uid} невозможно возвратить.");
         }
 
-        if (!$payment->isRefundable()) {
+        if (!$payment->isRefundable() && !$isTesting) {
             throw new \RuntimeException("Платёж для заказа № {$order->uid} невозможно возвратить.");
         }
 
