@@ -4831,3 +4831,6 @@ a.list-group-item.active > .badge,
   color: #fff;
   background-color: #c61f38;
 }
+.cancel-order-form {
+    display: inline-block;
+}

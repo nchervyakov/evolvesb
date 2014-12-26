@@ -9,11 +9,7 @@
         <?php endif; ?>
         <br/>
         <br/>
-        <p><a href="/payment/pay/<?php $_($orderUid); ?>" class="btn btn-danger btn-lg">Оплатить заказ</a></p>
-
         <?php if ($usePost): ?>
-            <br/>
-            Или через POST:
             <form action="<?php echo $gatewayUrl; ?>" method="post">
                 <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
                     <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
@@ -21,6 +17,8 @@
 
                 <input type="submit" value="Оплатить заказ" class="btn btn-danger btn-lg"/>
             </form>
+        <?php else: ?>
+            <p><a href="/payment/pay/<?php $_($orderUid); ?>" class="btn btn-danger btn-lg">Оплатить заказ</a></p>
         <?php endif; ?>
         <br/>
     </div>

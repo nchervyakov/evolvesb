@@ -10,6 +10,8 @@
 namespace App\Installation\Step;
 
 
+use PHPixie\DB\PDOV\Connection;
+
 class ConfirmationStep extends AbstractStep
 {
     protected $template = 'installation/confirmation';
@@ -110,8 +112,9 @@ class ConfirmationStep extends AbstractStep
     {
         $this->pixie->config->load_inherited_group('db');
 
-        /** @var \PDO $conn */
-        $conn = $this->pixie->db->get()->conn;
+        /** @var Connection $db */
+        $db = $this->pixie->db->get();
+        $conn = $db->conn;
         $conn->setAttribute(\PDO::ATTR_TIMEOUT, 300);
 
         $this->pixie->db->get()->execute("SET foreign_key_checks = 0;");

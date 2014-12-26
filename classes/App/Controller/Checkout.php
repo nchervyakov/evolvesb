@@ -197,14 +197,14 @@ class Checkout extends Page {
             $this->redirect('/checkout/order/' . $order->uid);
         }
 
-
-
         $paymentConfig = $this->pixie->config->get('payment');
         $usePost = $paymentConfig['use_post_for_request'];
 
         if ($usePost) {
             if (!$order->isPayable()) {
-                throw new \RuntimeException("Order {$order->uid} cannot be payed.");
+                $this->redirect('/account/orders/' . $order->uid);
+                return;
+                //throw new \RuntimeException("Order {$order->uid} cannot be payed.");
             }
 
             $payment = $order->payment;

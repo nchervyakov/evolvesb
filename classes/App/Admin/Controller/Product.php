@@ -36,16 +36,18 @@ class Product extends CRUDController
                 ],
                 'name' => [
                     'max_length' => 64,
-                    'type' => 'link'
+                    'type' => 'link',
+                    'title' => 'Название'
                 ],
                 'category.name' => [
-                    'title' => 'Category',
+                    'title' => 'Категория',
                     'type' => 'link',
                     'template' => '/admin/category/%category.categoryID%',
                     'width' => 150
                 ],
                 'Price' => [
-                    'value_prefix' => '$',
+                    'title' => 'Цена (руб.)',
+                    'value_prefix' => '',
                     'data_type' => 'integer',
                 ],
                 'picture' => [
@@ -55,7 +57,7 @@ class Product extends CRUDController
                     'max_height' => 30,
                     'is_link' => true,
                     'column_classes' => 'dt-picture-column',
-                    'title' => 'Pic',
+                    'title' => 'Картинка',
                     'thumbnail' => 'tiny'
                 ]
             ],

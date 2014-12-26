@@ -117,6 +117,14 @@
                         </tbody>
                     </table>
                 <?php endif; ?>
+
+                <?php if ($order->isRefundable()) { ?>
+                    <br/>
+                    <form action="/order/refund" method="post">
+                        <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
+                        <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
+                    </form>
+                <?php } ?>
             <?php endif; ?>
         </div>
     </div>

@@ -13,6 +13,7 @@ namespace App\Admin\Controller;
 use App\Admin\CRUDController;
 use App\Events\Events;
 use App\Events\OrderStatusChangedEvent;
+use App\Exception\HttpException;
 use App\Exception\NotFoundException;
 use App\Helpers\ArraysHelper;
 
@@ -158,6 +159,30 @@ class Order extends CRUDController
             $this->view->pageTitle = $this->modelNameSingle . ' №' . $order->uid;
             $this->view->pageHeader = $this->view->pageTitle;
         }
+    }
 
+    public function action_refund()
+    {
+        if ($this->request->method != 'POST') {
+            throw new HttpException("Invalid request method: " . $this->request->method);
+        }
+
+        $id = (string)$this->request->post('id');
+        if (!$id) {
+            throw new HttpException("Не указан номер заказа.");
+        }
+
+        /** @var \App\Model\Order $order */
+        $order = $this->pixie->orm->get('Order', $id)->find();
+
+        if (!$order || !$order->loaded()) {
+            throw new NotFoundException("Заказа с номером '$id' не существует.");
+        }
+
+        if (!$order->isRefundable()) {
+            throw new HttpException("Для заказа №" . $order->uid . " невозможно выполнить возврат платежа.");
+        }
+
+        $this->pixie->payments->sendRefundOrderRequest($order->id());
     }
 }

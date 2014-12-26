@@ -25,21 +25,28 @@
                     <dd><?php echo $_order_status($order->status); ?></dd>
 
                     <dt>Итого</dt>
-                    <dd><span class="label label-danger"><?php echo $_format_price($order->orderItems->getItemsTotal()); ?></span></dd>
+                    <dd><span class="label label-danger"><?php echo $_format_price($order->amount); ?></span></dd>
                 </dl>
 
                 <?php if ($order->status == \App\Model\Order::STATUS_PROCESSING) { ?>
                     <br/>
                     <form action="/payment/refund" method="post">
                         <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
-                        <input type="submit" class="btn btn-default" value="Отменить заказ" />
+                        <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
                     </form>
 
                 <?php } else if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT) { ?>
                     <br/>
-                    <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
+                    <a href="/checkout/payment/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
 
                 <?php } ?>
+
+                <?php if ($order->isCancellable()): ?>
+                    <form action="/account/cancel_order" method="post" class="cancel-order-form">
+                        <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
+                        <input type="submit" class="btn btn-default" value="Отменить заказ" />
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
 

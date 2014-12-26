@@ -35,4 +35,6 @@ return array(
     'thumb_path' => __DIR__.'/../../web/cache/thumb/',
     'allow_install' => false,
     'use_ssl' => true,
+    'admin_email' => ['admin1@gmail.com', 'admin2@example.com'],
+    'robot_email' => 'robot@evolveskateboards.ru',
 );

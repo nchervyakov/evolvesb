@@ -144,7 +144,7 @@ class PaymentService
         $this->sendOperationRequest($operation);
     }
 
-    public function sendRefundOrderRequest($orderId)
+    public function sendRefundOrderRequest($orderId, $params = [])
     {
         $order = $this->getOrder($orderId);
         $payment = $order->payment;
@@ -165,14 +165,17 @@ class PaymentService
             $payment->save();
         }
 
-        $this->sendOperationRequest($operation);
+        $this->sendOperationRequest($operation, $params);
     }
 
-    protected function sendOperationRequest(PaymentOperation $operation)
+    protected function sendOperationRequest(PaymentOperation $operation, $params = [])
     {
         $operation->setStatus(PaymentOperation::STATUS_PENDING);
         $operation->save();
         $request = $this->createRequestFromPaymentOperation($operation);
+        if ($params['MERCH_URL']) {
+            $request->setMerchantUrl($params['MERCH_URL']);
+        }
         $request->setPSign($this->calculateRequestMAC($request));
         $url = $this->gatewayUrl . '?' . http_build_query($request->getParametersArray());
         header('Location: ' . $url);
