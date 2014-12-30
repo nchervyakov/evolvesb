@@ -15,6 +15,8 @@ use App\Exception\NotFoundException;
 use App\Helpers\Thumber;
 use App\Installation\Installer;
 use App\Payment\PaymentService;
+use PaymentTest\PaymentTest;
+use PaymentTest\TestFactory;
 use PHPixie\Controller;
 use PHPixie\Cookie;
 use PHPixie\Exception\PageNotFound;
@@ -43,6 +45,8 @@ use VulnModule\VulnInjection;
  * @property-read Installer $installer
  * @property-read Thumber $thumb
  * @property-read PaymentService $payments
+ * @property-read PaymentTest $paymentTest
+ * @property-read TestFactory $paymentTestFactory
  * @method Controller|Rest\Controller controller
  */
 class Pixie extends \PHPixie\Pixie {
@@ -61,6 +65,7 @@ class Pixie extends \PHPixie\Pixie {
 		'email' => '\PHPixie\Email',
 		'paginate' => '\PHPixie\Paginate',
 		'paginateDB' => '\App\Paginate\Paginate',
+		'paymentTest' => '\PaymentTest\PaymentTest',
     );
 
     /**
@@ -77,6 +82,7 @@ class Pixie extends \PHPixie\Pixie {
         $this->instance_classes['thumb'] = '\\App\\Helpers\\Thumber';
         $this->instance_classes['http'] = '\\App\\Network\\HTTPService';
         $this->instance_classes['payments'] = '\\App\\Payment\\PaymentService';
+        $this->instance_classes['paymentTestFactory'] = '\\PaymentTest\\TestFactory';
     }
 
     /**

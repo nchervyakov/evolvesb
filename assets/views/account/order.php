@@ -28,10 +28,12 @@
                     <dd><span class="label label-danger"><?php echo $_format_price($order->amount); ?></span></dd>
                 </dl>
 
-                <?php if ($order->status == \App\Model\Order::STATUS_PROCESSING || ($this->pixie->config->get('payment.testing'))) { ?>
+                <?php if ($this->pixie->config->get('payment.testing')) { ?>
                     <br/>
-                    <form action="/payment/refund" method="post">
-                        <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
+                    <form action="<?php echo $gatewayUrl; ?>" method="post" id="refundForm">
+                        <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
+                            <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
+                        <?php } ?>
                         <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
                     </form>
 

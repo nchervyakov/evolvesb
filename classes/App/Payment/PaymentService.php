@@ -92,6 +92,11 @@ class PaymentService
      */
     protected $brands;
 
+    /**
+     * @var array
+     */
+    protected $macFields;
+
     function __construct(Pixie $pixie)
     {
         $this->pixie = $pixie;
@@ -110,6 +115,8 @@ class PaymentService
         $this->brands = $config['brands'];
         $this->component1 = $config['mac_component1'];
         $this->component2 = $config['mac_component2'];
+        $this->macFields = is_array($config['mac_fields'])
+                ? $config['mac_fields'] : ['NONCE', 'AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL'];
     }
 
     /**
@@ -203,11 +210,13 @@ class PaymentService
     /**
      * Calculates request MAC code
      * @param Request $request
+     * @param null|array $macFields
      * @return string
      */
-    public function calculateRequestMAC(Request $request)
+    public function calculateRequestMAC(Request $request, $macFields = null)
     {
-        $source = $request->calculateMACSourceString();
+        $fields = is_array($macFields) ? $macFields : $this->macFields;
+        $source = $request->calculateMACSourceString($fields);
         $key = $this->getKey();
         $result = hash_hmac('sha1', $source, pack("H*", $key));
         return $result;
@@ -250,7 +259,7 @@ class PaymentService
         return $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT);
     }
 
-    private function createRefundOperation(Payment $payment)
+    public function createRefundOperation(Payment $payment)
     {
         $operation = $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_REFUND);
         $operation->setRrn($payment->payment_operation->rrn);
@@ -314,5 +323,37 @@ class PaymentService
     public function createRequestFromPaymentOperation(PaymentOperation $operation)
     {
         return Request::createFromPaymentOperation($operation);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantId()
+    {
+        return $this->merchantId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantName()
+    {
+        return $this->merchantName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantUrl()
+    {
+        return $this->merchantUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantGMT()
+    {
+        return $this->merchantGMT;
     }
 }

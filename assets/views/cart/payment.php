@@ -10,7 +10,7 @@
         <br/>
         <br/>
         <?php if ($usePost): ?>
-            <form action="<?php echo $gatewayUrl; ?>" method="post">
+            <form action="<?php echo $gatewayUrl; ?>" method="post" id="paymentForm">
                 <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
                     <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
                 <?php } ?>

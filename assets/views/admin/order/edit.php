@@ -118,10 +118,12 @@
                     </table>
                 <?php endif; ?>
 
-                <?php if ($order->isRefundable()) { ?>
+                <?php if ($order->isRefundable() || $isTesting ) { ?>
                     <br/>
-                    <form action="/order/refund" method="post">
-                        <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
+                    <form action="<?php echo $gatewayUrl; ?>" method="post" id="refundForm">
+                        <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
+                            <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
+                        <?php } ?>
                         <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
                     </form>
                 <?php } ?>

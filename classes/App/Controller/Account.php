@@ -7,6 +7,8 @@ use App\Exception\HttpException;
 use App\Exception\NotFoundException;
 use App\Helpers\UserPictureUploader;
 use App\Model\Order;
+use App\Model\Order as OrderModel;
+use App\Model\PaymentOperation;
 use App\Model\User;
 use App\Page;
 use App\Rest\Events;
@@ -44,6 +46,51 @@ class Account extends Page {
             if (!$order->loaded() || $order->customer_id != $this->getUser()->id()) {
                 throw new NotFoundException();
             }
+
+            $paymentConfig = $this->pixie->config->get('payment');
+            $usePost = $paymentConfig['use_post_for_request'];
+            $isTesting = $paymentConfig['testing'];
+
+            if ($usePost && ($order->status == OrderModel::STATUS_PROCESSING || $isTesting)) {
+                $payment = $order->payment;
+
+                $isTesting = $this->pixie->config->get('payment.testing');
+
+                $canRefundOrder = !((!$order->isRefundable() && !$isTesting) || !$payment || !$payment->loaded());
+
+                if ($canRefundOrder) {
+                    $canRefundPayment = $payment->isRefundable() || $isTesting;
+
+
+                    if ($canRefundPayment) {
+                        $operation = $payment->refund_operation;
+
+                        if (!$operation || !$operation->loaded()) {
+                            $operation = $this->pixie->payments->createRefundOperation($payment);
+                            $payment->refund_operation_id = $operation->id();
+                            $payment->save();
+                        }
+
+                        if ($operation->status != PaymentOperation::STATUS_COMPLETED) {
+                            $operation->setStatus(PaymentOperation::STATUS_PENDING);
+                            $operation->save();
+                        }
+
+                        $request = $this->pixie->payments->createRequestFromPaymentOperation($operation);
+                        $request->setMerchantUrl($this->pixie->payments->getMerchantUrl());
+
+                        $macFields = null;
+                        if ($isTesting && ($macFieldsArr = $this->request->get('mac_fields')) && is_array($macFieldsArr)) {
+                            $macFields = $macFieldsArr;
+                        }
+                        $request->setPSign($this->pixie->payments->calculateRequestMAC($request, $macFields));
+
+                        $this->view->gatewayParameters = $request->getParametersArray();
+                        $this->view->gatewayUrl = $paymentConfig['gateway_url'];
+                    }
+                }
+            }
+
             $this->view->id = $orderId;
             $this->view->order = $order;
             $this->view->items = $order->orderItems->find_all()->as_array();

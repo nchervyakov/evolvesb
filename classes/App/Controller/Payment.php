@@ -54,6 +54,10 @@ class Payment extends Page
                 $message = "При оплате произошла ошибка. Попробуйте снова.";
                 if ($this->pixie->config->get('parameters.display_errors')) {
                     $message .= "\n" . $e->getMessage() . "\n" . $e->getStatus();
+                    $child = $e;
+                    while ($child = $child->getPrevious()) {
+                        $message .= "\n" . $child->getMessage() . "\n" . $child->getCode();
+                    }
                 }
                 $this->pixie->session->flash("payment_error", $message);
                 $this->redirect("/checkout/payment/" . $this->order->uid);

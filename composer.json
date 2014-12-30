@@ -8,7 +8,8 @@
             "": [
                 "classes/",
                 "modules/vulninjection/classes/",
-                "classes/PDOV"
+                "classes/PDOV",
+                "modules/payment_test/classes/"
             ],
             "PHPThumb": "vendor/project/phpthumb/src/",
             "PHPThumb\\Tests": "vendor/project/phpthumb/tests/",
@@ -49,7 +50,8 @@
         "phpixie/email": "2.*@dev",
         "phpixie/paginate":"2.*@dev",
         "project/phpthumb": "1.0.0",
-        "symfony/filesystem": "2.3.23"
+        "symfony/filesystem": "2.3.23",
+        "fabpot/goutte": "2.*"
     },
     "extra": {
         "branch-alias": {

@@ -16,4 +16,5 @@ return [
     'use_post_for_request' => false,
     'debug_payment_gateway_response' => false,
     'testing' => true,
+    'mac_fields' => ['NONCE', 'AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL'],
 ];

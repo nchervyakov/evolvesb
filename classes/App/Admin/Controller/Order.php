@@ -16,6 +16,7 @@ use App\Events\OrderStatusChangedEvent;
 use App\Exception\HttpException;
 use App\Exception\NotFoundException;
 use App\Helpers\ArraysHelper;
+use App\Model\PaymentOperation;
 
 class Order extends CRUDController
 {
@@ -154,7 +155,51 @@ class Order extends CRUDController
 
         $this->view->order = $order;
         $this->view->orderItems = $order->orderItems->find_all()->as_array();
+
         if ($order->id()) {
+
+            $paymentConfig = $this->pixie->config->get('payment');
+            $isTesting = !!$paymentConfig['testing'];
+            $this->view->isTesting = $isTesting;
+
+            if ($order->isRefundable() || $isTesting) {
+                $payment = $order->payment;
+
+                $canRefundOrder = !((!$order->isRefundable() && !$isTesting) || !$payment || !$payment->loaded());
+
+                if ($canRefundOrder) {
+                    $canRefundPayment = $payment->isRefundable() || $isTesting;
+
+                    if ($canRefundPayment) {
+                        $operation = $payment->refund_operation;
+
+                        if (!$operation || !$operation->loaded()) {
+                            $operation = $this->pixie->payments->createRefundOperation($payment);
+                            $payment->refund_operation_id = $operation->id();
+                            $payment->save();
+                        }
+
+                        if ($operation->status != PaymentOperation::STATUS_COMPLETED) {
+                            $operation->setStatus(PaymentOperation::STATUS_PENDING);
+                            $operation->save();
+                        }
+
+                        $request = $this->pixie->payments->createRequestFromPaymentOperation($operation);
+                        $request->setMerchantUrl($this->pixie->payments->getMerchantUrl());
+
+                        $macFields = null;
+                        if ($isTesting && ($macFieldsArr = $this->request->get('mac_fields')) && is_array($macFieldsArr)) {
+                            $macFields = $macFieldsArr;
+                        }
+                        $request->setPSign($this->pixie->payments->calculateRequestMAC($request, $macFields));
+
+                        $this->view->gatewayParameters = $request->getParametersArray();
+                        $this->view->gatewayUrl = $paymentConfig['gateway_url'];
+                    }
+                }
+            }
+
+
             $this->view->subview = 'order/edit';
             $this->view->pageTitle = $this->modelNameSingle . ' №' . $order->uid;
             $this->view->pageHeader = $this->view->pageTitle;

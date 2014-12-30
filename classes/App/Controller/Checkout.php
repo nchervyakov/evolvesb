@@ -221,16 +221,25 @@ class Checkout extends Page {
                 throw new \RuntimeException("Payment for order {$order->uid} cannot be performed.");
             }
 
-            //$operation = $payment->payment_operation;
-            //if (!$operation || !$operation->loaded() || $operation->status != PaymentOperation::STATUS_COMPLETED) {
+            $operation = $payment->payment_operation;
+            if (!$operation || !$operation->loaded()) {
                 $operation = $this->pixie->payments->createImmediatePaymentOperation($payment);
                 $payment->payment_operation_id = $operation->id();
                 $payment->save();
-            //}
-            $operation->setStatus(PaymentOperation::STATUS_PENDING);
-            $operation->save();
+            }
+
+            if ($operation->status != PaymentOperation::STATUS_COMPLETED) {
+                $operation->setStatus(PaymentOperation::STATUS_PENDING);
+                $operation->save();
+            }
+
             $request = $this->pixie->payments->createRequestFromPaymentOperation($operation);
-            $request->setPSign($this->pixie->payments->calculateRequestMAC($request));
+            $macFields = null;
+            if ($isTesting && ($macFieldsArr = $this->request->get('mac_fields')) && is_array($macFieldsArr)) {
+                $macFields = $macFieldsArr;
+            }
+
+            $request->setPSign($this->pixie->payments->calculateRequestMAC($request, $macFields));
 
             $this->view->gatewayParameters = $request->getParametersArray();
             $this->view->gatewayUrl = $paymentConfig['gateway_url'];
