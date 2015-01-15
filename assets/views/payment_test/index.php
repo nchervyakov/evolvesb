@@ -158,7 +158,7 @@ jQuery(function ($) {
             url: '/paymentTest/init',
             type: 'POST',
             dataType: 'json',
-            timeout: 30000,
+            timeout: 100000,
             success: function () {
                 var el = $('.js-init-label');
                 el.addClass('is-initialized');
@@ -236,7 +236,7 @@ jQuery(function ($) {
             type: 'POST',
             data: {id: id},
             dataType: 'json',
-            timeout: 30000,
+            timeout: 100000,
             success: function (result) {
                 if (!result) {
                     $row.find('.status').html('error');

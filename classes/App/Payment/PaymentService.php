@@ -262,8 +262,12 @@ class PaymentService
     public function createRefundOperation(Payment $payment)
     {
         $operation = $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_REFUND);
-        $operation->setRrn($payment->payment_operation->rrn);
-        $operation->setInternalReference($payment->payment_operation->int_ref);
+        if (isset($payment->payment_operation->rrn)) {
+            $operation->setRrn($payment->payment_operation->rrn);
+        }
+        if (isset($payment->payment_operation->int_ref)) {
+            $operation->setInternalReference($payment->payment_operation->int_ref);
+        }
         $operation->save();
         return $operation;
     }
@@ -288,7 +292,7 @@ class PaymentService
     /**
      * @param PaymentOperation $operation
      */
-    protected function fillPaymentOperationWithStandardValues(PaymentOperation $operation)
+    public function fillPaymentOperationWithStandardValues(PaymentOperation $operation)
     {
         $operation->setBackReference($this->returnUrl);
         $operation->setBrands($this->brands);

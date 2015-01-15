@@ -893,25 +893,43 @@ return [
                         'ACTION' => '3'
                     ],
                     'data' => [
-                        'mac_fields' => []
+                        'mac_fields' => [],
+                        'exclude_fields' => ['NONCE']
                     ]
                 ]]],
 
-                '30.5' => ['operations' => [[
-                    'TRTYPE' => 24,
-                    'description' => 'Reversal',
-                    'card' => [1, 2, 3, 4],
-                    'amount' => '30.50',
-                    'comment' => 'шифрование только NONCE',
-                    'expected' => [
-                        'Host' => '00',
-                        'RC' => '00',
-                        'ACTION' => '0'
+                '30.5' => ['operations' => [
+                    [
+                        'TRTYPE' => 1,
+                        'description' => 'Auth & Sale',
+                        'card' => [1, 2, 3, 4],
+                        'amount' => '30.50',
+                        'comment' => 'шифрование только NONCE',
+                        'expected' => [
+                            'Host' => '00',
+                            'RC' => '00',
+                            'ACTION' => '0'
+                        ],
+                        'data' => [
+                            'mac_fields' => ['NONCE']
+                        ]
                     ],
-                    'data' => [
-                        'mac_fields' => ['NONCE']
+                    [
+                        'TRTYPE' => 24,
+                        'description' => 'Reversal',
+                        'card' => [1, 2, 3, 4],
+                        'amount' => '30.50',
+                        'comment' => 'шифрование только NONCE',
+                        'expected' => [
+                            'Host' => '00',
+                            'RC' => '00',
+                            'ACTION' => '0'
+                        ],
+                        'data' => [
+                            'mac_fields' => ['NONCE']
+                        ]
                     ]
-                ]]],
+                ]],
 
                 '31.2' => ['operations' => [[
                     'TRTYPE' => 1,
@@ -941,25 +959,43 @@ return [
                         'ACTION' => '3'
                     ],
                     'data' => [
-                        'mac_fields' => ['AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL']
+                        'mac_fields' => ['AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL'],
+                        'exclude_fields' => ['NONCE']
                     ]
                 ]]],
 
-                '31.5' => ['operations' => [[
-                    'TRTYPE' => 24,
-                    'description' => 'Reversal',
-                    'card' => [1, 2, 3, 4],
-                    'amount' => '31.50',
-                    'comment' => 'NONCE, AMOUNT, ORDER, TIMESTAMP, TRTYPE, TERMINAL',
-                    'expected' => [
-                        'Host' => '00',
-                        'RC' => '00',
-                        'ACTION' => '0'
+                '31.5' => ['operations' => [
+                    [
+                        'TRTYPE' => 1,
+                        'description' => 'Auth & Sale',
+                        'card' => [1, 2, 3, 4],
+                        'amount' => '31.50',
+                        'comment' => 'NONCE, AMOUNT, ORDER, TIMESTAMP, TRTYPE, TERMINAL',
+                        'expected' => [
+                            'Host' => '00',
+                            'RC' => '00',
+                            'ACTION' => '0'
+                        ],
+                        'data' => [
+                            'mac_fields' => ['NONCE', 'AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL']
+                        ]
                     ],
-                    'data' => [
-                        'mac_fields' => ['NONCE', 'AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL']
+                    [
+                        'TRTYPE' => 24,
+                        'description' => 'Reversal',
+                        'card' => [1, 2, 3, 4],
+                        'amount' => '31.50',
+                        'comment' => 'NONCE, AMOUNT, ORDER, TIMESTAMP, TRTYPE, TERMINAL',
+                        'expected' => [
+                            'Host' => '00',
+                            'RC' => '00',
+                            'ACTION' => '0'
+                        ],
+                        'data' => [
+                            'mac_fields' => ['NONCE', 'AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL']
+                        ]
                     ]
-                ]]],
+                ]],
             ]
         ]
     ],

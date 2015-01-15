@@ -112,6 +112,10 @@ class TestFactory
             $test->setMacFields($opData['mac_fields']);
         }
 
+        if (array_key_exists('exclude_fields', $opData) && is_array($opData['exclude_fields'])) {
+            //$test->setExcludedFields($opData['exclude_fields']);
+        }
+
         return $test;
     }
 }

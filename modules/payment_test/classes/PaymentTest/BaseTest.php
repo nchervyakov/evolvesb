@@ -72,6 +72,8 @@ abstract class BaseTest
 
     protected $data;
 
+    protected $excludedFields = [];
+
     function __construct(Pixie $pixie)
     {
         $this->pixie = $pixie;
@@ -120,7 +122,9 @@ abstract class BaseTest
         ];
         $this->client->submit($homeForm);
 
-        //var_dump($client->getHistory(), parse_url($client->getHistory()->current()->getUri()), $testConfig); exit;
+        ob_start();
+        var_dump($this->client->getHistory());
+        $result['history'] = ob_get_clean();
 
         return $result;
     }
@@ -137,6 +141,12 @@ abstract class BaseTest
         }
         if ($this->email !== null) {
             $form['EMAIL'] = $this->email;
+        }
+
+        if (count($this->excludedFields)) {
+            foreach ($this->excludedFields as $field) {
+                unset($form[$field]);
+            }
         }
 
         return $form;
@@ -415,9 +425,25 @@ abstract class BaseTest
     public function getMacFieldsQuery()
     {
         $macFieldsQuery = '';
-        if ($this->macFields) {
-            $macFieldsQuery = '?' . http_build_query(['mac_fields' => $this->macFields]);
+        if (is_array($this->macFields)) {
+            $macFieldsQuery = '?' . http_build_query(['mac_fields' => empty($this->macFields) ? 'none' : $this->macFields]);
         }
         return $macFieldsQuery;
+    }
+
+    /**
+     * @return array
+     */
+    public function getExcludedFields()
+    {
+        return $this->excludedFields;
+    }
+
+    /**
+     * @param array $excludedFields
+     */
+    public function setExcludedFields(array $excludedFields)
+    {
+        $this->excludedFields = $excludedFields;
     }
 }

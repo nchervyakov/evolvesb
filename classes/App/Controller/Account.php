@@ -56,19 +56,33 @@ class Account extends Page {
 
                 $isTesting = $this->pixie->config->get('payment.testing');
 
-                $canRefundOrder = !((!$order->isRefundable() && !$isTesting) || !$payment || !$payment->loaded());
+                $canRefundOrder = $order->isRefundable() || $isTesting;
 
                 if ($canRefundOrder) {
+                    if ($isTesting && (!$payment || !$payment->loaded())) {
+                        $payment = $this->pixie->payments->createOrderPayment($order);
+                        $order->refresh();
+                    }
+
                     $canRefundPayment = $payment->isRefundable() || $isTesting;
 
-
                     if ($canRefundPayment) {
-                        $operation = $payment->refund_operation;
+                        $operation = $payment && $payment->loaded() ? $payment->refund_operation : null;
 
                         if (!$operation || !$operation->loaded()) {
-                            $operation = $this->pixie->payments->createRefundOperation($payment);
-                            $payment->refund_operation_id = $operation->id();
-                            $payment->save();
+                            if ($payment && $payment->loaded()) {
+                                $operation = $this->pixie->payments->createRefundOperation($payment);
+                                $payment->refund_operation_id = $operation->id();
+                                $payment->save();
+
+                            } else if ($isTesting) {
+                                $operation = new PaymentOperation($this->pixie);
+                                $operation->payment_id = $payment->id();
+                                $this->pixie->payments->fillPaymentOperationWithStandardValues($operation);
+                                $this->pixie->payments->fillPaymentOperationWithOrderData($operation, $order);
+                                $operation->setTransactionType(PaymentOperation::TR_TYPE_REFUND);
+                                $operation->save();
+                            }
                         }
 
                         if ($operation->status != PaymentOperation::STATUS_COMPLETED) {
@@ -80,8 +94,13 @@ class Account extends Page {
                         $request->setMerchantUrl($this->pixie->payments->getMerchantUrl());
 
                         $macFields = null;
-                        if ($isTesting && ($macFieldsArr = $this->request->get('mac_fields')) && is_array($macFieldsArr)) {
-                            $macFields = $macFieldsArr;
+                        if ($isTesting){
+                            $macFieldsArr = $this->request->get('mac_fields');
+                            if (is_array($macFieldsArr)) {
+                                $macFields = $macFieldsArr;
+                            } else if ($macFieldsArr == 'none') {
+                                $macFields = [];
+                            }
                         }
                         $request->setPSign($this->pixie->payments->calculateRequestMAC($request, $macFields));
 

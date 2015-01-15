@@ -188,8 +188,13 @@ class Order extends CRUDController
                         $request->setMerchantUrl($this->pixie->payments->getMerchantUrl());
 
                         $macFields = null;
-                        if ($isTesting && ($macFieldsArr = $this->request->get('mac_fields')) && is_array($macFieldsArr)) {
-                            $macFields = $macFieldsArr;
+                        if ($isTesting){
+                            $macFieldsArr = $this->request->get('mac_fields');
+                            if (is_array($macFieldsArr)) {
+                                $macFields = $macFieldsArr;
+                            } else if ($macFieldsArr == 'none') {
+                                $macFields = [];
+                            }
                         }
                         $request->setPSign($this->pixie->payments->calculateRequestMAC($request, $macFields));
 
