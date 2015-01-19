@@ -304,7 +304,8 @@ class PaymentService
         $operation->setMerchantUrl($this->merchantUrl);
         $operation->setTerminal($this->terminal);
         $operation->setTimestamp(gmdate('YmdHis'));
-        $operation->setNonce(strtoupper(uniqid()));
+        srand();
+        $operation->setNonce(strtoupper(rand(100, 999) . uniqid()));
         $operation->setStatus(PaymentOperation::STATUS_NEW);
     }
 
