@@ -66,13 +66,13 @@ class Order extends BaseModel
 
     public function getMyOrders()
     {
-        $rows = $this->where('customer_id', $this->pixie->auth->user()->id)->find_all()->as_array();
+        $rows = $this->where('customer_id', $this->pixie->auth->user()->id())->find_all()->as_array();
         return $rows;
     }
 
     public function getMyOrdersPager($page = 1, $perPage = 10)
     {
-        $query = $this->where('customer_id', $this->pixie->auth->user()->id);
+        $query = $this->where('customer_id', $this->pixie->auth->user()->id());
         $pager = $this->pixie->paginate->orm($query, $page, $perPage);
         $currentItems = $pager;
         return $currentItems;
@@ -142,6 +142,11 @@ class Order extends BaseModel
 
     public function isRefundable()
     {
-        return in_array($this->status, [self::STATUS_SHIPPING, self::STATUS_PROCESSING, self::STATUS_COMPLETED]);
+        return $this->loaded() && in_array($this->status, [self::STATUS_SHIPPING, self::STATUS_PROCESSING, self::STATUS_COMPLETED]);
+    }
+
+    public function isCancellable()
+    {
+        return $this->loaded() && in_array($this->status, [self::STATUS_NEW, self::STATUS_WAITING_PAYMENT]);
     }
 }

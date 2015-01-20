@@ -113,8 +113,6 @@ class Request
             throw new \InvalidArgumentException("Order Id must be a number (length 6-20). Provided: $orderId");
         }
 
-        $orderId = (int) $orderId;
-
         $this->parameters['ORDER'] = $orderId;
     }
 
@@ -485,12 +483,13 @@ class Request
     }
 
     /**
+     * @param $fields
      * @return string Raw mac source string
      */
-    public function calculateMACSourceString()
+    public function calculateMACSourceString($fields)
     {
         //$macValues = array_values($this->parameters->getArrayCopy());
-        $fields = $this->getFields();
+        //$fields = $this->getFields();
         $macSource = [];
         foreach ($fields as $field) {
             if ($field == 'P_SIGN') {
@@ -565,5 +564,11 @@ class Request
 
     public function initFromOperation(PaymentOperation $operation)
     {
+        $this->setCountry($operation->country);
+        $this->setCustomerEmail($operation->email);
+        $this->setMerchantUrl($operation->merchant_url);
+        $this->setMerchant($operation->merchant);
+        $this->setMerchantGMTTimezoneOffset($operation->merchant_gmt);
+        $this->setMerchantName($operation->merchant_name);
     }
 }

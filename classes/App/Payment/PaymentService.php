@@ -92,6 +92,11 @@ class PaymentService
      */
     protected $brands;
 
+    /**
+     * @var array
+     */
+    protected $macFields;
+
     function __construct(Pixie $pixie)
     {
         $this->pixie = $pixie;
@@ -110,6 +115,8 @@ class PaymentService
         $this->brands = $config['brands'];
         $this->component1 = $config['mac_component1'];
         $this->component2 = $config['mac_component2'];
+        $this->macFields = is_array($config['mac_fields'])
+                ? $config['mac_fields'] : ['NONCE', 'AMOUNT', 'ORDER', 'TIMESTAMP', 'TRTYPE', 'TERMINAL'];
     }
 
     /**
@@ -144,16 +151,18 @@ class PaymentService
         $this->sendOperationRequest($operation);
     }
 
-    public function sendRefundOrderRequest($orderId)
+    public function sendRefundOrderRequest($orderId, $params = [])
     {
         $order = $this->getOrder($orderId);
         $payment = $order->payment;
 
-        if (!$order->isRefundable() || !$payment || !$payment->loaded()) {
+        $isTesting = $this->pixie->config->get('payment.testing');
+
+        if ((!$order->isRefundable() && !$isTesting) || !$payment || !$payment->loaded()) {
             throw new \RuntimeException("Заказ № {$order->uid} невозможно возвратить.");
         }
 
-        if (!$payment->isRefundable()) {
+        if (!$payment->isRefundable() && !$isTesting) {
             throw new \RuntimeException("Платёж для заказа № {$order->uid} невозможно возвратить.");
         }
 
@@ -165,14 +174,17 @@ class PaymentService
             $payment->save();
         }
 
-        $this->sendOperationRequest($operation);
+        $this->sendOperationRequest($operation, $params);
     }
 
-    protected function sendOperationRequest(PaymentOperation $operation)
+    protected function sendOperationRequest(PaymentOperation $operation, $params = [])
     {
         $operation->setStatus(PaymentOperation::STATUS_PENDING);
         $operation->save();
         $request = $this->createRequestFromPaymentOperation($operation);
+        if ($params['MERCH_URL']) {
+            $request->setMerchantUrl($params['MERCH_URL']);
+        }
         $request->setPSign($this->calculateRequestMAC($request));
         $url = $this->gatewayUrl . '?' . http_build_query($request->getParametersArray());
         header('Location: ' . $url);
@@ -198,11 +210,13 @@ class PaymentService
     /**
      * Calculates request MAC code
      * @param Request $request
+     * @param null|array $macFields
      * @return string
      */
-    public function calculateRequestMAC(Request $request)
+    public function calculateRequestMAC(Request $request, $macFields = null)
     {
-        $source = $request->calculateMACSourceString();
+        $fields = is_array($macFields) ? $macFields : $this->macFields;
+        $source = $request->calculateMACSourceString($fields);
         $key = $this->getKey();
         $result = hash_hmac('sha1', $source, pack("H*", $key));
         return $result;
@@ -245,11 +259,15 @@ class PaymentService
         return $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT);
     }
 
-    private function createRefundOperation(Payment $payment)
+    public function createRefundOperation(Payment $payment)
     {
         $operation = $this->createTypedOperation($payment, PaymentOperation::TR_TYPE_REFUND);
-        $operation->setRrn($payment->payment_operation->rrn);
-        $operation->setInternalReference($payment->payment_operation->int_ref);
+        if (isset($payment->payment_operation->rrn)) {
+            $operation->setRrn($payment->payment_operation->rrn);
+        }
+        if (isset($payment->payment_operation->int_ref)) {
+            $operation->setInternalReference($payment->payment_operation->int_ref);
+        }
         $operation->save();
         return $operation;
     }
@@ -274,7 +292,7 @@ class PaymentService
     /**
      * @param PaymentOperation $operation
      */
-    protected function fillPaymentOperationWithStandardValues(PaymentOperation $operation)
+    public function fillPaymentOperationWithStandardValues(PaymentOperation $operation)
     {
         $operation->setBackReference($this->returnUrl);
         $operation->setBrands($this->brands);
@@ -286,7 +304,8 @@ class PaymentService
         $operation->setMerchantUrl($this->merchantUrl);
         $operation->setTerminal($this->terminal);
         $operation->setTimestamp(gmdate('YmdHis'));
-        $operation->setNonce(strtoupper(uniqid()));
+        srand();
+        $operation->setNonce(strtoupper(rand(100, 999) . uniqid()));
         $operation->setStatus(PaymentOperation::STATUS_NEW);
     }
 
@@ -309,5 +328,37 @@ class PaymentService
     public function createRequestFromPaymentOperation(PaymentOperation $operation)
     {
         return Request::createFromPaymentOperation($operation);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantId()
+    {
+        return $this->merchantId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantName()
+    {
+        return $this->merchantName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantUrl()
+    {
+        return $this->merchantUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantGMT()
+    {
+        return $this->merchantGMT;
     }
 }

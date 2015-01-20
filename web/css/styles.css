@@ -4831,3 +4831,68 @@ a.list-group-item.active > .badge,
   color: #fff;
   background-color: #c61f38;
 }
+.cancel-order-form {
+    display: inline-block;
+}
+
+.payment-testing .container {
+  width: 90%;
+}
+
+.payment-testing table tr.even td {
+    background: #ffce82;
+}
+
+.payment-testing th {
+    background: #b6c8d9;
+}
+
+.payment-testing table,
+.payment-testing tbody,
+.payment-testing .payment-test-table tr,
+.payment-testing .payment-test-table th,
+.payment-testing .payment-test-table td {
+  border-color: #000000;
+}
+
+.payment-testing .payment-test-table td {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.payment-testing .payment-test-table .expected-pass {
+    background-color: #b2f2ab;
+}
+
+.payment-testing .payment-test-table .expected-fail {
+    background-color: #f0bfff;
+}
+
+.payment-testing .payment-test-table .expected-result {
+  background-color: #fffd84;
+}
+
+.payment-testing table.simple th,
+.payment-testing table.simple td {
+    padding: 5px;
+}
+
+.payment-testing .init-label {
+  color: #ff0000;
+}
+
+.payment-testing .init-label.is-initialized {
+  color: green;
+}
+
+.payment-testing .code-field {
+    white-space: nowrap;
+}
+
+.payment-testing tr.pass td.expected-result {
+    background: #99ee85;
+}
+
+.payment-testing tr.fail td.expected-result {
+  background: #ee6f64;
+}

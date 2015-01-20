@@ -28,7 +28,7 @@ if (count($myOrders) == 0) {
         <td><?php $_($order->shipping_method);?> </td-->
         <td><?php echo $_order_status($order->status);?>
             <?php if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT):?>
-                <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-sm btn-default">Оплатить</a>
+                <a href="/checkout/payment/<?php echo $order->uid; ?>" class="btn btn-sm btn-default">Оплатить</a>
             <?php endif; ?>
         </td>
     </tr>

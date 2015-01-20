@@ -121,8 +121,6 @@ class PaymentOperation extends BaseModel
             throw new \InvalidArgumentException("Order Id must be a number (length 6-20). Provided: $orderId");
         }
 
-        $orderId = (int) $orderId;
-
         $this->order = $orderId;
     }
 

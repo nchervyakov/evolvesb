@@ -25,21 +25,32 @@
                     <dd><?php echo $_order_status($order->status); ?></dd>
 
                     <dt>Итого</dt>
-                    <dd><span class="label label-danger"><?php echo $_format_price($order->orderItems->getItemsTotal()); ?></span></dd>
+                    <dd><span class="label label-danger"><?php echo $_format_price($order->amount); ?></span></dd>
                 </dl>
 
-                <?php if ($order->status == \App\Model\Order::STATUS_PROCESSING) { ?>
+                <?php if ($this->pixie->config->get('payment.testing')) { ?>
                     <br/>
-                    <form action="/payment/refund" method="post">
+                    <form action="<?php echo $gatewayUrl; ?>" method="post" id="refundForm">
+                        <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
+                            <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
+                        <?php } ?>
+                        <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
+                    </form>
+
+                <?php }
+
+                if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT || $this->pixie->config->get('payment.testing')) { ?>
+                    <br/>
+                    <a href="/checkout/payment/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
+
+                <?php } ?>
+
+                <?php if ($order->isCancellable()): ?>
+                    <form action="/account/cancel_order" method="post" class="cancel-order-form">
                         <input type="hidden" name="uid" value="<?php echo $order->uid; ?>" />
                         <input type="submit" class="btn btn-default" value="Отменить заказ" />
                     </form>
-
-                <?php } else if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT) { ?>
-                    <br/>
-                    <a href="/payment/pay/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
-
-                <?php } ?>
+                <?php endif; ?>
             </div>
         </div>
 

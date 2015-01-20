@@ -42,13 +42,22 @@ class Payment extends Page
     {
         try {
             $this->processResponse();
+            $this->informAdmins();
             return;
 
         } catch (HttpException $e) {
+            $this->informAdmins($e);
+
             if ($this->order) {
+                $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_FAILED, new PaymentOperationFailedEvent($this->order->payment));
+
                 $message = "При оплате произошла ошибка. Попробуйте снова.";
                 if ($this->pixie->config->get('parameters.display_errors')) {
                     $message .= "\n" . $e->getMessage() . "\n" . $e->getStatus();
+                    $child = $e;
+                    while ($child = $child->getPrevious()) {
+                        $message .= "\n" . $child->getMessage() . "\n" . $child->getCode();
+                    }
                 }
                 $this->pixie->session->flash("payment_error", $message);
                 $this->redirect("/checkout/payment/" . $this->order->uid);
@@ -56,8 +65,12 @@ class Payment extends Page
                 return;
 
             } else {
-                throw new HttpException('', 0, $e);
+                throw new HttpException('Заказ отсутствует.', 0, $e);
             }
+
+        } catch (\Exception $e) {
+            $this->informAdmins($e);
+            throw new \Exception('', 0, $e);
         }
     }
 
@@ -68,15 +81,19 @@ class Payment extends Page
     public function processResponse()
     {
         if ($this->request->method != 'POST') {
-            throw new HttpException("Request type must be POST");
+            throw new HttpException("Должен использоваться POST-запрос");
         }
 
         $data = $this->request->post();
-        $orderUid = $data['ORDER'];
-        $transactionType = (int) $data['TRTYPE'];
+        $orderUid = trim($data['ORDER']);
+        $transactionType = (int) trim($data['TRTYPE']);
 
         if (!$orderUid) {
             throw new HttpException("Отсутствует идентификатор заказа.");
+        }
+
+        if (!is_numeric(trim($data['RESULT'])) || !is_numeric(trim($data['RC'])) || !trim($data['RRN']) || !trim($data['INT_REF'])) {
+            throw new HttpException("Некорректный запрос.");
         }
 
         /** @var Order $orderModel */
@@ -109,15 +126,15 @@ class Payment extends Page
         }
 
         if ($operation->status != PaymentOperation::STATUS_COMPLETED) {
-            $operation->rrn = (string) $data['RRN'];
-            $operation->action = (string) $data['ACTION'];
-            $operation->rc = (string) $data['RC'];
-            $operation->int_ref = (string) $data['INT_REF'];
+            $operation->rrn = (string) trim($data['RRN']);
+            $operation->action = (string) trim($data['RESULT']);
+            $operation->rc = (string) trim($data['RC']);
+            $operation->int_ref = (string) trim($data['INT_REF']);
             $operation->status = PaymentOperation::STATUS_COMPLETED;
             $operation->save();
         }
 
-        if (($data['ACTION'] == '0' || $data['ACTION'] == '1') && $data['RC'] == '00') {
+        if ((trim($data['RESULT']) == '0' || trim($data['RESULT']) == '1') && trim($data['RC']) == '00') {
             $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_SUCCEEDED, new PaymentOperationSucceededEvent($order->payment, $operation));
 
             if ($transactionType == PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT) {
@@ -154,7 +171,6 @@ class Payment extends Page
             }
 
         } else {
-            $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_FAILED, new PaymentOperationFailedEvent($order->payment, $operation));
             throw new HttpException("Ошибка при выполнении транзакции.");
         }
     }
@@ -162,10 +178,10 @@ class Payment extends Page
 
     protected function checkFieldsMatch(Order $order, PaymentModel $payment, PaymentOperation $operation, $data)
     {
-        return $order->amount == $data['AMOUNT']
-            && $order->uid == $data['ORDER']
-            && $payment->currency == $data['CURRENCY']
-            && $operation->terminal == $data['TERMINAL'];
+        return $order->amount == trim($data['AMOUNT'])
+            && $order->uid == trim($data['ORDER'])
+            && $payment->currency == trim($data['CURRENCY'])
+            && $operation->terminal == trim($data['TERMINAL']);
     }
 
 
@@ -208,10 +224,48 @@ class Payment extends Page
             throw new NotFoundException("Заказа с номером '$orderUid' не существует.");
         }
 
-        if (!$order->isRefundable()) {
+        $isTesting = $this->pixie->config->get('payment.testing');
+
+        if ($order->status != Order::STATUS_PROCESSING && !$isTesting) {
             throw new HttpException("Для заказа №" . $order->uid . " невозможно выполнить возврат платежа.");
         }
 
         $this->pixie->payments->sendRefundOrderRequest($order->id());
+    }
+
+    private function informAdmins($e = null)
+    {
+        $pixie = $this->pixie;
+        $emailView = $pixie->view('payment/payment_operation_admin_email');
+
+        foreach (['nick.chervyakov@gmail.com', 'dpodgurskiy@ntobjectives.com'] as $email) {
+            $emailView->requestData = self::dumpRequestDataAsString();
+            $emailView->data = $_POST;
+            $emailView->error = '';
+            $emailView->trace = '';
+            if ($e instanceof \Exception) {
+                $emailView->error = $e->getMessage();
+                $emailView->trace = $e->getTraceAsString();
+            }
+
+            $pixie->email->send(
+                $email,
+                'robot@evolveskateboards.ru',
+                'Проведена транзакция "' . $pixie->view_helper()->formatPaymentOperation(trim($_POST['TRTYPE']))
+                . '" по заказу №' . trim($_POST['ORDER']) . '" на evolveskateboards.ru',
+                $emailView->render()
+            );
+        }
+    }
+
+    public static function dumpRequestDataAsString()
+    {
+        ob_start();
+        var_dump([
+            'GET' => $_GET,
+            'POST' => $_POST,
+            'COOKIE' => $_COOKIE,
+        ]);
+        return ob_get_clean();
     }
 }

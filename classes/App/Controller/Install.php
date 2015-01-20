@@ -58,24 +58,4 @@ class Install extends Page {
             $this->view->bodyClass = "installation-page";
         }
     }
-
-//    /**
-//     * Step 1
-//     */
-//	public function action_step1() {
-//		$this->view->subview = 'install/step1';
-//		$this->view->tab = 'step1';
-//		$this->view->step = 'Step 1';
-//    }
-//
-//    /**
-//     * Step 2
-//     */
-//	public function action_step2() {
-//		$this->view->subview = 'install/step2';
-//		$this->view->tab = 'step2';
-//		$this->view->step = 'Step 2';
-//    }
-
-
 }

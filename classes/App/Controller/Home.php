@@ -36,6 +36,13 @@ class Home extends Page {
     public $mainView = 'main';
 
     public function action_index() {
+        if ($this->request->method == 'POST') {
+            $data = $this->request->post();
+            if (trim($data['ORDER'])) {
+                $this->redirect('/account/orders/' . trim($data['ORDER']));
+            }
+        }
+
         $this->view->bodyClass = "index";
         $page = $this->pixie->orm->get('page')->where('alias', 'main')->find();
 
