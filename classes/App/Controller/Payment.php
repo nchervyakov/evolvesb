@@ -49,7 +49,7 @@ class Payment extends Page
             $this->informAdmins($e);
 
             if ($this->order) {
-                $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_FAILED, new PaymentOperationFailedEvent($this->order->payment));
+                $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_FAILED, new PaymentOperationFailedEvent($this->order->payment, null, null, $this->request));
 
                 $message = "При оплате произошла ошибка. Попробуйте снова.";
                 if ($this->pixie->config->get('parameters.display_errors')) {
@@ -135,7 +135,7 @@ class Payment extends Page
         }
 
         if ((trim($data['RESULT']) == '0' || trim($data['RESULT']) == '1') && trim($data['RC']) == '00') {
-            $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_SUCCEEDED, new PaymentOperationSucceededEvent($order->payment, $operation));
+            $this->pixie->dispatcher->dispatch(Events::PAYMENT_OPERATION_SUCCEEDED, new PaymentOperationSucceededEvent($order->payment, $operation, $this->request));
 
             if ($transactionType == PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT) {
                 if ($order->payment->isPayable()) {
@@ -243,6 +243,7 @@ class Payment extends Page
             $emailView->data = $_POST;
             $emailView->error = '';
             $emailView->trace = '';
+            $emailView->data = $this->request->post();
             if ($e instanceof \Exception) {
                 $emailView->error = $e->getMessage();
                 $emailView->trace = $e->getTraceAsString();
@@ -251,9 +252,10 @@ class Payment extends Page
             $pixie->email->send(
                 $email,
                 'robot@evolveskateboards.ru',
-                'Проведена транзакция "' . $pixie->view_helper()->formatPaymentOperation(trim($_POST['TRTYPE']))
+                'Проведена ' . ((int) trim($_POST['RC']) > 0 ? 'неудачная попытка осуществить транзакцию ' : 'транзакция') . ' "'
+                    . $pixie->view_helper()->formatPaymentOperation(trim($_POST['TRTYPE']))
                 . '" по заказу №' . trim($_POST['ORDER']) . '" на evolveskateboards.ru',
-                $emailView->render()
+                $emailView->render(), true
             );
         }
     }

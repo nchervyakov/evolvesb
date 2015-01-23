@@ -10,6 +10,7 @@
 namespace App\Events;
 
 
+use App\Core\Request;
 use App\EventDispatcher\Event;
 use App\Model\Payment;
 use App\Model\PaymentOperation;
@@ -26,10 +27,16 @@ class PaymentOperationSucceededEvent extends Event
      */
     protected $paymentOperation;
 
-    function __construct(Payment $payment, PaymentOperation $operation)
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    function __construct(Payment $payment = null, PaymentOperation $operation = null, Request $request = null)
     {
         $this->payment = $payment;
         $this->paymentOperation = $operation;
+        $this->request = $request;
     }
 
     /**
@@ -46,5 +53,13 @@ class PaymentOperationSucceededEvent extends Event
     public function getPaymentOperation()
     {
         return $this->paymentOperation;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

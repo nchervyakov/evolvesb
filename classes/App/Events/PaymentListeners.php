@@ -88,17 +88,19 @@ class PaymentListeners extends EventListeners
         $pixie = $event->getPixie();
         $order = $event->getPayment()->order;
         $operation = $event->getPaymentOperation();
+        $request = $event->getRequest();
 
         $from = $pixie->config->get('parameters.robot_email', 'robot@evolveskateboards.ru');
-        $subject =  'Проведена успешная транзакция "' . $pixie->view_helper()->formatPaymentOperation($operation->transaction_type)
+        $subject =  'Проведена успешная транзакция "' . $pixie->view_helper()->formatPaymentOperation(trim($request->post('TRTYPE')))
             . '" по заказу №' . $order->uid . '" на evolveskateboards.ru';
 
         $emailView = $pixie->view('payment/payment_operation_success_email');
         $emailView->order = $order;
+        $emailView->data = $request->post(null, []);
         $emailView->paymentOperation = $operation;
         $emailView->isAdmin = false;
 
-        $pixie->email->send($order->customer_email, $from, $subject, $emailView->render());
+        $pixie->email->send($order->customer_email, $from, $subject, $emailView->render(), true);
 
 
         if ($pixie->config->get('payment.debug_payment_gateway_response', false)) {
@@ -117,7 +119,7 @@ class PaymentListeners extends EventListeners
 
                 foreach ($adminEmail as $email) {
                     $emailView->requestData = self::dumpRequestDataAsString();
-                    $pixie->email->send($email, $from, $subjectAdmin, $emailView->render());
+                    $pixie->email->send($email, $from, $subjectAdmin, $emailView->render(), true);
                 }
             }
         }
@@ -130,9 +132,11 @@ class PaymentListeners extends EventListeners
         $operation = $event->getPaymentOperation();
         $request = $event->getRequest();
 
+        $opType = trim($request->post('TRTYPE'));
+
         $from = $pixie->config->get('parameters.robot_email', 'robot@evolveskateboards.ru');
         $subject = 'Произведена неудачная попытка проведения транзакции "'
-            . $pixie->view_helper()->formatPaymentOperation($operation->transaction_type)
+            . $pixie->view_helper()->formatPaymentOperation($opType)
             . '" по заказу №' . $order->uid . ' на evolveskateboards.ru';
 
         $emailView = $pixie->view('payment/payment_operation_failure_email');
@@ -141,9 +145,10 @@ class PaymentListeners extends EventListeners
         $emailView->isAdmin = false;
         $emailView->transaction_type = trim($request->post('TRTYPE'));
         $emailView->amount = trim($request->post('AMOUNT'));
+        $emailView->data = $request->post();
         $emailView->paymentOperationId = $operation && $operation->loaded() ? $operation->id() : '-';
 
-        $pixie->email->send($order->customer_email, $from, $subject, $emailView->render());
+        $pixie->email->send($order->customer_email, $from, $subject, $emailView->render(), true);
 
         if ($pixie->config->get('payment.debug_payment_gateway_response', false)) {
             $adminEmail = $pixie->config->get('parameters.admin_email');
@@ -156,12 +161,12 @@ class PaymentListeners extends EventListeners
                 $emailView->isAdmin = true;
 
                 $subjectAdmin = 'Произведена неудачная попытка проведения транзакции "'
-                    . $pixie->view_helper()->formatPaymentOperation($operation->transaction_type)
+                    . $pixie->view_helper()->formatPaymentOperation($opType)
                     . '" по заказу №' . $order->uid . ' на evolveskateboards.ru';
 
                 foreach ($adminEmail as $email) {
                     $emailView->requestData = self::dumpRequestDataAsString();
-                    $pixie->email->send($email, $from, $subjectAdmin, $emailView->render());
+                    $pixie->email->send($email, $from, $subjectAdmin, $emailView->render(), true);
                 }
             }
         }

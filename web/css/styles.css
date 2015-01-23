@@ -1607,7 +1607,7 @@ div.hidden { display: none; }
     color: #af1f31;
   }
   .payment_methods img {
-    padding-left: 4px;
+    padding-right: 4px;
     height: 26px;
     width: 38px;
     position: relative;

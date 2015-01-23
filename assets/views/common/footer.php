@@ -79,6 +79,11 @@
 <div class="footer">
     <div class="container">
         <div class="ten columns">
+            <div class="payment_methods ">
+                <img src="/images/cc-visa.png" alt="Visa" />
+                <img src="/images/cc-mastercard.png" alt="Mastercard" />
+            </div>
+
             <p class="credits">
                 &copy; 2014 http://evolveskateboards.ru/
             </p>
@@ -91,10 +96,7 @@
         </div>
 
         <div class="six columns credits_right">
-            <div class="payment_methods ">
-                <img src="/images/cc-visa.png" alt="Visa" />
-                <img src="/images/cc-mastercard.png" alt="Mastercard" />
-            </div>
+            <img src="/images/visuel_3dsecure.png" alt="3DSecure" />
         </div>
     </div>
 </div>
