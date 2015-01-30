@@ -166,7 +166,8 @@ class Category extends BaseModel {
     public function getPrintName()
     {
         if ($this->parent == 0) {
-            return $this->pixie->config->get("parameters.root_category_name") ?: 'All';
+            $params = $this->pixie->config->get("parameters");
+            return $params['root_category_name'] ?: 'All';
         } else {
             return $this->name;
         }
