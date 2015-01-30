@@ -75,10 +75,11 @@ class Page extends BaseController
                 $value = $this->request->get("id");
                 $category = new Category($this->pixie);
                 $search_category = $category->getPageTitle($this->request->get('id'));
-				$search_category = ($search_category == "") ? "All" : $search_category;
+				$search_category = ($search_category == "")
+                    ? ($this->pixie->config->get("parameters.root_category_name") ?: "All") : $search_category;
                 break;
             default:
-                $search_category = 'All';
+                $search_category = $this->pixie->config->get("parameters.root_category_name") ?: 'All';
                 $value = '';
                 break;
         }
