@@ -184,8 +184,17 @@ class Order extends CRUDController
                             $operation->save();
                         }
 
+                        if ($payment->payment_operation && $payment->payment_operation->loaded()) {
+                            $operation->setRrn($payment->payment_operation->getRrn());
+                            $operation->setInternalReference($payment->payment_operation->getInternalReference());
+                        }
+
                         $request = $this->pixie->payments->createRequestFromPaymentOperation($operation);
                         $request->setMerchantUrl($this->pixie->payments->getMerchantUrl());
+
+                        if ($isTesting && $this->request->get('amount')) {
+                            $request->setAmount($this->request->get('amount'));
+                        }
 
                         $macFields = null;
                         if ($isTesting){
