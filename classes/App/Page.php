@@ -30,7 +30,7 @@ class Page extends BaseController
             $this->view->sidebar = $category->getCategoriesSidebar();
             $this->view->search_category = $this->getSearchCategory($className);
             $this->view->search_subcategories = $this->getAllCategories($this->view->sidebar);
-            $this->view->pages = $this->pixie->orm->get('page')->find_all()->as_array();
+            $this->view->pages = $this->pixie->orm->get('page')->where('is_active', 1)->find_all()->as_array();
             $this->view->cart = $this->getCart();
             $this->view->cartItems = $this->getCart()->items->find_all()->as_array();
 

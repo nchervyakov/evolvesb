@@ -35,9 +35,9 @@
 
                 <li><a href="/pages/demo-locations" title="Дилеры">Дилеры</a></li>
 
-                <li><a href="/pages/reviews" title="Обзоры">Обзоры</a></li>
+                <?php /* <li><a href="/pages/reviews" title="Обзоры">Обзоры</a></li>
 
-                <li><a href="/pages/information" title="Информация">Информация</a></li>
+                <li><a href="/pages/information" title="Информация">Информация</a></li> */ ?>
 
                 <li><a href="/pages/contact-us" title="Контакты">Контакты</a></li>
 
