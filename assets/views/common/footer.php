@@ -10,7 +10,7 @@
 
                 <li><a href="/pages/about-us" title="О нас">О нас</a></li>
 
-                <li><a href="/pages/store-policies" title="Правила магазина">Правила магазина</a></li>
+                <?php // <li><a href="/pages/store-policies" title="Правила магазина">Правила магазина</a></li>?>
 
                 <li><a href="/pages/shipping" title="Информация о доставке">Информация о доставке</a></li>
 
