@@ -128,13 +128,15 @@
             </div>
             <hr class="colorgraph">
             <div class="row">
-                <div class="col-xs-6 col-md-6"><button id="loginbtn" type="submit" class="btn btn-block btn-lg">Войти</button></div>
-                <div class="col-xs-6 col-md-6">
-                    <div>
+                <div class="col-xs-12 col-md-12"><button id="loginbtn" type="submit" class="btn btn-block btn-lg">Войти</button></div>
+                <div class="col-xs-12 col-md-12">
+                    <div style="padding: 10px 0;">
                         <span class="login-social-span">Или через</span>
                         <ul class="list-unstyled list-inline list-social-icons">
                             <li class="tooltip-social facebook-link"><a href="/facebook" data-toggle="tooltip" data-placement="top" title="Facebook"><i class="fa fa-facebook-square fa-3x"></i></a></li>
                             <li class="tooltip-social twitter-link"><a href="/twitter" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="fa fa-twitter-square fa-3x"></i></a></li>
+                            <li class="tooltip-social vkontakte-link"><a href="/vkontakte" data-toggle="tooltip" data-placement="top" title="Vkontakte"><i class="fa fa-vk fa-3x"></i></a></li>
+                            <li class="tooltip-social google-plus-link"><a href="/google" data-toggle="tooltip" data-placement="top" title="Google Plus"><i class="fa fa-google-plus-square fa-3x"></i></a></li>
                         </ul>
 
                     </div>

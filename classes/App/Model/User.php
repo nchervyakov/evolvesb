@@ -13,6 +13,13 @@ use RelationTest\Model\Role;
  * @property string $username
  * @property string $password
  * @property string $photo
+ * @property string $first_name
+ * @property string $last_name
+ * @property string $email
+ * @property string $created_on
+ * @property string $oauth_provider
+ * @property string $oauth_uid
+ * @property boolean $active
  *
  * @property Role $roles
  * @property WishListFollowers $wishlistFollowers
@@ -100,6 +107,12 @@ class User extends BaseModel {
         return null;
     }
 
+    /**
+     * @param $username
+     * @param $oauth_uid
+     * @param $oauth_provider
+     * @return User
+     */
     public function saveOAuthUser($username, $oauth_uid, $oauth_provider) {
         $user = $this->pixie->orm->get('User');
         $user->username = $username;

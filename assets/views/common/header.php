@@ -8,11 +8,13 @@
         });
     });
 </script>
-<div id="cart" class="mm-menu mm-horizontal mm-dark mm-ismenu mm-right" ><ul class="mm-list mm-panel mm-opened mm-current" id="mm-m1-p0">
-        <li class="mm-subtitle"><a class="mm-subclose continue" href="#cart">Продолжить</a></li>
-        <?php include __DIR__.'/_sidebar_cart.php'; ?>
 
-    </ul></div>
+<?php /*<div id="cart" class="mm-menu mm-horizontal mm-dark mm-ismenu mm-right">
+    <ul class="mm-list mm-panel mm-opened mm-current" id="mm-m1-p0">
+        <li class="mm-subtitle"><a class="mm-subclose continue" href="#cart">Продолжить</a></li>
+        <?php include __DIR__ . '/_sidebar_cart.php'; ?>
+    </ul>
+</div>  */ ?>
 <div>
     <div id="header" class="mm-fixed-top">
         <a href="#nav" class="icon-menu"><span>Menu</span></a>
@@ -99,7 +101,7 @@
                             <a href="/search" title="Search" class="icon-search" id="search-toggle"></a>
                         </li>
                         <li>
-                            <a href="#cart" class="icon-cart cart-button">
+                            <a href="/cart" class="icon-cart cart-button">
                                 <?php if (isset($cart) && $cart && $cart->items_qty > 0): ?>
                                     <div class="cart_count"><?php $_($cart->items_qty); ?></div>
                                 <?php endif; ?>

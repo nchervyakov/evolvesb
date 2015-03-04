@@ -4533,6 +4533,10 @@ img.btn_close {
     color: #d14836;
 }
 
+.vkontakte-link a:hover {
+    color: #567CA4;
+}
+
 .btn:hover,
 .btn:focus {
     color: #fff;
