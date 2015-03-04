@@ -424,10 +424,11 @@ abstract class BaseTest
 
     public function getMacFieldsQuery()
     {
-        $macFieldsQuery = '';
+        $fields = ['amount' => $this->amount];
         if (is_array($this->macFields)) {
-            $macFieldsQuery = '?' . http_build_query(['mac_fields' => empty($this->macFields) ? 'none' : $this->macFields]);
+            $fields['mac_fields'] = empty($this->macFields) ? 'none' : $this->macFields;
         }
+        $macFieldsQuery = '?' . http_build_query($fields);
         return $macFieldsQuery;
     }
 
