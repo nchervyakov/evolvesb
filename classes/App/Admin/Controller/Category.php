@@ -14,7 +14,8 @@ use App\Admin\CRUDController;
 
 class Category extends CRUDController
 {
-    public $modelNamePlural = 'Categories';
+    public $modelNamePlural = 'Категории';
+    public $modelNameSingle = 'Категория';
 
     protected function getListFields()
     {
@@ -28,11 +29,12 @@ class Category extends CRUDController
                 'name' => [
                     'max_length' => 64,
                     'type' => 'link',
+                    'title' => 'Название',
                 ],
                 'parentCategory.name' => [
                     'is_link' => true,
                     'template' => '/admin/category/%parentCategory.categoryID%',
-                    'title' => 'Parent'
+                    'title' => 'Родительская категория'
                 ],
                 'enabled' => [
                     'type' => 'boolean',
@@ -66,40 +68,47 @@ class Category extends CRUDController
             ],
             'name' => [
                 'type' => 'text',
-                'required' => true
+                'required' => true,
+                'label' => 'Название'
             ],
             'hurl' => [
                 'label' => 'Alias',
             ],
             'parent' => [
-                'label' => 'Category',
+                'label' => 'Родительская категория',
                 'type' => 'select',
                 'option_list' => [$this, 'getAvailableCategoryOptions']
             ],
             'description' => [
-                'type' => 'textarea'
+                'type' => 'textarea',
+                'label' => 'Описание'
             ],
             'enabled' => [
-                'type' => 'boolean'
+                'type' => 'boolean',
+                'label' => 'Включена'
             ],
             'hidden' => [
-                'type' => 'boolean'
+                'type' => 'boolean',
+                'label' => 'Скрыта'
             ],
             'picture' => [
                 'type' => 'image',
                 'dir_path' => '/products_pictures/',
-                'abs_path' => false
+                'abs_path' => false,
+                'label' => 'Картинка'
             ],
 
             'meta_title' => [
                 'type' => 'textarea',
+                'label' => 'Meta Заголовок'
             ],
             'meta_keywords' => [
                 'type' => 'textarea',
+                'label' => 'Meta Ключевые слова'
             ],
             'meta_desc' => [
                 'type' => 'textarea',
-                'label' => 'Meta Description'
+                'label' => 'Meta Описание',
             ],
         ];
     }

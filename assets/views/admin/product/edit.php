@@ -8,7 +8,7 @@
             <?php
             /** @var \App\Admin\FieldFormatter $formatter */
             $formatter->renderFormStart();
-            $formatter->renderFields(['productID', 'hurl', 'name', 'categoryID']); ?>
+            $formatter->renderFields(['productID', 'hurl', 'name', 'categoryID', 'status']); ?>
             <div class="form-group">
                 <label for="field_brief_description">Дополнительные категории</label><br>
                 <div class="additional-categories">

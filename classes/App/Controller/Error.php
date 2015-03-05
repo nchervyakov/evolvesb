@@ -19,6 +19,7 @@ class Error extends Page
 
     public function action_view()
     {
+        /** @var \Exception|HttpException $exception */
         $exception = $this->request->param('exception', null, false);
         $status = method_exists($exception, 'getStatus')
             ? $exception->getStatus() : $exception->getCode() . ' ' .$exception->getMessage();
@@ -26,9 +27,24 @@ class Error extends Page
         header($this->request->server("SERVER_PROTOCOL").' '.$status);
         header("Status: {$status}");
 
-        $this->view->subview = 'error/view';
-        $this->view->exception = $exception;
-        $this->view->pageTitle = 'Error: ' . $exception->getCode() . ' ' . $exception->getMessage();
-        $this->view->pageHeader = $this->view->pageTitle;
+        if (strpos(strtolower($this->request->server('HTTP_ACCEPT')), 'json') !== false) {
+            if ($exception) {
+                $this->jsonResponse([
+                    'error' => true,
+                    'message' => $exception->getMessage(),
+                    'code' => $exception->getCode(),
+                    'status' => $status
+                ]);
+
+            } else {
+                $this->jsonResponse(['error' => true]);
+            }
+
+        } else {
+            $this->view->subview = 'error/view';
+            $this->view->exception = $exception;
+            $this->view->pageTitle = 'Error: ' . $exception->getCode() . ' ' . $exception->getMessage();
+            $this->view->pageHeader = $this->view->pageTitle;
+        }
     }
 } 

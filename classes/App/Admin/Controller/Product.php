@@ -12,17 +12,19 @@ namespace App\Admin\Controller;
 
 use App\Admin\CRUDController;
 use App\Admin\FieldFormatter;
+use App\Events\Events;
+use App\Events\ProductStatusChangedEvent;
 use App\Exception\NotFoundException;
 use App\Model\Category;
 use App\Model\Option;
 use App\Model\OptionValue;
 use App\Model\ProductOptionValue;
-use App\Model\Role;
 use App\Pixie;
 
 class Product extends CRUDController
 {
-    public $modelNamePlural = 'Products';
+    public $modelNamePlural = 'Продукты';
+    public $modelNameSingle = 'Продукт';
 
     protected function getListFields()
     {
@@ -50,6 +52,13 @@ class Product extends CRUDController
                     'value_prefix' => '',
                     'data_type' => 'integer',
                 ],
+                'status' => [
+                    'title' => 'Статус',
+                    'value_converter' => function ($value) {
+                        return Product::getFormattedProductStatus($value);
+                    },
+                    'no_escape' => true
+                ],
                 'picture' => [
                     'type' => 'image',
                     'dir_path' => '/products_pictures/',
@@ -59,6 +68,11 @@ class Product extends CRUDController
                     'column_classes' => 'dt-picture-column',
                     'title' => 'Картинка',
                     'thumbnail' => 'tiny'
+                ],
+                'enabled' => [
+                    'type' => 'boolean',
+                    'column_classes' => 'dt-flag-column',
+                    'title' => '+'
                 ]
             ],
             $this->getEditLinkProp(),
@@ -73,7 +87,7 @@ class Product extends CRUDController
 
     protected function getEditFields()
     {
-         $fields = [
+        $fields = [
             'productID' => [
                 'label' => 'Id'
             ],
@@ -93,6 +107,15 @@ class Product extends CRUDController
                 'type' => 'select',
                 'option_list' => 'App\Admin\Controller\Category::getAvailableCategoryOptions',
                 'required' => true
+            ],
+            'status' => [
+                'label' => 'Статус',
+                'type' => 'select',
+                'option_list' => 'App\\Model\\Product::getStatusLabels',
+                'required' => true
+            ],
+            'max_items_per_order' => [
+                'label' => 'Количество (максимально на один заказ)'
             ],
             'description' => [
                 'label' => 'Описание',
@@ -145,6 +168,7 @@ class Product extends CRUDController
 
     public function action_edit()
     {
+        $oldStatus = null;
         $id = $this->request->param('id');
         $options = $this->getAllProductOptionsWithValuesArray();
         $allCategories = self::getCategoryOptions($this->pixie);
@@ -160,7 +184,13 @@ class Product extends CRUDController
                 throw new NotFoundException();
             }
 
+            $oldStatus = $product->status;
+
             $data = $this->request->post();
+
+            // Ensure checkbox fields are existing in dataset even if it is missing (unchecked)
+            $data = array_merge(array_fill_keys(array_keys($this->getEditFields()), ''), $data);
+
             $this->processRequestFilesForItem($product, $data);
             $product->values($product->filterValues($data));
             $product->save();
@@ -175,6 +205,10 @@ class Product extends CRUDController
                 } else {
                     $product->remove('categories', $cat);
                 }
+            }
+
+            if ($oldStatus != $product->status) {
+                $this->pixie->dispatcher->dispatch(Events::PRODUCT_STATUS_CHANGED, new ProductStatusChangedEvent($product, $product->status, $oldStatus));
             }
 
             if ($product->loaded()) {
@@ -195,7 +229,7 @@ class Product extends CRUDController
         }
 
         $editFields = $this->prepareEditFields();
-        $this->view->pageTitle = $this->modelName.' &laquo;'.htmlspecialchars(trim($product->name)).'&raquo;';
+        $this->view->pageTitle = 'Продукт &laquo;'.htmlspecialchars(trim($product->name)).'&raquo;';
         $this->view->pageHeader = $this->view->pageTitle;
         $this->view->modelName = $this->model->model_name;
         $this->view->item = $product;
@@ -241,7 +275,7 @@ class Product extends CRUDController
         }
 
         $editFields = $this->prepareEditFields();
-        $this->view->pageTitle = 'Add new ' . $this->modelNameSingle;
+        $this->view->pageTitle = 'Добавить новый продукт';
         $this->view->pageHeader = $this->view->pageTitle;
         $this->view->modelName = $this->model->model_name;
         $this->view->item = $product;
@@ -375,5 +409,11 @@ class Product extends CRUDController
             $result[$category->id()] = $category->name;
         }
         return $result;
+    }
+
+    public static function getFormattedProductStatus($status)
+    {
+        $label = \App\Model\Product::getStatusLabel($status);
+        return "<span class='label label-$status'>".htmlspecialchars($label, ENT_COMPAT, 'UTF-8')."</span>";
     }
 }

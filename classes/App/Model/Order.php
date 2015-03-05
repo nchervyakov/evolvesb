@@ -64,6 +64,14 @@ class Order extends BaseModel
         ],
     ];
 
+    public function __construct($pixie)
+    {
+        parent::__construct($pixie);
+        $this->created_at = date('Y-m-d H:i:s');
+        $this->status = self::STATUS_NEW;
+        $this->amount = 0;
+    }
+
     public function getMyOrders()
     {
         $rows = $this->where('customer_id', $this->pixie->auth->user()->id())->find_all()->as_array();
@@ -148,5 +156,30 @@ class Order extends BaseModel
     public function isCancellable()
     {
         return $this->loaded() && in_array($this->status, [self::STATUS_NEW, self::STATUS_WAITING_PAYMENT]);
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkProductsAreAvailable()
+    {
+        if (!$this->loaded()) {
+            return false;
+        }
+
+        if (!in_array($this->status, [self::STATUS_NEW, self::STATUS_WAITING_PAYMENT])) {
+            return true;
+        }
+
+        /** @var OrderItems[]|OrderItems $items */
+        $items = $this->orderItems->with('product')->find_all()->as_array();
+        foreach ($items as $item) {
+            $product = $item->product;
+            if (!$product->enabled || !$product->in_stock || $product->status == Product::STATUS_EXPECTED) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

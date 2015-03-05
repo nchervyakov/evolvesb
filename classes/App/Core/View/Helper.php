@@ -13,7 +13,6 @@ use App\Model\Order;
 use App\Model\PaymentOperation;
 use App\Page;
 use App\Pixie;
-use PHPixie\Paginate\Pager\ORM as ORMPager;
 use PHPixie\Paginate\Pager as Pager;
 use VulnModule\VulnInjection;
 
@@ -43,6 +42,14 @@ class Helper extends \PHPixie\View\Helper
         PaymentOperation::TR_TYPE_REFUND => "Возврат денег",
     ];
 
+    protected $paymentOpTypesComplete = [
+        PaymentOperation::TR_TYPE_AUTHORIZED_PAYMENT => "Блок",
+        PaymentOperation::TR_TYPE_IMMEDIATE_PAYMENT => "Оплата",
+        PaymentOperation::TR_TYPE_PAYMENT_COMPLETION => "Подтверждение",
+        PaymentOperation::TR_TYPE_AUTH_CANCELLATION => "Отмена авторизации",
+        PaymentOperation::TR_TYPE_REFUND => "Отмена",
+    ];
+
     /**
      * @var BaseController|Page
      */
@@ -63,6 +70,8 @@ class Helper extends \PHPixie\View\Helper
         '_format_price' => 'formatPrice',
         '_hl_search' => 'highliteSearchResults',
         '_format_payment_op' => 'formatPaymentOperation',
+        '_format_payment_op_complete' => 'formatPaymentOperationComplete',
+        '_format_payment_result' => 'formatPaymentResult',
     );
 
     /**
@@ -436,5 +445,17 @@ class Helper extends \PHPixie\View\Helper
     public function formatPaymentOperation($operationType)
     {
         return $this->paymentOpTypes[$operationType];
+    }
+
+    public function formatPaymentOperationComplete($operationType)
+    {
+        $operationType = (int) trim($operationType);
+        return $operationType . ' ' . $this->paymentOpTypesComplete[$operationType];
+    }
+
+    public function formatPaymentResult($resultCode)
+    {
+        $errors = $this->pixie->config->get('payment_test.errors');
+        return trim($resultCode) . '-' . $errors['rc_detail'][(int) trim($resultCode)];
     }
 }

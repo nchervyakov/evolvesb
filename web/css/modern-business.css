@@ -95,6 +95,10 @@ body {
     color: #d14836;
 }
 
+.vkontakte-link a:hover {
+    color: #567CA4;
+}
+
 /* Service Page Styles */
 .service-icon {
     font-size: 50px;

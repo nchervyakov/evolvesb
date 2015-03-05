@@ -37,7 +37,7 @@
             },
             complete: function () {
                 if ($('.cart-product-item').length) {
-                    onUpdateCart();
+                    //onUpdateCart();
                 } else {
                     location.reload();
                 }
@@ -144,7 +144,7 @@
                                 <label class="quantity_label" for="updates_<?php $_($item->id()); ?>">Количество:</label>
                                 <input type="number" value="<?php echo $item->qty; ?>"
                                        id="input_<?php echo $item->id?>" onchange="update_qty(<?php echo $item->id?>, this.value, this);"
-                                       class="quantity" maxlength="3" size="3" min="0">
+                                       class="quantity" maxlength="3" size="3" min="0" max="<?php $_(is_numeric($product->max_items_per_order) ? $product->max_items_per_order : 100); ?>">
                             </p>
 
                             <p class="remove_item">

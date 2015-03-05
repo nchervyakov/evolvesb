@@ -95,6 +95,8 @@ class CRUDController extends Controller
             $this->view->subview = $this->listView;
             $this->view->listFields = $listFields;
             $this->view->modelName = $this->model->model_name;
+            $this->view->modelNamePlural = $this->modelNamePlural;
+            $this->view->modelNameSingle = $this->modelNameSingle;
             $this->view->alias = $this->alias;
         }
     }
@@ -187,7 +189,7 @@ class CRUDController extends Controller
         }
 
         $editFields = $this->prepareEditFields();
-        $this->view->pageTitle = 'Add new ' . $this->modelNameSingle;
+        $this->view->pageTitle = 'Добавить новый ' . $this->modelNameSingle;
         $this->view->pageHeader = $this->view->pageTitle;
         $this->view->modelName = $this->model->model_name;
         $this->view->item = $item;
@@ -442,6 +444,11 @@ class CRUDController extends Controller
 //        $this->pixie->dispatcher->dispatch('PRE_ADMIN_LIST_FIELD_FORMAT', $event);
 //        $value = $event->getValue();
 
+        if ($format['value_converter'] && is_callable($format['value_converter'])) {
+            $converter = $format['value_converter'];
+            $value = $converter($value);
+        }
+
         if ($format['field']) {
             $prop = $format['field'];
             $value = $item->$prop;
@@ -459,7 +466,9 @@ class CRUDController extends Controller
         }
 
         $value = $format['value_prefix'] . $value;
-        $value = htmlspecialchars($value);
+        if (!$format['no_escape']) {
+            $value = htmlspecialchars($value);
+        }
 
         if ($format['type'] == 'image') {
             if ($format['extra'] && $format['image_field']) {
@@ -599,7 +608,7 @@ class CRUDController extends Controller
                 'extra' => true,
                 'type' => 'html',
                 'template' => '<a href="/admin/'.strtolower($this->alias).'/edit/%'.$this->model->id_field.'%" '
-                    . ' class="js-edit-item">Edit</a>',
+                    . ' class="js-edit-item">Редактировать</a>',
                 'column_classes' => 'edit-action-column'
             ]
         ];
@@ -612,7 +621,7 @@ class CRUDController extends Controller
                 'extra' => true,
                 'type' => 'html',
                 'template' => '<a href="/admin/'.strtolower($this->alias).'/delete/%'.$this->model->id_field.'%" '
-                    . ' class="js-delete-item">Delete</a>',
+                    . ' class="js-delete-item">Удалить</a>',
                 'column_classes' => 'delete-action-column'
             ],
         ];

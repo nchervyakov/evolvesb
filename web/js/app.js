@@ -61,17 +61,17 @@ $(function() {
   })
 
 
-  if ($('html').hasClass('ie')) {
-    $('.cart-button').click(function() { window.location = '/cart'; });
-  } else {
-    $('#cart').mmenu({
-      position: 'right',
-      classes: "mm-dark"
-    });
-    $('.icon-cart, .icon-menu').on("click", function(e) { 
-      $('#search').hide();
-    });
-  }
+  //if ($('html').hasClass('ie')) {
+  //  $('.cart-button').click(function() { window.location = '/cart'; });
+  //} else {
+  //  $('#cart').mmenu({
+  //    position: 'right',
+  //    classes: "mm-dark"
+  //  });
+  //  $('.icon-cart, .icon-menu').on("click", function(e) {
+  //    $('#search').hide();
+  //  });
+  //}
 
   $('.slider').flexslider({touch: false, controlNav: false, animation: "fade" });
   

@@ -483,3 +483,11 @@ table.dataTable thead .sorting:after {
     font-weight: normal;
     margin-right: 15px;
 }
+
+.label-expected {
+    background-color: saddlebrown;
+}
+
+.label-available {
+    background-color: green;
+}

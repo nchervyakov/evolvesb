@@ -34,7 +34,7 @@ class Product extends Page
         $category = $this->pixie->orm->get('Category')->loadCategoryByAlias($categoryAlias);
         $category = $category && $category->loaded() ? $category : false;
 
-        if (!$product->loaded()) {
+        if (!$product->loaded() || !$product->enabled) {
             throw new NotFoundException;
         }
 

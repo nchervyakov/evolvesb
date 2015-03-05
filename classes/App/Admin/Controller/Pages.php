@@ -19,6 +19,9 @@ class Pages extends CRUDController
 
     protected $alias = 'pages';
 
+    public $modelNamePlural = 'Страницы';
+    public $modelNameSingle = 'Страница';
+
     protected function getListFields()
     {
         return array_merge(

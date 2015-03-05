@@ -8,11 +8,13 @@
         });
     });
 </script>
-<div id="cart" class="mm-menu mm-horizontal mm-dark mm-ismenu mm-right" ><ul class="mm-list mm-panel mm-opened mm-current" id="mm-m1-p0">
-        <li class="mm-subtitle"><a class="mm-subclose continue" href="#cart">Продолжить</a></li>
-        <?php include __DIR__.'/_sidebar_cart.php'; ?>
 
-    </ul></div>
+<?php /*<div id="cart" class="mm-menu mm-horizontal mm-dark mm-ismenu mm-right">
+    <ul class="mm-list mm-panel mm-opened mm-current" id="mm-m1-p0">
+        <li class="mm-subtitle"><a class="mm-subclose continue" href="#cart">Продолжить</a></li>
+        <?php include __DIR__ . '/_sidebar_cart.php'; ?>
+    </ul>
+</div>  */ ?>
 <div>
     <div id="header" class="mm-fixed-top">
         <a href="#nav" class="icon-menu"><span>Menu</span></a>
@@ -52,18 +54,18 @@
                     </li>
                     <li><a href="/pages/compare-evolve-skateboard-models" title="Сравнить модели" class="top-link ">Сравнить модели</a></li>
                     <li><a href="/pages/demo-locations" title="Дилеры" class="top-link ">Дилеры</a></li>
-                    <li><a href="/pages/reviews" title="Обзоры" class="top-link ">Обзоры</a></li>
-                    <li><a href="/pages/information" title="Информация" class="sub-menu  ">Информация                     
-                            <span class="arrow">▾</span></a>
+                   <?php // <li><a href="/pages/reviews" title="Обзоры" class="top-link ">Обзоры</a></li> ?>
+                    <li><a href="/pages/information" title="Информация" class="sub-menu  ">Информация
+                        <span class="arrow">▾</span></a>
                         <div class="dropdown ">
                             <ul>
-                                <li><a href="/pages/videos" title="Видео">Видео</a></li>
+                                <?php /*<li><a href="/pages/videos" title="Видео">Видео</a></li>
                                 <li><a href="/blogs/news" title="Новости">Новости</a></li>
-                                <li><a href="/pages/testimonials" title="Отзывы">Отзывы</a></li>
+                                <li><a href="/pages/testimonials" title="Отзывы">Отзывы</a></li>*/ ?>
                                 <li><a href="/pages/shipping" title="Shipping & Transit Times">Оплата и доставка</a></li>
-                                <!--li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li-->
+                                <?php /*<!--li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li-->
                                 <li><a href="/pages/rider-tips-maintenance" title="Tips & Maintenance">Советы</a></li>
-                                <li><a href="/pages/troubleshooting" title="Troubleshooting">Устранение проблем</a></li>
+                                <li><a href="/pages/troubleshooting" title="Troubleshooting">Устранение проблем</a></li>*/?>
                             </ul>
                         </div>
                     </li>
@@ -99,7 +101,7 @@
                             <a href="/search" title="Search" class="icon-search" id="search-toggle"></a>
                         </li>
                         <li>
-                            <a href="#cart" class="icon-cart cart-button">
+                            <a href="/cart" class="icon-cart cart-button">
                                 <?php if (isset($cart) && $cart && $cart->items_qty > 0): ?>
                                     <div class="cart_count"><?php $_($cart->items_qty); ?></div>
                                 <?php endif; ?>

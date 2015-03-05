@@ -30,7 +30,7 @@ class Page extends BaseController
             $this->view->sidebar = $category->getCategoriesSidebar();
             $this->view->search_category = $this->getSearchCategory($className);
             $this->view->search_subcategories = $this->getAllCategories($this->view->sidebar);
-            $this->view->pages = $this->pixie->orm->get('page')->find_all()->as_array();
+            $this->view->pages = $this->pixie->orm->get('page')->where('is_active', 1)->find_all()->as_array();
             $this->view->cart = $this->getCart();
             $this->view->cartItems = $this->getCart()->items->find_all()->as_array();
 
@@ -65,6 +65,7 @@ class Page extends BaseController
     }
 
     protected function getSearchCategory($className) {
+        $params = $this->pixie->config->get("parameters");
         switch ($className) {
             case 'Category':
                 $category = new Category($this->pixie);
@@ -75,10 +76,11 @@ class Page extends BaseController
                 $value = $this->request->get("id");
                 $category = new Category($this->pixie);
                 $search_category = $category->getPageTitle($this->request->get('id'));
-				$search_category = ($search_category == "") ? "All" : $search_category;
+				$search_category = ($search_category == "")
+                    ? ($params['root_category_name'] ?: "All") : $search_category;
                 break;
             default:
-                $search_category = 'All';
+                $search_category = $params['root_category_name'] ?: 'All';
                 $value = '';
                 break;
         }

@@ -9,16 +9,21 @@
         <?php endif; ?>
         <br/>
         <br/>
-        <?php if ($usePost): ?>
-            <form action="<?php echo $gatewayUrl; ?>" method="post" id="paymentForm">
-                <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
-                    <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
-                <?php } ?>
+        <?php if ($productsAvailable): ?>
+            <?php if ($usePost): ?>
+                <form action="<?php echo $gatewayUrl; ?>" method="post" id="paymentForm">
+                    <?php foreach ($gatewayParameters as $pName => $pValue) { ?>
+                        <input type="hidden" name="<?php echo $pName; ?>" value="<?php echo $pValue; ?>"/>
+                    <?php } ?>
 
-                <input type="submit" value="Оплатить заказ" class="btn btn-danger btn-lg"/>
-            </form>
+                    <input type="submit" value="Оплатить заказ" class="btn btn-danger btn-lg"/>
+                </form>
+            <?php else: ?>
+                <p><a href="/payment/pay/<?php $_($orderUid); ?>" class="btn btn-danger btn-lg">Оплатить заказ</a></p>
+            <?php endif; ?>
         <?php else: ?>
-            <p><a href="/payment/pay/<?php $_($orderUid); ?>" class="btn btn-danger btn-lg">Оплатить заказ</a></p>
+            <p>В данный момент не все продукты в вашем заказе доступны. Как только они станут доступны &mdash; вы сможете оплатить заказ. </p>
+            <p><a href="/account/orders/<?php echo $orderUid; ?>" class="btn btn-danger btn-lg">ПЕРЕЙТИ К ЗАКАЗУ</a></p>
         <?php endif; ?>
         <br/>
     </div>

@@ -14,7 +14,8 @@ use App\Admin\CRUDController;
 
 class Faq extends CRUDController
 {
-    public $modelNamePlural = 'Enquiries';
+    public $modelNamePlural = 'FAQs';
+    public $modelNameSingle = 'FAQ';
 
     protected function getListFields()
     {

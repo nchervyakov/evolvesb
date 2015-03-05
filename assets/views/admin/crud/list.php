@@ -1,6 +1,6 @@
 <div class="panel panel-default">
     <div class="panel-heading">
-        <?php $_(isset($tableHeader) ? $tableHeader : 'Список ' . ucfirst($modelName)); ?>
+        <?php $_(isset($tableHeader) ? $tableHeader : 'Список "' . ucfirst($modelNamePlural) . '"'); ?>
 
         <div class="pull-right">
             <div class="btn-group">
@@ -9,7 +9,7 @@
                     <span class="caret"></span>
                 </button>
                 <ul role="menu" class="dropdown-menu pull-right">
-                    <li><a href="/admin/<?php $_(strtolower($alias)); ?>/new">Добавить новый <?php $_($modelNameSingle); ?></a></li>
+                    <li><a href="/admin/<?php $_(strtolower($alias)); ?>/new">Добавить новый <?php $_(strtolower($modelNameSingle)); ?></a></li>
                     </li>
                 </ul>
             </div>

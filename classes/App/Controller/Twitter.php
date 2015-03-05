@@ -22,8 +22,12 @@ class Twitter extends \PHPixie\Auth\Controller\Twitter{
 
         //Save the new user
         $model = new User($this->pixie);
-        $user = $model->saveOAuthUser($data->name, $data->id, 'twitter');
- 
+        $user = $model->saveOAuthUser('tw' . $data->id, $data->id, 'twitter');
+        $nameParts = preg_split('/\s+/', $data->name, -1, PREG_SPLIT_NO_EMPTY);
+        $user->first_name = $nameParts[0];
+        $user->last_name = $nameParts[1];
+        $user->save();
+
         //Get the 'pixie' role
         /*
         $role=$this->pixie->orm->get('role')

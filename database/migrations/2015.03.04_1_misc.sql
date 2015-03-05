@@ -1,0 +1,1 @@
+ALTER TABLE `tbl_users` CHANGE `username` `username` varchar(32) COLLATE 'utf8_general_ci' NOT NULL AFTER `id`;

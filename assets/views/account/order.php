@@ -37,10 +37,10 @@
                         <input type="submit" class="btn btn-default" value="Отменить заказ и вернуть оплату" />
                     </form>
 
-                <?php }
+                <?php } ?>
+                <br/>
+                <?php if ($productsAvailable && ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT || $this->pixie->config->get('payment.testing'))) { ?>
 
-                if ($order->status == \App\Model\Order::STATUS_WAITING_PAYMENT || $this->pixie->config->get('payment.testing')) { ?>
-                    <br/>
                     <a href="/checkout/payment/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
 
                 <?php } ?>

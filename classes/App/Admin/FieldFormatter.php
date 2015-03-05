@@ -190,12 +190,12 @@ class FieldFormatter
     {
         if ($this->item->id()) {
             echo '<a class="btn btn-primary" '
-                .'href="/admin/'.$this->controllerAlias.'/new/">Add new</a> ';
+                .'href="/admin/'.$this->controllerAlias.'/new/">Добавить новый</a> ';
             echo '<a class="btn btn-danger js-delete-item" '
-                .'href="/admin/'.$this->controllerAlias.'/delete/'.$this->item->id().'">Delete</a> ';
+                .'href="/admin/'.$this->controllerAlias.'/delete/'.$this->item->id().'">Удалить</a> ';
         }
 
-        $name = $this->item->id() ? 'Save' : 'Add';
+        $name = $this->item->id() ? 'Сохранить' : 'Добавить';
         echo '<button class="btn btn-primary" type="submit">'.$name.'</button> ';
     }
 

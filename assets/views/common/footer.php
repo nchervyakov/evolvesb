@@ -10,7 +10,7 @@
 
                 <li><a href="/pages/about-us" title="О нас">О нас</a></li>
 
-                <li><a href="/pages/store-policies" title="Правила магазина">Правила магазина</a></li>
+                <?php // <li><a href="/pages/store-policies" title="Правила магазина">Правила магазина</a></li>?>
 
                 <li><a href="/pages/shipping" title="Информация о доставке">Информация о доставке</a></li>
 
@@ -35,9 +35,9 @@
 
                 <li><a href="/pages/demo-locations" title="Дилеры">Дилеры</a></li>
 
-                <li><a href="/pages/reviews" title="Обзоры">Обзоры</a></li>
+                <?php /* <li><a href="/pages/reviews" title="Обзоры">Обзоры</a></li>
 
-                <li><a href="/pages/information" title="Информация">Информация</a></li>
+                <li><a href="/pages/information" title="Информация">Информация</a></li> */ ?>
 
                 <li><a href="/pages/contact-us" title="Контакты">Контакты</a></li>
 
@@ -79,6 +79,11 @@
 <div class="footer">
     <div class="container">
         <div class="ten columns">
+            <div class="payment_methods ">
+                <img src="/images/cc-visa.png" alt="Visa" />
+                <img src="/images/cc-mastercard.png" alt="Mastercard" />
+            </div>
+
             <p class="credits">
                 &copy; 2014 http://evolveskateboards.ru/
             </p>
@@ -91,10 +96,7 @@
         </div>
 
         <div class="six columns credits_right">
-            <div class="payment_methods ">
-                <img src="/images/cc-visa.png" alt="Visa" />
-                <img src="/images/cc-mastercard.png" alt="Mastercard" />
-            </div>
+            <img src="/images/visuel_3dsecure.png" alt="3DSecure" />
         </div>
     </div>
 </div>
@@ -126,13 +128,15 @@
             </div>
             <hr class="colorgraph">
             <div class="row">
-                <div class="col-xs-6 col-md-6"><button id="loginbtn" type="submit" class="btn btn-block btn-lg">Войти</button></div>
-                <div class="col-xs-6 col-md-6">
-                    <div>
+                <div class="col-xs-12 col-md-12"><button id="loginbtn" type="submit" class="btn btn-block btn-lg">Войти</button></div>
+                <div class="col-xs-12 col-md-12">
+                    <div style="padding: 10px 0;">
                         <span class="login-social-span">Или через</span>
                         <ul class="list-unstyled list-inline list-social-icons">
                             <li class="tooltip-social facebook-link"><a href="/facebook" data-toggle="tooltip" data-placement="top" title="Facebook"><i class="fa fa-facebook-square fa-3x"></i></a></li>
                             <li class="tooltip-social twitter-link"><a href="/twitter" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="fa fa-twitter-square fa-3x"></i></a></li>
+                            <li class="tooltip-social vkontakte-link"><a href="/vkontakte" data-toggle="tooltip" data-placement="top" title="Vkontakte"><i class="fa fa-vk fa-3x"></i></a></li>
+                            <li class="tooltip-social google-plus-link"><a href="/google" data-toggle="tooltip" data-placement="top" title="Google Plus"><i class="fa fa-google-plus-square fa-3x"></i></a></li>
                         </ul>
 
                     </div>

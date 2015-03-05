@@ -1,8 +1,10 @@
 <?php
 namespace App\Controller;
+use App\Exception\HttpException;
 use App\Exception\NotFoundException;
 use App\Model\Cart as CartModel;
 use App\Model\CartItems;
+use App\Model\Product;
 use App\Page;
 
 /**
@@ -29,6 +31,25 @@ class Cart extends Page {
 
         $qty = $this->request->post('qty', 1);
         $productId = $this->request->post('product_id');
+        if (!is_numeric($productId) || !is_numeric($qty)) {
+            $this->jsonResponse(['error' => 1, 'message' => 'Некорректный идентификатор продукта или количество.']);
+            return;
+        }
+
+        $productId = (int) $productId;
+        $qty = (int) $qty;
+
+        /** @var Product $product */
+        $product = $this->pixie->orm->get('Product')->where('productID', $productId)->find();
+
+        if (!$product || !$product->loaded()) {
+            throw new NotFoundException();
+        }
+
+        if ($qty <= 0 || $qty > $product->max_items_per_order) {
+            throw new HttpException('Количество элементов должно быть в интервале от 1 до ' . $product->max_items_per_order);
+        }
+
         $result = $this->pixie->orm->get('CartItems')->addItems($productId, $qty);
         $this->pixie->orm->get('Cart')->forceSetLastStep(CartModel::STEP_OVERVIEW);
 
@@ -73,14 +94,21 @@ class Cart extends Page {
     public function action_update() {
         $qty = $this->request->post('qty');
         $itemId = $this->request->post('itemId');
-        if (!$itemId) {
+        if (!$itemId || !is_numeric($itemId) || !is_numeric($qty)) {
             throw new NotFoundException;
         }
+
+        $qty = (int)$qty;
+        $itemId = (int)$itemId;
 
         /** @var CartItems $item */
         $item = $this->pixie->orm->get('CartItems', $itemId);
         if (!$item->loaded()) {
             throw new NotFoundException;
+        }
+
+        if ($qty < 0) {
+            throw new HttpException('Количество экземпляров данного продукта должно быть 0 или больше.');
         }
 
         $this->pixie->orm->get('CartItems')->updateItems($itemId, $qty);
@@ -101,6 +129,7 @@ class Cart extends Page {
      * clean cart
      */
     public function action_empty() {
+        /** @var \App\Model\Cart $cart */
         $cart = $this->pixie->orm->get('Cart')->getCart();
         $cart->delete();
         $this->pixie->orm->get('Cart')->getCart();

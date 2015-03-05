@@ -37,4 +37,5 @@ return array(
     'use_ssl' => true,
     'admin_email' => ['admin1@gmail.com', 'admin2@example.com'],
     'robot_email' => 'robot@evolveskateboards.ru',
+    'root_category_name' => 'Все'
 );
