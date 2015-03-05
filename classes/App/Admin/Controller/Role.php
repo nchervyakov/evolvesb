@@ -14,7 +14,8 @@ use App\Admin\CRUDController;
 
 class Role extends CRUDController
 {
-    public $modelNamePlural = 'Roles';
+    public $modelNamePlural = 'Роли';
+    public $modelNameSingle = 'Роль';
 
     protected function getListFields()
     {

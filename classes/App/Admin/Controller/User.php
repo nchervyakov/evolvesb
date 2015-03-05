@@ -25,7 +25,8 @@ use App\Pixie;
  */
 class User extends CRUDController
 {
-    public $modelNamePlural = 'Users';
+    public $modelNamePlural = 'Пользователи';
+    public $modelNameSingle = 'Пользователь';
 
     public function action_login()
     {
@@ -205,20 +206,26 @@ class User extends CRUDController
             [
                 'id',
                 'username' => [
+                    'title' => 'Логин',
                     'max_length' => 30,
                     'type' => 'link'
                 ],
                 'first_name' => [
+                    'title' => 'Имя',
                     'max_length' => 30
                 ],
                 'last_name' => [
+                    'title' => 'Фамилия',
                     'max_length' => 30
                 ],
                 'email',
                 'oauth_provider',
-                'created_on',
+                'created_on' => [
+                    'title' => 'Создан',
+                ],
                 'last_login',
                 'photo' => [
+                    'title' => 'Фото',
                     'type' => 'image',
                     'max_width' => 40,
                     'max_height' => 30,

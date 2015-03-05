@@ -14,7 +14,8 @@ use App\Admin\CRUDController;
 
 class Category extends CRUDController
 {
-    public $modelNamePlural = 'Categories';
+    public $modelNamePlural = 'Категории';
+    public $modelNameSingle = 'Категория';
 
     protected function getListFields()
     {

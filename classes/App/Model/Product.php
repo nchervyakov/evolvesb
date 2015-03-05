@@ -17,7 +17,13 @@ use PHPixie\ORM;
  * @property float customers_rating
  * @property string picture
  * @property int categoryID
+ * @property int $customer_votes
  * @property int $show_in_root
+ * @property string $status
+ * @property int $max_items_per_order
+ * @property int $enabled
+ * @property int $in_stock
+ *
  * @property Pixie pixie
  * @property SpecialOffers $special_offers
  * @property Review $reviews
@@ -28,7 +34,10 @@ use PHPixie\ORM;
  * @property ProductOptionValue $productOptions
  * @package App\Model
  */
-class Product extends BaseModel {
+class Product extends BaseModel
+{
+    const STATUS_AVAILABLE = 'available';
+    const STATUS_EXPECTED = 'expected';
 
     public $table = 'tbl_products';
     public $id_field = 'productID';
@@ -88,8 +97,17 @@ class Product extends BaseModel {
         ]
     ];
 
+    public function __construct($pixie)
+    {
+        parent::__construct($pixie);
+        $this->enabled = false;
+        $this->in_stock = true;
+        $this->status = self::STATUS_AVAILABLE;
+    }
+
     public function getProduct($productID){
         $productData = array();
+        /** @var Product $product */
         $product = $this->pixie->orm->get('Product')->where('productID',$productID)->find();
         if($product->loaded()){
             $productData = array(
@@ -106,10 +124,13 @@ class Product extends BaseModel {
         return $productData;
     }
 
-    public  function getPageTitle($productID){
+    public function getPageTitle($productID){
+        /** @var Product $product */
         $product = $this->pixie->orm->get('Product')->where('productID',$productID)->find();
-        if($product->loaded())
+        if($product->loaded()) {
             return $product->name;
+        }
+        return null;
     }
 
     /**
@@ -294,7 +315,9 @@ class Product extends BaseModel {
         return $num > 0;
     }
 
-
+    /**
+     * @param Category|int $category
+     */
     public function prepareForCategory($category)
     {
         if (is_numeric($category)) {
@@ -304,10 +327,12 @@ class Product extends BaseModel {
             return;
         }
 
-        $this->where('categoryID', $category->id());
+        $conditions = [
+            ['categoryID', '=', $category->id()]
+        ];
 
         if ($category->parent == 0) {
-            $this->where('or', ['show_in_root', 1]);
+            $conditions[] = ['or', ['show_in_root', '=', 1]];
         }
 
         $additionalProductsIds = [];
@@ -315,7 +340,7 @@ class Product extends BaseModel {
         $result = $this->pixie->db->query('select')->table('tbl_products', 'p')->fields(['p.productId', 'id'])
             ->join(['tbl_category_product', 'cp'], ['cp.productID', 'p.productID'])
             ->join(['tbl_categories', 'c'], ['cp.categoryID', 'c.categoryID'])
-            ->where('c.categoryID', '=', $category->id())
+            ->where('and', ['c.categoryID', '=', $category->id()], ['p.enabled', '!=', '0'])
             ->execute();
 
         $ids = $result->as_array(true);
@@ -324,12 +349,44 @@ class Product extends BaseModel {
         }
 
         if (count($additionalProductsIds)) {
-            $this->where('or', ['productID', 'IN', $this->pixie->db->expr('(' . implode(',', $additionalProductsIds) . ')')]);
+            $conditions[] = ['or', ['productID', 'IN', $this->pixie->db->expr('(' . implode(',', $additionalProductsIds) . ')')]];
         }
+
+        $this->where('enabled', '!=', '0');     // Show only enabled products
+        $this->where('and', $conditions);
 
         $this->with('category')
             ->order_by('category.sort_order', 'asc')
             ->order_by('categoryID', 'asc')
             ->order_by('productID', 'asc');
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatuses()
+    {
+        return [self::STATUS_AVAILABLE, self::STATUS_EXPECTED];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusLabels()
+    {
+        return [
+            self::STATUS_AVAILABLE => 'В наличии',
+            self::STATUS_EXPECTED => 'Ожидается'
+        ];
+    }
+
+    /**
+     * @param $status
+     * @return mixed
+     */
+    public static function getStatusLabel($status)
+    {
+        $labels = self::getStatusLabels();
+        return $labels[$status] ?: $status;
     }
 }

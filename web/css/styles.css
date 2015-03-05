@@ -4900,3 +4900,32 @@ a.list-group-item.active > .badge,
 .payment-testing tr.fail td.expected-result {
   background: #ee6f64;
 }
+
+.label-expected {
+    background-color: saddlebrown;
+}
+
+.label-available {
+    background-color: green;
+}
+
+.label-missing {
+    background-color: orangered;
+}
+.product_name .label {
+    font-weight: normal;
+    font-size: 0.5em;
+    vertical-align: 0.2em;
+}
+
+.thumbnail .price {
+    display:inline-block;
+    margin-right: 15px;
+}
+
+.thumbnail a:hover {
+    text-decoration: none;
+}
+.thumbnail a:hover .title {
+    text-decoration: underline;
+}

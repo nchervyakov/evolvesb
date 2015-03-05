@@ -2,6 +2,19 @@
 
 namespace App\Model;
 
+use App\Exception\HttpException;
+
+/**
+ * Class CartItems
+ * @package App\Model
+ * @property int $id
+ * @property int $price
+ * @property int $qty
+ * @property int $cart_id
+ * @property string $created_at
+ * @property int $product_id
+ * @property Product $product
+ */
 class CartItems extends BaseModel {
 
     public $table = 'tbl_cart_items';
@@ -21,6 +34,9 @@ class CartItems extends BaseModel {
         $this->_cart = $this->pixie->orm->get('Cart')->getCart();
     }
 
+    /**
+     * @return mixed|Cart
+     */
     public function getCart()
     {
         if (empty($this->_cart)) {
@@ -34,11 +50,14 @@ class CartItems extends BaseModel {
      * @param int $productId
      * @param int $qty
      * @return array
+     * @throws HttpException
      */
     public function addItems($productId, $qty)
     {
+        /** @var Product $product */
         $product = $this->pixie->orm->get('Product')->where('productID', $productId)->find();
 
+        /** @var CartItems $itemExist */
         $itemExist = $this->where(
             'and', array(
                 array('product_id', '=', $productId),
@@ -47,8 +66,13 @@ class CartItems extends BaseModel {
 
         $item = $itemExist;
         if ($itemExist->loaded()) {//update existed
-            $itemExist->qty += $qty;
+            $newQuantity = $itemExist->qty + $qty;
+            if ($newQuantity <= 0 || $newQuantity > $product->max_items_per_order) {
+                throw new HttpException('Количество элементов должно быть в интервале от 1 до ' . $product->max_items_per_order);
+            }
+            $itemExist->qty = $newQuantity;
             $itemExist->save();
+
         } else if($product->loaded())  {//create new item
             $this->cart_id = $this->getCart()->id;
             $this->created_at = date('Y-m-d H:i:s');
@@ -89,19 +113,32 @@ class CartItems extends BaseModel {
      * Update items qty, remove items
      * @param int $itemId
      * @param int $qty
-     * @return bool
+     * @throws HttpException
+     * @throws \Exception
      */
     public function updateItems($itemId, $qty)
     {
+        /** @var CartItems $item */
         $item = $this->where('id', $itemId)->find();
+        $product = $item->product;
+
+        if (!$product || !$product->loaded() || !$product->in_stock || !$product->enabled) {
+            throw new HttpException('Ошибочный продукт.');
+        }
+
+        if ($qty < 0 || $qty > $product->max_items_per_order) {
+            throw new HttpException('Количество экземпляров данного продукта должно быть от 0 до ' . $product->max_items_per_order);
+        }
 
         if ($qty <= 0) {
             $this->getCart()->total_price -= $item->price * $item->qty;
             $this->getCart()->items_count -= 1;
             $this->getCart()->items_qty -= $item->qty;
+
         } else {
-            $this->getCart()->items_count += 1;
+            //$this->getCart()->items_count += 1;
             $diffQty = $item->qty - $qty;
+
             if ($diffQty > 0) {
                 $this->getCart()->items_qty -= $diffQty;
                 $this->getCart()->total_price -= $item->price * $diffQty;
@@ -114,7 +151,7 @@ class CartItems extends BaseModel {
 
         if ($qty <= 0) {
             $item->delete();
-            return true;
+            return;
         }
         $item->qty = $qty;
         $item->save();

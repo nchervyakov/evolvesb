@@ -22,4 +22,6 @@ class Events
     const ORDER_PAYED = 'order.payed';
     const ORDER_REFUNDED = 'order.refunded';
     const ORDER_STATUS_CHANGED = 'order.status_changed';
+
+    const PRODUCT_STATUS_CHANGED = 'product.status_changed';
 }

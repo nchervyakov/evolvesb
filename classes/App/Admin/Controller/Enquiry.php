@@ -18,7 +18,8 @@ use App\Model\EnquiryMessage;
 
 class Enquiry extends CRUDController
 {
-    public $modelNamePlural = 'Enquiries';
+    public $modelNamePlural = 'Заявки';
+    public $modelNameSingle = 'Заявка';
 
     protected function getListFields()
     {

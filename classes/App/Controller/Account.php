@@ -119,6 +119,7 @@ class Account extends Page {
                 }
             }
 
+            $this->view->productsAvailable = $order->checkProductsAreAvailable();
             $this->view->id = $orderId;
             $this->view->order = $order;
             $this->view->items = $order->orderItems->find_all()->as_array();

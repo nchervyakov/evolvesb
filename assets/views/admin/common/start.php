@@ -54,6 +54,33 @@
     <!--<script src="/js/plugins/morris/morris-data.js"></script>-->
     <script src="/js/plugins/dataTables/jquery.dataTables.js"></script>
     <script src="/js/plugins/dataTables/dataTables.bootstrap.js"></script>
+    <script type="text/javascript">
+        $.extend(true, $.fn.dataTable.defaults, {
+            "sDom": "<'row'<'col-sm-6'l><'col-sm-6'f>r>" + "t" + "<'row'<'col-sm-6'i><'col-sm-6'p>>",
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ элементов на странице",
+                "oPaginate": {
+                    "_hungarianMap": {
+                        sFirst: "Первая",
+                        sLast: "Последняя",
+                        sNext: "Следующая",
+                        sPrevious: "Предыдущая"
+                    }
+                },
+                sEmptyTable: "Данные отсутствуют",
+                sInfo: "Отображаются записи с _START_ до _END_ из _TOTAL_",
+                sInfoEmpty: "Отображаются записи с 0 по 0 из 0",
+                sInfoFiltered: "(отфильтрованы из _MAX_ элементов)",
+                sInfoPostFix: "",
+                sInfoThousands: ",",
+                sLoadingRecords: "Загрузка...",
+                sProcessing: "Обработка...",
+                sSearch: "Найти: ",
+                sUrl: "",
+                sZeroRecords: "Подходящих элементов не найдено"
+            }
+        });
+    </script>
 
     <script src="/js/bootstrap.file-input.js"></script>
     <script src="/js/jquery.form.js"></script>

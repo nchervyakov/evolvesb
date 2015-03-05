@@ -24,6 +24,8 @@
         <div class="info">
             <span class="title"><?php $_($product->name); ?></span>
             <span class="price "><?php echo $_format_price($product->Price);?></span>
+            <span class="label label-<?php $_($product->in_stock ? $product->status : 'missing'); ?>"><?php
+                $_($product->in_stock ? \App\Model\Product::getStatusLabel($product->status) : 'Отсутствует'); ?></span>
         </div>
     </a>
 </div>

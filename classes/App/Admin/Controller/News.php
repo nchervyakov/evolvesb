@@ -14,7 +14,8 @@ use App\Admin\CRUDController;
 
 class News extends CRUDController
 {
-    public $modelNamePlural = 'News';
+    public $modelNamePlural = 'Новости';
+    public $modelNameSingle = 'Новость';
 
     protected function getListFields()
     {

@@ -88,9 +88,13 @@
             </div>
 
             <div class="eight columns omega">
-                <h1 itemprop="name" class="product_name"><?php $_($product->name); ?></h1>
+                <h1 itemprop="name" class="product_name"><?php $_($product->name); ?>
+                    <small class="label label-<?php $_($product->in_stock ? $product->status : 'missing'); ?>"><?php
+                        $_($product->in_stock ? \App\Model\Product::getStatusLabel($product->status) : 'Отсутствует'); ?></small>
+                </h1>
 
-                <p itemtype="http://data-vocabulary.org/Offer" itemscope="" itemprop="offerDetails" class="modal_price">
+                <p itemtype="http://data-vocabulary.org/Offer" itemscope="" itemprop="offerDetails" class="modal_price"
+                   style="display: inline; ">
                     <meta content="RUR" itemprop="currency">
                     <meta content="Evolve Skateboards" itemprop="seller">
                     <meta content="in_stock" itemprop="availability">
@@ -104,19 +108,26 @@
                      <span class="was_price"></span>
                 </p>
 
+                <?php if ($product->in_stock): ?>
+                    <form id="product-form-<?php $_($product->id()); ?>" data-option-index="0" action="/cart/add"
+                          data-shop-currency="RUR" data-money-format="${{amount}}" class="product_form" method="post"
+                          style="display: inline;">
+                        <input type="hidden" value="<?php $_($product->id()); ?>" name="product_id">
+                        <input type="hidden" value="1" name="qty">
+                        <div class="purchase" style="display:inline; padding-left: 15px;">
+                            <input id="add_to_cart" type="submit" class="action_button add_to_cart" style="width: auto; padding: 10px 20px;" value="<?php
+                            $_($product->status == \App\Model\Product::STATUS_AVAILABLE ? "Купить" : "Заказать")?>" name="add">
+                        </div>
+                    </form>
+                <?php endif; ?>
+                <br/><br/>
+
                 <?php //include __DIR__.'/_notify_product_block.php'; ?>
 
                 <div itemprop="description" class="description">
                     <?php echo $product->description; ?>
                 </div>
 
-                <form id="product-form-<?php $_($product->id()); ?>" data-option-index="0" data-shop-currency="RUR" data-money-format="${{amount}}" class="clearfix product_form" method="post" action="/cart/add">
-                    <input type="hidden" value="<?php $_($product->id()); ?>" name="product_id">
-                    <input type="hidden" value="1" name="qty">
-                    <div class="purchase clearfix ">
-                        <input id="add_to_cart" type="submit" class="action_button add_to_cart" value="Добавить в корзину" name="add">
-                    </div>
-                </form>
                 <div class="meta">
                 </div>
                 <hr>
