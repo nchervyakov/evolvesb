@@ -47,9 +47,9 @@
 
         <div class="four columns">
             <ul class="social_icons">
-                <li><a href="https://twitter.com/EvolveSk8boards" title="Evolve Skateboards Россия в Twitter" rel="me" target="_blank" class="icon-twitter"></a></li>
-                <li><a href="https://www.facebook.com/EvolveSkateboardsUSA" title="Evolve Skateboards Россия в Facebook" rel="me" target="_blank" class="icon-facebook"></a></li>
-                <li><a href="https://www.youtube.com/user/evolveSkateboards" title="Evolve Skateboards Россия на YouTube" rel="me" target="_blank" class="icon-youtube"></a></li>
+                <li><a href="<?php echo $this->pixie->config->get('parameters.social_links.twitter'); ?>" title="Evolve Skateboards Россия в Twitter" rel="me" target="_blank" class="icon-twitter"></a></li>
+                <li><a href="<?php echo $this->pixie->config->get('parameters.social_links.facebook'); ?>" title="Evolve Skateboards Россия в Facebook" rel="me" target="_blank" class="icon-facebook"></a></li>
+                <li><a href="<?php echo $this->pixie->config->get('parameters.social_links.youtube'); ?>" title="Evolve Skateboards Россия на YouTube" rel="me" target="_blank" class="icon-youtube"></a></li>
                 <!--li><a href="https://vimeo.com/user14906646" title="Evolve Skateboards USA on Vimeo" rel="me" target="_blank" class="icon-vimeo-2"></a></li>
                 <li><a href="http://instagram.com/evolveskateboards" title="Evolve Skateboards USA on Instagram" rel="me" target="_blank" class="icon-instagram"></a></li-->
             </ul>

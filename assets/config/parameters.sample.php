@@ -37,5 +37,10 @@ return array(
     'use_ssl' => true,
     'admin_email' => ['admin1@gmail.com', 'admin2@example.com'],
     'robot_email' => 'robot@evolveskateboards.ru',
-    'root_category_name' => 'Все'
+    'root_category_name' => 'Все',
+    'social_links' => [
+        'twitter' => 'https://twitter.com/EvolveSk8boards',
+        'facebook' => 'https://www.facebook.com/EvolveSkateboardsUSA',
+        'youtube' => 'https://www.youtube.com/user/evolveSkateboards',
+    ]
 );
