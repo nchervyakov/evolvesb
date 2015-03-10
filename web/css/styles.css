@@ -53,7 +53,37 @@ table {
 img {
     vertical-align: inherit;
 }
-    
+
+@font-face {
+    font-family: 'icomoon';
+    src:url('../fonts/icomoon.eot?fl6iq8');
+    src:url('../fonts/icomoon.eot?#iefixfl6iq8') format('embedded-opentype'),
+    url('../fonts/icomoon.woff?fl6iq8') format('woff'),
+    url('../fonts/icomoon.ttf?fl6iq8') format('truetype'),
+    url('../fonts/icomoon.svg?fl6iq8#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-odnoklassniki-rect-512px:before {
+    content: "\e600";
+}
+
+
 /* #Basic Styles
 ================================================== */
   body { 
@@ -4537,6 +4567,15 @@ img.btn_close {
     color: #567CA4;
 }
 
+.odnoklassniki-link a:hover {
+    color: #F99718;
+}
+
+.fa-ok {
+    font-size: 2.61em;
+    vertical-align: -0.02em;
+}
+
 .btn:hover,
 .btn:focus {
     color: #fff;
@@ -4929,3 +4968,8 @@ a.list-group-item.active > .badge,
 .thumbnail a:hover .title {
     text-decoration: underline;
 }
+
+.icon-odnoklassniki-rect:before {
+    content: "\e600";
+}
+

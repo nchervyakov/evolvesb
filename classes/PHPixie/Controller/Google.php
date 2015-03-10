@@ -63,6 +63,7 @@ abstract class Google extends Facebook
             } else {
                 $this->error($display_mode);
             }
+
             return;
         }
 
@@ -76,7 +77,6 @@ abstract class Google extends Facebook
 
         $this->pixie->session->set($this->return_url_key, $return_url);
         $url = $this->provider->login_url('', $this->request->url(), $display_mode);
-        //var_dump($url);exit;
         $this->response->redirect($url);
     }
 

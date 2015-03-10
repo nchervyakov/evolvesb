@@ -4,23 +4,28 @@ namespace PHPixie\Auth\Login;
 use PHPixie\Auth\Service;
 
 /**
- * Vkontakte login provider
+ * Odnoklassniki login provider
  *
  * @package    Auth
  */
-class Vkontakte extends Provider {
+class Odnoklassniki extends Provider {
 
     /**
-     * App ID of the vkontakte app
+     * App ID of the odnoklassniki app
      * @var string
      */
     protected $app_id;
 
     /**
-     * App Secret of the vkontakte app
+     * App Secret of the odnoklassniki app
      * @var string
      */
     protected $app_secret;
+
+    /**
+     * @var string Odnoklassniki application public key
+     */
+    protected $app_key;
 
     /**
      * Permissions to request
@@ -30,10 +35,10 @@ class Vkontakte extends Provider {
 
     /**
      * Field in the users table where the users
-     * vkontakte id is stored.
+     * odnoklassniki id is stored.
      * @var string
      */
-    protected $vkid_field;
+    protected $okid_field;
 
     /**
      * Users access token
@@ -63,13 +68,7 @@ class Vkontakte extends Provider {
      * Name of the login provider
      * @var string
      */
-    protected $name = 'vkontakte';
-
-    /**
-     * Version of use Vk api
-     * @var string
-     */
-    protected $api_version = '5.2';
+    protected $name = 'odnoklassniki';
 
     /**
      * Constructs password login provider for the specified configuration.
@@ -81,13 +80,13 @@ class Vkontakte extends Provider {
     public function __construct($pixie, $service, $config) {
         parent::__construct($pixie, $service, $config);
         $this->app_id = $pixie->config->get($this->config_prefix."app_id");
+        $this->app_key = $pixie->config->get($this->config_prefix."app_public");
         $this->app_secret = $pixie->config->get($this->config_prefix."app_secret");
         $this->permissions = $pixie->config->get($this->config_prefix."permissions",array());
-        $this->vkid_field = $pixie->config->get($this->config_prefix."vkid_field");
-        $this->api_version = $pixie->config->get($this->config_prefix."api_version","5.2");
+        $this->vkid_field = $pixie->config->get($this->config_prefix."okid_field");
 
-        $this->access_token_key = "auth_{$config}_vkontakte_token";
-        $this->token_expires_key = "auth_{$config}_vkontakte_token_expires";
+        $this->access_token_key = "auth_{$config}_odnoklassniki_token";
+        $this->token_expires_key = "auth_{$config}_odnoklassniki_token_expires";
     }
 
     /**
@@ -146,21 +145,21 @@ class Vkontakte extends Provider {
     }
 
     /**
-     * Gets vkontakte logout URL
+     * Gets odnoklassniki logout URL
      *
      * @param string $redirect_url URL to redirect the user to after the logout
-     * @return string vkontakte logout URL
+     * @return string odnoklassniki logout URL
      * @throws \Exception
      * @throw \Exception If the user is not logged in
      */
     public function logout_url($redirect_url) {
         if ($this->access_token == null)
-            throw new \Exception("User is not logged in with Vkontakte");
+            throw new \Exception("User is not logged in with Odnoklassniki");
         return '';
     }
 
     /**
-     * Checks if the user is logged in with vkontakte, if so
+     * Checks if the user is logged in with odnoklassniki, if so
      * notifies the associated Service instance about it.
      *
      * @return bool If the user is logged in
@@ -177,20 +176,21 @@ class Vkontakte extends Provider {
     }
 
     /**
-     * Returns login url for the server-side vkontakte login flow.
+     * Returns login url for the server-side odnoklassniki login flow.
      *
      * @param string $return_url URL to return the user after he authorizes the app.
-     * @param string $display_mode Determines the vkontakte page look.
+     * @param string $display_mode Determines the odnoklassniki page look.
      *                             Can be either 'page' or 'popup'
      * @return string Login url.
      */
     public function login_url($state, $return_url, $display_mode) {
-        return "https://oauth.vk.com/authorize?"
+        return "http://www.odnoklassniki.ru/oauth/authorize?"
             ."client_id={$this->app_id}"
             ."&redirect_uri={$return_url}"
-            ."&scope=".implode(',', $this->permissions)
-            ."&display={$display_mode}"
-            ."&v={$this->api_version}";
+            ."&response_type=code"
+            ."&scope=";
+            //."&scope=".implode(';', $this->permissions)
+            //."&display={$display_mode}";
     }
 
     /**
@@ -198,27 +198,49 @@ class Vkontakte extends Provider {
      *
      * @param string $code OAuth code
      * @param string $return_url URL to return the user after he authorizes the app.
-     * @return array Parsed result of the vkontakte call.
+     * @return array Parsed result of the odnoklassniki call.
      */
     public function exchange_code($code, $return_url) {
-        $url = "https://oauth.vk.com/access_token?"
-            ."client_id={$this->app_id}"
-            ."&redirect_uri={$return_url}"
-            ."&client_secret={$this->app_secret}"
-            ."&code={$code}";
-        $response = $this->request($url);
-        parse_str($response, $params);
-        return $params;
+        $url = "http://api.odnoklassniki.ru/oauth/token.do";
+        $response = $this->request($url, "POST", [
+            "client_id" => $this->app_id,
+            "redirect_uri" => $return_url,
+            "client_secret" => $this->app_secret,
+            "code" => $code,
+            "grant_type" => "authorization_code"
+        ]);
+
+        $data = json_decode($response, true);
+
+        if ($data['access_token']) {
+            $userUrl = "http://api.odnoklassniki.ru/fb.do?"
+                ."method=users.getCurrentUser"
+                ."&access_token=" . $data['access_token']
+                ."&application_key=".$this->app_key
+                ."&sig=".$this->getSignature($data['access_token']);
+            $userData = json_decode($this->request($userUrl), true);
+
+            $data['user_id'] = $userData['548775234'];
+
+            if (is_array($userData['name'])) {
+                $data['first_name'] = $userData['first_name'];
+                $data['last_name'] = $userData['last_name'];
+            }
+        }
+
+        return $data;
     }
 
     /**
      * Requests a url using CURL
      *
      * @param string $url URL to fetch
+     * @param string $method
+     * @param array $params
      * @return array Parsed result of the vkontakte call.
      * @throws \Exception If the request failed
      */
-    public function request($url) {
+    public function request($url, $method = 'GET', $params = []) {
         $ch = curl_init();
         curl_setopt_array($ch, array(
             CURLOPT_CONNECTTIMEOUT => 10,
@@ -227,14 +249,37 @@ class Vkontakte extends Provider {
             CURLOPT_HTTPHEADER     => array('Expect:'),
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_URL            => $url,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLINFO_REDIRECT_COUNT => 3,
+            CURLOPT_URL            => $url
         ));
+        if ($method == 'POST') {
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($params));
+        }
+
         $response = curl_exec($ch);
         if($response === false)
             throw new \Exception("URL request failed:".curl_error($ch));
 
         return $response;
+    }
+
+    /**
+     * Generates the signature for requests to OK API
+     * @param $accessToken
+     * @return string
+     */
+    public function getSignature($accessToken)
+    {
+        return md5(sprintf('application_key=%smethod=users.getCurrentUser%s',
+            $this->app_key, md5($accessToken . $this->app_secret)
+        ));
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppKey()
+    {
+        return $this->app_key;
     }
 }

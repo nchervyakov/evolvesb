@@ -14,5 +14,5 @@ return array(
     'PHPThumb\\Tests' => array($vendorDir . '/project/phpthumb/tests', $vendorDir . '/project/phpthumb/tests'),
     'PHPThumb' => array($vendorDir . '/project/phpthumb/src', $vendorDir . '/project/phpthumb/src'),
     'Goutte' => array($vendorDir . '/fabpot/goutte'),
-    '' => array($baseDir . '/classes', $baseDir . '/modules/vulninjection/classes', $baseDir . '/classes/PDOV', $baseDir . '/modules/payment_test/classes'),
+    '' => array($baseDir . '/classes', $baseDir . '/modules/vulninjection/classes', $baseDir . '/classes/PDOV', $baseDir . '/classes/PHPixie', $baseDir . '/modules/payment_test/classes'),
 );

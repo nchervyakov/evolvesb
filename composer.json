@@ -9,6 +9,7 @@
                 "classes/",
                 "modules/vulninjection/classes/",
                 "classes/PDOV",
+                "classes/PHPixie",
                 "modules/payment_test/classes/"
             ],
             "PHPThumb": "vendor/project/phpthumb/src/",

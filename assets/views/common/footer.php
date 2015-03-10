@@ -137,6 +137,7 @@
                             <li class="tooltip-social twitter-link"><a href="/twitter" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="fa fa-twitter-square fa-3x"></i></a></li>
                             <li class="tooltip-social vkontakte-link"><a href="/vkontakte" data-toggle="tooltip" data-placement="top" title="Vkontakte"><i class="fa fa-vk fa-3x"></i></a></li>
                             <li class="tooltip-social google-plus-link"><a href="/google" data-toggle="tooltip" data-placement="top" title="Google Plus"><i class="fa fa-google-plus-square fa-3x"></i></a></li>
+                            <li class="tooltip-social odnoklassniki-link"><a href="/odnoklassniki" data-toggle="tooltip" data-placement="top" title="Odnoklassniki"><i class="fa fa-ok fa-2-5x icon-odnoklassniki-rect"></i></a></li>
                         </ul>
 
                     </div>

@@ -2,7 +2,7 @@
 namespace PHPixie\Auth\Controller;
 
 /**
- * Abstract Vkontakte login controller. To use it you need to extend this class
+ * Abstract Odnoklassniki login controller. To use it you need to extend this class
  * and override the new_user() method, which handles the situation when a user
  * logs in with your app for the very first time (basically you need to register him
  * at that point).
@@ -13,15 +13,15 @@ namespace PHPixie\Auth\Controller;
  * Optionally you can pass a ?return_url =<url> parameter to specify where to redirect the
  * user after he is logged in. You can also specify a default redirect url in the auth.php config file.
  */
-abstract class Vkontakte extends Facebook
+abstract class Odnoklassniki extends Facebook
 {
     /**
-     * @var \PHPixie\Auth\Login\Vkontakte
+     * @var \PHPixie\Auth\Login\Odnoklassniki
      */
     protected $provider;
 
     /**
-     * User ID of the vkontake user
+     * User ID of the odnoklassniki user
      * @var string
      */
     protected $user_id = '';
@@ -34,15 +34,15 @@ abstract class Vkontakte extends Facebook
     public function before()
     {
         $config = $this->request->param('config', 'default');
-        $this->provider = $this->pixie->auth->provider('vkontakte', $config);
-        $this->default_return_url = $this->pixie->config->get("auth.{$config}.login.vkontakte.return_url", null);
-        $this->return_url_key = "auth_{$config}_vkontakte_return";
+        $this->provider = $this->pixie->auth->provider('odnoklassniki', $config);
+        $this->default_return_url = $this->pixie->config->get("auth.{$config}.login.odnoklassniki.return_url", null);
+        $this->return_url_key = "auth_{$config}_odnoklassniki_return";
     }
 
     /**
-     * Handles vkontakte login.
+     * Handles odnoklassniki login.
      *
-     * @param string $display_mode Display mode of the vkontakte login.
+     * @param string $display_mode Display mode of the odnoklassniki login.
      *                             Either 'page' or 'popup'
      * @return void
      */
@@ -56,9 +56,14 @@ abstract class Vkontakte extends Facebook
 
         if ($code = $this->request->get('code')) {
             $params = $this->provider->exchange_code($code, $this->request->url());
-            $params = json_decode(current(array_keys($params)), true);
-            $this->user_id = $params['user_id'];
-            $this->success($params, $display_mode);
+            if ($params['access_token']) {
+                $this->user_id = $params['user_id'];
+                $this->success($params, $display_mode);
+
+            } else {
+                $this->error($display_mode);
+            }
+
             return;
         }
 
@@ -78,9 +83,9 @@ abstract class Vkontakte extends Facebook
     /**
      * Called upon the completion of exchange of code for an access token.
      *
-     * @param array $params Parsed vkontakte server response for the exchange.
+     * @param array $params Parsed odnoklassniki server response for the exchange.
      *                      Access token is under the 'access_token' key.
-     * @param string $display_mode Display mode of the vkontakte login.
+     * @param string $display_mode Display mode of the odnoklassniki login.
      *                             Either 'page' or 'popup'
      * @return void
      */
