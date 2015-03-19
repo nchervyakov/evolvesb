@@ -1,14 +1,14 @@
 <?php
-$dateFormatter = datefmt_create(
-    'ru_RU',
-    IntlDateFormatter::TRADITIONAL,
-    IntlDateFormatter::NONE,
-    null,
-    null,
-    'dd MMMM YYYY г.'
-);
-
-$priceFormatter = numfmt_create('ru_RU', NumberFormatter::DECIMAL_ALWAYS_SHOWN);
+//$dateFormatter = datefmt_create(
+//    'ru_RU',
+//    IntlDateFormatter::TRADITIONAL,
+//    IntlDateFormatter::NONE,
+//    null,
+//    null,
+//    'dd MMMM YYYY г.'
+//);
+//
+//$priceFormatter = numfmt_create('ru_RU', NumberFormatter::DECIMAL_ALWAYS_SHOWN);
 $numeral = \App\Utils\RUtils::numeral();
 
 $items = $order->orderItems->with('product')->find_all()->as_array();
@@ -230,7 +230,7 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
         </tr>
     </table>
 
-    <h2>Счёт на оплату № <?php $_($order->uid); ?> от <?php echo $dateFormatter->format(new DateTime()); ?></h2>
+    <h2>Счёт на оплату № <?php $_($order->uid); ?> от <?php echo date('Y.m.d'); ?></h2>
     <table class="contragents-table">
         <tr>
             <td>Поставщик:</td>
@@ -268,7 +268,7 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
         <tfoot style="text-align: right; font-weight: bold;">
             <tr>
                 <td colspan="5">Итого:</td>
-                <td><?php echo $priceFormatter->format($order->amount); ?></td>
+                <td><?php echo \php_rutils\RUtils::formatNumber($order->amount, 2); ?></td>
             </tr>
             <tr>
                 <td colspan="5">Без налога (НДС)</td>
@@ -278,7 +278,7 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
     </table>
 
     <p>
-        Всего наименований <?php echo count($items); ?>, на сумму <?php echo $priceFormatter->format($order->amount); ?> <br/>
+        Всего наименований <?php echo count($items); ?>, на сумму <?php echo \php_rutils\RUtils::formatNumber($order->amount, 2);; ?> RUB <br/>
         <strong><?php echo \App\Utils\Strings::ucfirst($numeral->getRubles($order->amount, true, true)); ?></strong>
     </p>
 
