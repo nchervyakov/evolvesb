@@ -35,12 +35,13 @@ return array(
     'thumb_path' => __DIR__.'/../../web/cache/thumb/',
     'allow_install' => false,
     'use_ssl' => true,
-    'admin_email' => ['admin1@gmail.com', 'admin2@example.com'],
+    'admin_email' => [],//'admin1@gmail.com', 'admin2@example.com'],
     'robot_email' => 'robot@evolveskateboards.ru',
     'root_category_name' => 'Все',
     'social_links' => [
         'twitter' => 'https://twitter.com/EvolveSk8boards',
         'facebook' => 'https://www.facebook.com/EvolveSkateboardsUSA',
         'youtube' => 'https://www.youtube.com/user/evolveSkateboards',
-    ]
+    ],
+    'wkhtmltopdf_path' => '/var/www/el/bin/wkhtmltopdf'
 );

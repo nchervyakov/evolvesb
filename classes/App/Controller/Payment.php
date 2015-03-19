@@ -26,6 +26,7 @@ use App\Model\Order;
 use App\Model\Payment as PaymentModel;
 use App\Model\PaymentOperation;
 use App\Page;
+use Knp\Snappy\Pdf;
 
 class Payment extends Page
 {
@@ -186,12 +187,19 @@ class Payment extends Page
 
 
     public function action_pay() {
+        $user = $this->pixie->auth->user();
+        if (!$user) {
+            throw new ForbiddenException();
+        }
+
         $orderUid = $this->request->param('id');
 
         /** @var Order $order */
         $order = $this->pixie->orm->get('Order')->where('uid', $orderUid)->find();
 
-        if (!$order || !$order->loaded()) {
+        if (!$order || !$order->loaded()
+            || $user->id() != $order->customer_id
+        ) {
             throw new NotFoundException("Заказа с номером $orderUid не существует.");
         }
 
@@ -208,6 +216,11 @@ class Payment extends Page
 
     public function action_refund()
     {
+        $user = $this->pixie->auth->user();
+        if (!$user) {
+            throw new ForbiddenException();
+        }
+
         if ($this->request->method != 'POST') {
             throw new HttpException("Invalid request method: " . $this->request->method);
         }
@@ -220,7 +233,9 @@ class Payment extends Page
         /** @var Order $order */
         $order = $this->pixie->orm->get('Order')->where('uid', $orderUid)->find();
 
-        if (!$order || !$order->loaded()) {
+        if (!$order || !$order->loaded()
+            || $user->id() != $order->customer_id
+        ) {
             throw new NotFoundException("Заказа с номером '$orderUid' не существует.");
         }
 
@@ -231,6 +246,90 @@ class Payment extends Page
         }
 
         $this->pixie->payments->sendRefundOrderRequest($order->id());
+    }
+
+    public function action_request_bill()
+    {
+        $orderUid = (string)$this->request->param('id');
+        $code = $this->request->get('code');
+        if ($code != $this->generatePrintCode($orderUid)) {
+            throw new ForbiddenException;
+        }
+
+        $order = $this->prepareOrderAction($orderUid, false);
+
+        $this->initView('print');
+        $this->view->subview = 'payment/receipt';
+        $this->view->order = $order;
+        $this->view->print = true;
+    }
+
+    public function action_print_receipt()
+    {
+        $orderUid = (string)$this->request->param('id');
+        $order = $this->prepareOrderAction($orderUid);
+
+        $this->initView('print');
+        $this->view->subview = 'payment/receipt';
+        $this->view->order = $order;
+        $this->view->print = false;
+    }
+
+    public function action_download_receipt()
+    {
+        $orderUid = (string)$this->request->param('id');
+        $order = $this->prepareOrderAction($orderUid);
+        $this->response->add_header('Content-Type: application/pdf');
+        $this->response->add_header('Content-Disposition: attachment; filename="receipt_'.$order->uid.'_'.date('Y.m.d').'.pdf"');
+        $this->response->body = $this->generatePdfReceipt($orderUid);
+        $this->execute = false;
+    }
+
+    public function action_send_receipt()
+    {
+        $orderUid = (string)$this->request->param('id');
+        $order = $this->prepareOrderAction($orderUid);
+
+        if ($order->customer_email) {
+            $file = $this->generatePdfReceipt($orderUid);
+
+            // Send a message with the file
+            $pixie = $this->pixie;
+            $emailView = $pixie->view('payment/receipt_email');
+            $emailView->order = $order;
+
+            $message = \Swift_Message::newInstance(
+                'Квитанция для оплаты заказа №' . trim($orderUid) . '" на evolveskateboards.ru',
+                $emailView->render(), 'text/plain', 'utf-8'
+            );
+            $message->attach(\Swift_Attachment::newInstance($file, 'receipt_'.$order->uid.'_'.date('Y.m.d').'.pdf', 'application/pdf'));
+            $pixie->email->send($order->customer_email, 'robot@evolveskateboards.ru', null, $message);
+        }
+
+        return $this->jsonResponse(['success' => 1]);
+    }
+
+    protected function prepareOrderAction($orderUid, $checkUser = true)
+    {
+        $user = $this->pixie->auth->user();
+        if ($checkUser && !$user) {
+            throw new ForbiddenException();
+        }
+
+        if (!$orderUid) {
+            throw new HttpException("Не указан номер заказа.");
+        }
+
+        /** @var Order $order */
+        $order = $this->pixie->orm->get('Order')->where('uid', $orderUid)->find();
+
+        if (!$order || !$order->loaded()
+            || ($checkUser && $user->id() != $order->customer_id)
+        ) {
+            throw new NotFoundException("Заказа с номером '$orderUid' не существует.");
+        }
+
+        return $order;
     }
 
     private function informAdmins($e = null)
@@ -269,5 +368,36 @@ class Payment extends Page
             'COOKIE' => $_COOKIE,
         ]);
         return ob_get_clean();
+    }
+
+    /**
+     * @param $orderUid
+     * @return string
+     */
+    protected function generatePrintCode($orderUid)
+    {
+        $salt = 'asdfsadf980yn98324';
+        return md5($salt.$orderUid);
+    }
+
+    /**
+     * @param $orderUid
+     * @return string
+     * @throws \Exception
+     */
+    protected function generatePdfReceipt($orderUid)
+    {
+        $snappy = new Pdf($this->pixie->config->get('parameters.wkhtmltopdf_path'));
+        //$snappy->setOption('cookie', $_COOKIE);
+        $snappy->setOption('viewport-size', '800x600');
+        $snappy->setOption('toc', false);
+        $snappy->setOption('outline', false);
+        $snappy->setOption('outline-depth', 0);
+
+        $url = ($_SERVER['HTTPS'] == 'on' ? 'https' : 'http')
+            . '://' . $_SERVER['HTTP_HOST'] . '/payment/request_bill/' . $orderUid . '?print=1'
+            . '&code=' . $this->generatePrintCode($orderUid);
+
+        return $snappy->getOutput($url);
     }
 }

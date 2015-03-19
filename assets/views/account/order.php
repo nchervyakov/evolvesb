@@ -43,6 +43,11 @@
 
                     <a href="/checkout/payment/<?php echo $order->uid; ?>" class="btn btn-primary btn-lg">Оплатить</a>
 
+                    <a href="/payment/print_receipt/<?php $_($order->uid); ?>" class="btn btn-primary btn-lg js-print-receipt-link"
+                       data-order-id="<?php $_($order->uid); ?>">Распечатать квитанцию</a>
+
+                    <a href="/payment/download_receipt/<?php $_($order->uid); ?>" class="btn btn-primary btn-lg">Скачать квитанцию</a>
+
                 <?php } ?>
 
                 <?php if ($order->isCancellable()): ?>

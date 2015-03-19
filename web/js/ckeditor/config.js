@@ -13,7 +13,7 @@ CKEDITOR.editorConfig = function( config ) {
 		{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
 		{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
 		{ name: 'links' },
-		{ name: 'insert' },
+        { name: 'insert', groups: ['Image', 'Youtube']},
 		{ name: 'forms' },
 		{ name: 'tools' },
 		{ name: 'document',	   groups: [ 'mode', 'document', 'doctools' ] },
@@ -39,4 +39,6 @@ CKEDITOR.editorConfig = function( config ) {
     config.filebrowserBrowseUrl =  '/js/ckeditor/plugins/w3bdeveloper_uimages/index.php';
     config.filebrowserWindowWidth = '860';
     config.filebrowserWindowHeight = '660';
+
+    config.extraPlugins = 'youtube';
 };

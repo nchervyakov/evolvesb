@@ -477,4 +477,26 @@ $(function () {
     })();
 
     $('.file-input').bootstrapFileInput();
+
+    $(document).on('click', '.js-print-receipt-link', function (ev) {
+        ev.preventDefault();
+        var id = $(ev.target).data('order-id');
+
+        if ($(ev.target).data('send-message')) {
+            $.ajax('/payment/send_receipt/' + id, {
+                dataType: 'json',
+                timeout: 10000,
+                type: 'POST'
+
+            }).success(function () {
+                location.href = '/account/orders/' + id;
+            });
+        }
+
+        var popup = window.open('http://evolvesb.dev/payment/print_receipt/' + id, 'payment_receipt','height=600,width=800,scrollbars=yes');
+        if (window.focus) {
+            popup.focus();
+        }
+        return false;
+    });
 });

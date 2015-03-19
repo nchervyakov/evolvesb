@@ -40,7 +40,10 @@ $mediaItems = $mediaItems->fetchAll(PDO::FETCH_ASSOC);
 			'swf'      : 'uploader/uploadify.swf',
 			'uploader' : 'upload.php?action=upload',
 			'auto'     :  false,
-			'fileTypeExts': '*.*'
+			'fileTypeExts': '*.*',
+            'onUploadComplete' : function(file) {
+                location.reload();
+            }
 		});
 	});
 	// this function will insert the url of the picture in the inage handler
@@ -77,10 +80,15 @@ $mediaItems = $mediaItems->fetchAll(PDO::FETCH_ASSOC);
 			{
 				foreach($mediaItems as $k=>$v)
 				{
+                  $fileParts = pathinfo($uploadDir.$v['fileName']);
 			      ?>
 			      <div class="media-item" id="media-item-<?php echo $v['id']; ?>">
 			      	<a href="#" onclick="insert_url('<?php echo $uploadDir.$v['path'] ?>')" class="image_cke">
-			      		<img src="<?php echo $uploadDir.$v['path'] ?>" class="media-item-image" />
+                        <?php if (in_array($fileParts['extension'], ['jpg','jpeg','gif','png'])) { ?>
+			      		    <img src="<?php echo $uploadDir.$v['path'] ?>" class="media-item-image" />
+                        <?php } else { ?>
+                            <?php echo $uploadDir.$v['fileName']; ?>
+                        <?php } ?>
 			      	</a>
 			      	<a class="close_small_btn remove_media" id="media-<?php echo $v['id']; ?>" title="Delete Picture" onclick="remove_media_file(<?php echo $v['id']; ?>)"></a>
 			      </div>

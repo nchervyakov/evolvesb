@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'php_rutils' => array($vendorDir . '/andre_487'),
+    'Symfony\\Component\\Process\\' => array($vendorDir . '/symfony/process'),
     'Symfony\\Component\\Filesystem\\' => array($vendorDir . '/symfony/filesystem', $vendorDir . '/symfony/filesystem'),
     'Symfony\\Component\\DomCrawler\\' => array($vendorDir . '/symfony/dom-crawler'),
     'Symfony\\Component\\CssSelector\\' => array($vendorDir . '/symfony/css-selector'),
@@ -13,6 +15,7 @@ return array(
     'PHPixie' => array($vendorDir . '/phpixie/db/classes', $vendorDir . '/phpixie/orm/classes', $vendorDir . '/phpixie/auth/classes', $vendorDir . '/phpixie/email/classes', $vendorDir . '/phpixie/paginate/classes', $vendorDir . '/phpixie/core/classes'),
     'PHPThumb\\Tests' => array($vendorDir . '/project/phpthumb/tests', $vendorDir . '/project/phpthumb/tests'),
     'PHPThumb' => array($vendorDir . '/project/phpthumb/src', $vendorDir . '/project/phpthumb/src'),
+    'Knp\\Snappy' => array($vendorDir . '/knplabs/knp-snappy/src'),
     'Goutte' => array($vendorDir . '/fabpot/goutte'),
     '' => array($baseDir . '/classes', $baseDir . '/modules/vulninjection/classes', $baseDir . '/classes/PDOV', $baseDir . '/classes/PHPixie', $baseDir . '/modules/payment_test/classes'),
 );
