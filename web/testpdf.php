@@ -9,7 +9,7 @@ $pixie->bootstrap($root);
 
 
 
-$snappy = new \Knp\Snappy\Pdf($this->pixie->config->get('parameters.wkhtmltopdf_path'));
+$snappy = new \Knp\Snappy\Pdf($pixie->config->get('parameters.wkhtmltopdf_path'));
 //$snappy->setOption('cookie', $_COOKIE);
 $snappy->setOption('viewport-size', '800x600');
 $snappy->setOption('toc', false);

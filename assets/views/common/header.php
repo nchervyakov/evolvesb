@@ -62,7 +62,7 @@
                             <ul>
                                 <li><a href="/pages/shipping" title="Оплата и доставка">Оплата и доставка</a></li>
                                 <li><a href="/pages/warranty" title="Гарантийные обязательства">Гарантийные обязательства</a></li>
-                                <li><a href="/blogs/guide" title="Руководства по эксплуатации">Руководства по эксплуатации</a></li>
+                                <li><a href="/pages/guide" title="Руководства по эксплуатации">Руководства по эксплуатации</a></li>
                                 <li><a href="/pages/troubleshooting" title="Устранение неисправностей">Устранение неисправностей</a></li>
 
                                 <?php /*<!--li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li-->

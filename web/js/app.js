@@ -493,7 +493,7 @@ $(function () {
             });
         }
 
-        var popup = window.open('http://evolvesb.dev/payment/print_receipt/' + id, 'payment_receipt','height=600,width=800,scrollbars=yes');
+        var popup = window.open(location.protocol + '//' + location.host + '/payment/print_receipt/' + id, 'payment_receipt','height=600,width=800,scrollbars=yes');
         if (window.focus) {
             popup.focus();
         }

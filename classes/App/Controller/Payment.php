@@ -279,6 +279,7 @@ class Payment extends Page
     {
         $orderUid = (string)$this->request->param('id');
         $order = $this->prepareOrderAction($orderUid);
+
         $this->response->add_header('Content-Type: application/pdf');
         $this->response->add_header('Content-Disposition: attachment; filename="receipt_'.$order->uid.'_'.date('Y.m.d').'.pdf"');
         $this->response->body = $this->generatePdfReceipt($orderUid);
