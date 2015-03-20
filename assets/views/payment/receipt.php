@@ -170,14 +170,14 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
     <table class="header-table">
         <tr>
             <td style="width: 3cm;"><img src="/images/logo.png" alt="" style="width: 3cm; vertical-align: middle;"/></td>
-            <td style="width: 11cm; text-align: center;">
+            <td style="width: 13cm; text-align: center;">
                 Внимание! Счет действителен до <?php echo date('d.m.Y', strtotime('+1 week')); ?>.<br/>
                 Оплата данного счета означает согласие с условиями поставки товара. <br/>
                 Уведомление об оплате обязательно, в противном случае не гарантируется <br/>
                 наличие товара на складе. Товар отпускается по факту прихода денег <br/>
                 на р/с Поставщика, самовывозом, при наличии доверенности и паспорта. <br/>
             </td>
-            <td style="width: 6cm;">&nbsp;</td>
+            <td style="width: 4cm;">&nbsp;</td>
         </tr>
     </table>
 
