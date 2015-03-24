@@ -52,7 +52,7 @@ $receiptDate = new \DateTime($order->created_at);
 
     .product-items-table thead td,
     .product-items-table tbody td {
-        border-width: 0.2pt;
+        border-width: 1pt;
         border-left: 0 none;
         border-top: 0 none;
         border-color: #000000;
