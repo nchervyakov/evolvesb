@@ -1,17 +1,9 @@
 <?php
-//$dateFormatter = datefmt_create(
-//    'ru_RU',
-//    IntlDateFormatter::TRADITIONAL,
-//    IntlDateFormatter::NONE,
-//    null,
-//    null,
-//    'dd MMMM YYYY г.'
-//);
-//
-//$priceFormatter = numfmt_create('ru_RU', NumberFormatter::DECIMAL_ALWAYS_SHOWN);
 $numeral = \App\Utils\RUtils::numeral();
+$df = \App\Utils\RUtils::dt();
 
 $items = $order->orderItems->with('product')->find_all()->as_array();
+$receiptDate = new \DateTime($order->created_at);
 
 ?><style type="text/css">
     body {
@@ -171,7 +163,7 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
         <tr>
             <td style="width: 3cm;"><img src="/images/logo.png" alt="" style="width: 3cm; vertical-align: middle;"/></td>
             <td style="width: 13cm; text-align: center;">
-                Внимание! Счет действителен до <?php echo date('d.m.Y', strtotime('+1 week')); ?>.<br/>
+                Внимание! Счет действителен до <?php  echo $df->ruStrFTime(['format' => 'j F Y', 'monthInflected' => true, 'date' => new DateTime('+1 week')]); ?>.<br/>
                 Оплата данного счета означает согласие с условиями поставки товара. <br/>
                 Уведомление об оплате обязательно, в противном случае не гарантируется <br/>
                 наличие товара на складе. Товар отпускается по факту прихода денег <br/>
@@ -188,34 +180,38 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
                 <table style="text-align: left; margin: 0 auto 0.4cm; width: 100%; border-collapse: collapse;">
                     <tr>
                         <td rowspan="2" colspan="4">
-                            ОАО "ВУЗ-БАНК" Г. ЕКАТЕРИНБУРГ <br/>
+                            <?php $_($receiptCredentials['bank_name']); ?> <br/>
                             <small>Банк получателя</small>
                         </td>
                         <td>БИК</td>
-                        <td>046577781</td>
+                        <td><?php $_($receiptCredentials['bank_bic']); ?></td>
 
                     </tr>
                     <tr>
                         <td>Сч. №</td>
-                        <td>30101810600000000781</td>
+                        <td><?php $_($receiptCredentials['bank_account']); ?></td>
                     </tr>
                     <tr>
                         <td>ИНН</td>
-                        <td>6671468126</td>
+                        <td><?php $_($receiptCredentials['company_inn']); ?></td>
                         <td>КПП</td>
-                        <td>667101001</td>
+                        <td><?php $_($receiptCredentials['company_kpp']); ?></td>
                         <td rowspan="2" style="vertical-align: top;">Сч. №</td>
-                        <td rowspan="2" style="vertical-align: top;">40702810500000101928</td>
+                        <td rowspan="2" style="vertical-align: top;"><?php $_($receiptCredentials['company_account']); ?></td>
                     </tr>
                     <tr>
                         <td rowspan="1" colspan="4">
-                            ООО "ИВОЛВ РУС" <br/>
+                            <?php $_($receiptCredentials['company_name']); ?> <br/>
                             <small>Получатель</small>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="6">
-                            Оплата по реализации товаров и услуг №1 <br/>
+                            <?php echo "Оплата по счету №" . $order->uid . " от " . $df->ruStrFTime([
+                                    'format' => 'j F Y',
+                                    'monthInflected' => true,
+                                    'date' => $receiptDate
+                                ]);?> <br/>
                             <small>Назначение платежа</small>
                         </td>
                     </tr>
@@ -223,18 +219,19 @@ $items = $order->orderItems->with('product')->find_all()->as_array();
 
             </td>
             <td style="width: 4cm; border: 0 solid #fff; text-align: center; vertical-align: top;">
-                <img src="/images/qrcode.png" alt="" style="width: 3cm; margin-bottom: 0.1cm;"/> <br/>
+                <img src="/payment/order_qr_code/<?php $_($order->uid); ?>?code=<?php $_($print_code); ?>" alt="" style="width: 3cm; margin-bottom: 0.1cm;"/> <br/>
                 <small style="line-height: 0.5em; font-size: 0.7em;">Оплатите, отсканировав код в платежном
                     терминале или передав сотруднику банка</small>
             </td>
         </tr>
     </table>
 
-    <h2>Счёт на оплату № <?php $_($order->uid); ?> от <?php echo date('Y.m.d'); ?></h2>
+    <h2>Счёт на оплату № <?php $_($order->uid); ?> от <?php echo $df->ruStrFTime(['format' => 'j F Y', 'monthInflected' => true, 'date' => $receiptDate]); ?></h2>
     <table class="contragents-table">
         <tr>
             <td>Поставщик:</td>
-            <td><strong>ООО "ИВОЛВ РУС", ИНН 6671468126, КПП 667101001, 620144, Свердловская обл, Екатеринбург, Куйбышева, дом № 55, офис 509</strong></td>
+            <td><strong><?php $_($receiptCredentials['company_name']); ?>, ИНН <?php $_($receiptCredentials['company_inn']); ?>,
+                    КПП <?php $_($receiptCredentials['company_kpp']); ?>, <?php $_($receiptCredentials['company_address']); ?></strong></td>
         </tr>
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr>

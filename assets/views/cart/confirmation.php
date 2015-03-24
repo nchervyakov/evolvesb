@@ -49,7 +49,7 @@
                                 <b><?php echo $_($shippingAddress->full_name, 'full_name'); ?></b><br />
                                 <?php echo $_($shippingAddress->address_line_1, 'address_line_1'); ?><br />
                                 <?php echo $_($shippingAddress->address_line_2, 'address_line_2'); ?><br />
-                                <?php echo $_($shippingAddress->city, 'city') . ' ' . $_($shippingAddress->region, 'region') . ' ' . $_($shippingAddress->zip, 'zip'); ?><br />
+                                <?php echo $_esc($shippingAddress->city, 'city') . ', ' . $_esc($shippingAddress->region, 'region') . ', ' . $_esc($shippingAddress->zip, 'zip'); ?><br />
                                 <?php echo $_($shippingAddress->country_id, 'country_id'); ?><br />
                                 <?php echo $_($shippingAddress->phone, 'phone'); ?><br />
                             </div>

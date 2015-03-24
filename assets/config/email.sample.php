@@ -5,7 +5,7 @@ return array(
         //Type can be either 'smtp', 'sendmail' or 'native'
         'type'        => 'sendmail',
  
-        //Settings for smtp connection
+        //ReceiptSettings for smtp connection
         'hostname'    => 'localhost',
         'port'        => '25',
         'username'    => null,

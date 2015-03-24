@@ -4576,6 +4576,10 @@ img.btn_close {
     vertical-align: -0.02em;
 }
 
+.fa-ok.fa-4x {
+    font-size: 3.44em;
+}
+
 .btn:hover,
 .btn:focus {
     color: #fff;

@@ -55,7 +55,8 @@
         "fabpot/goutte": "2.*",
         "andre_487/php_rutils": "~1.1",
         "knplabs/knp-snappy": "0.3.*",
-        "symfony/process": "~2.6"
+        "symfony/process": "~2.6",
+        "endroid/qrcode": "~1.5"
     },
     "extra": {
         "branch-alias": {

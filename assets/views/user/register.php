@@ -72,6 +72,9 @@
 
                             <li class="tooltip-social facebook-link"><a href="/facebook" data-toggle="tooltip" data-placement="top" title="Facebook"><i class="fa fa-facebook-square fa-4x"></i></a></li>
                             <li class="tooltip-social twitter-link"><a href="/twitter" data-toggle="tooltip" data-placement="top" title="Twitter"><i class="fa fa-twitter-square fa-4x"></i></a></li>
+                            <li class="tooltip-social vkontakte-link"><a href="/vkontakte" data-toggle="tooltip" data-placement="top" title="Vkontakte"><i class="fa fa-vk fa-4x"></i></a></li>
+                            <li class="tooltip-social google-plus-link"><a href="/google" data-toggle="tooltip" data-placement="top" title="Google Plus"><i class="fa fa-google-plus-square fa-4x"></i></a></li>
+                            <li class="tooltip-social odnoklassniki-link"><a href="/odnoklassniki" data-toggle="tooltip" data-placement="top" title="Odnoklassniki"><i class="fa fa-ok fa-4x icon-odnoklassniki-rect"></i></a></li>
                         </ul>
 
                     </div>

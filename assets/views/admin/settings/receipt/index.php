@@ -1,0 +1,1 @@
+<h1>Receipt settings</h1>

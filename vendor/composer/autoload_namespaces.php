@@ -17,5 +17,6 @@ return array(
     'PHPThumb' => array($vendorDir . '/project/phpthumb/src', $vendorDir . '/project/phpthumb/src'),
     'Knp\\Snappy' => array($vendorDir . '/knplabs/knp-snappy/src'),
     'Goutte' => array($vendorDir . '/fabpot/goutte'),
+    'Endroid' => array($vendorDir . '/endroid/qrcode/src'),
     '' => array($baseDir . '/classes', $baseDir . '/modules/vulninjection/classes', $baseDir . '/classes/PDOV', $baseDir . '/classes/PHPixie', $baseDir . '/modules/payment_test/classes'),
 );

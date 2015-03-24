@@ -26,6 +26,7 @@ use App\Model\Order;
 use App\Model\Payment as PaymentModel;
 use App\Model\PaymentOperation;
 use App\Page;
+use App\Payment\ReceiptService;
 use Knp\Snappy\Pdf;
 
 class Payment extends Page
@@ -260,7 +261,9 @@ class Payment extends Page
 
         $this->initView('print');
         $this->view->subview = 'payment/receipt';
+        $this->view->receiptCredentials = $this->pixie->config->get('parameters.receipt');
         $this->view->order = $order;
+        $this->view->print_code = $this->generatePrintCode($orderUid);
         $this->view->print = true;
     }
 
@@ -271,7 +274,9 @@ class Payment extends Page
 
         $this->initView('print');
         $this->view->subview = 'payment/receipt';
+        $this->view->receiptCredentials = $this->pixie->config->get('parameters.receipt');
         $this->view->order = $order;
+        $this->view->print_code = $this->generatePrintCode($orderUid);
         $this->view->print = false;
     }
 
@@ -307,7 +312,24 @@ class Payment extends Page
             $pixie->email->send($order->customer_email, 'robot@evolveskateboards.ru', null, $message);
         }
 
-        return $this->jsonResponse(['success' => 1]);
+        $this->jsonResponse(['success' => 1]);
+    }
+
+    public function action_order_qr_code()
+    {
+        $orderUid = (string)$this->request->param('id');
+        $code = $this->request->get('code');
+
+        if ($code != $this->generatePrintCode($orderUid)) {
+            throw new ForbiddenException;
+        }
+
+        $order = $this->prepareOrderAction($orderUid, false);
+
+        $receiptService = new ReceiptService($this->pixie);
+
+        header('Content-Type: image/png');
+        $receiptService->renderQRCodeForOrder($order);
     }
 
     protected function prepareOrderAction($orderUid, $checkUser = true)
