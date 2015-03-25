@@ -236,7 +236,7 @@ $receiptDate = new \DateTime($order->created_at);
         <tr><td colspan="2">&nbsp;</td></tr>
         <tr>
             <td>Покупатель:</td>
-            <td><strong>Розничный покупатель</strong></td>
+            <td><strong><?php $_($order->buyer_name); ?></strong></td>
         </tr>
     </table>
 

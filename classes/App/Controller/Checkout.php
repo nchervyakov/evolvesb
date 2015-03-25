@@ -62,18 +62,31 @@ class Checkout extends Page {
 
             $post = $this->request->post();
             $addressId = isset($post['address_id']) ? $post['address_id'] : 0;
+            if ($post['buyer_name']) {
+                $cart->buyer_name = $post['buyer_name'];
+                $cart->save();
+            }
+            unset($post['buyer_name']);
+
             if (!$addressId) {
                 $addressId = $this->pixie->orm->get('CustomerAddress')->create($post);
             }
             $this->pixie->orm->get('Cart')->updateAddress($addressId, 'shipping');
             $this->execute = false;
+
         } else {
+            if (!$cart->buyer_name) {
+                $cart->buyer_name = trim($cart->customer->first_name . ' ' . $cart->customer->last_name);
+                $cart->save();
+            }
+
             $this->view->subview = 'cart/shipping';
             $this->view->tab = 'shipping';//active tab
             $this->view->step = $this->pixie->orm->get('Cart')->getStepLabel();//last step
             $currentAddress = $cart->getShippingAddress() ;
             $this->view->shippingAddress = is_array($currentAddress) ? [] : $currentAddress->as_array();
             $this->view->customerAddresses = $customerAddresses;
+            $this->view->customerName = $cart->buyer_name;
         }
     }
 
