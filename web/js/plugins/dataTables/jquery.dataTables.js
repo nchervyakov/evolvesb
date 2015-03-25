@@ -4638,7 +4638,7 @@
 	/**
 	 * Return the settings object for a particular table
 	 *  @param {node} table table we are using as a dataTable
-	 *  @returns {object} ReceiptSettings object - or null if not found
+	 *  @returns {object} Settings object - or null if not found
 	 *  @memberof DataTable#oApi
 	 */
 	function _fnSettingsFromNode ( table )

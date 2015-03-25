@@ -25,7 +25,7 @@ class Query extends DB\Query
     protected $_quote;
 
     /**
-     * ReceiptSettings for the current query
+     * Settings for the current query
      * @var string
      */
     protected $_settings;
