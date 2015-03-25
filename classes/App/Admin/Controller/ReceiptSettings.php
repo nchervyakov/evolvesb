@@ -23,7 +23,7 @@ class ReceiptSettings extends Controller
             $fields = ['bank_name', 'bank_bic', 'bank_account', 'company_account', 'company_name', 'company_address', 'company_inn', 'company_kpp', 'facsimile'];
             $newData = $this->request->post();
 
-            if ($_FILES['facsimile']) {
+            if ($_FILES['facsimile'] && $_FILES['facsimile']['tmp_name']) {
                 $targetDir = __DIR__.'./../../../../web';
                 $relativePath = '/upload/images/' . $_FILES['facsimile']['name'];
                 $targetPath = $targetDir . '/' . $relativePath;

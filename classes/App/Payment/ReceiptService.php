@@ -52,7 +52,7 @@ class ReceiptService
             ->setForegroundColor(array('r' => 0, 'g' => 0, 'b' => 0, 'a' => 0))
             ->setBackgroundColor(array('r' => 255, 'g' => 255, 'b' => 255, 'a' => 0))
             ->setLabelFontSize(16)
-            ->render();
+            ->render(null, 'jpeg');
     }
 
     /**

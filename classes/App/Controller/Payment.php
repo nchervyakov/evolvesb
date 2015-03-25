@@ -328,7 +328,7 @@ class Payment extends Page
 
         $receiptService = new ReceiptService($this->pixie);
 
-        header('Content-Type: image/png');
+        header('Content-Type: image/jpeg');
         $receiptService->renderQRCodeForOrder($order);
     }
 
