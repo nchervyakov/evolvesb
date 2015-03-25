@@ -53,5 +53,6 @@ return array(
         'company_address' => '620144, Свердловская обл, Екатеринбург, Куйбышева, дом № 55, офис 509',
         'company_inn' => '6671468126',
         'company_kpp' => '667101001',
+        'facsimile' => '/images/receipt_footer.png'
     ]
 );

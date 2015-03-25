@@ -279,5 +279,5 @@ $receiptDate = new \DateTime($order->created_at);
         <strong><?php echo \App\Utils\Strings::ucfirst($numeral->getRubles($order->amount, true, true)); ?></strong>
     </p>
 
-    <img src="/images/receipt_footer.png" alt="" style="width: 100%;"/>
+    <img src="<?php $_($this->pixie->config->get('parameters.receipt.facsimile', '')); ?>" alt="" style="width: 100%;"/>
 </div>
