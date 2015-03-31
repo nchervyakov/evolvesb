@@ -55,17 +55,19 @@
                     <li><a href="/pages/compare-evolve-skateboard-models" title="Сравнить модели" class="top-link ">Сравнить модели</a></li>
                     <li><a href="/pages/demo-locations" title="Дилеры" class="top-link ">Дилеры</a></li>
                    <?php // <li><a href="/pages/reviews" title="Обзоры" class="top-link ">Обзоры</a></li> ?>
-                    <li><a href="/pages/information" title="Информация" class="sub-menu  ">Информация
+                    <?php /*<li><a href="/pages/information" title="Информация" class="sub-menu">Информация */ ?>
+                    <li><a title="Информация" class="sub-menu text-uppercase">Информация
                         <span class="arrow">▾</span></a>
                         <div class="dropdown ">
                             <ul>
-                                <?php /*<li><a href="/pages/videos" title="Видео">Видео</a></li>
-                                <li><a href="/blogs/news" title="Новости">Новости</a></li>
-                                <li><a href="/pages/testimonials" title="Отзывы">Отзывы</a></li>*/ ?>
-                                <li><a href="/pages/shipping" title="Shipping & Transit Times">Оплата и доставка</a></li>
+                                <li><a href="/pages/shipping" title="Оплата и доставка">Оплата и доставка</a></li>
+                                <li><a href="/pages/warranty" title="Гарантийные обязательства">Гарантийные обязательства</a></li>
+                                <li><a href="/pages/guide" title="Руководства по эксплуатации">Руководства по эксплуатации</a></li>
+                                <li><a href="/pages/troubleshooting" title="Устранение неисправностей">Устранение неисправностей</a></li>
+
                                 <?php /*<!--li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li-->
                                 <li><a href="/pages/rider-tips-maintenance" title="Tips & Maintenance">Советы</a></li>
-                                <li><a href="/pages/troubleshooting" title="Troubleshooting">Устранение проблем</a></li>*/?>
+                                <li><a href="/pages/troubleshooting" title="Troubleshooting">Устранение проблем</a></li> */ ?>
                             </ul>
                         </div>
                     </li>

@@ -20,37 +20,34 @@ switch($action)
 			$targetFile = $targetFolder . $_FILES['Filedata']['name'];
 			
 			// Validate the file type
-			$fileTypes = array('jpg','jpeg','gif','png'); // File extensions
+			$imageTypes = array('jpg','jpeg','gif','png'); // File extensions
 			$fileParts = pathinfo($_FILES['Filedata']['name']);
 			
-			if(in_array($fileParts['extension'], $fileTypes))
-			{
-				
-				$res = move_uploaded_file($tempFile,$targetFile);
-                $targetFile = str_replace('\\', '/', realpath($targetFile));
-                $targetFile = str_replace(str_replace('\\', '/', realpath(__DIR__.'/../../../../upload') . '/'), '', $targetFile);
+			if(in_array($fileParts['extension'], $imageTypes)) {
+                $type = 'image';
+            } else {
+                $type = 'file';
+            }
+            $res = move_uploaded_file($tempFile,$targetFile);
+            $targetFile = str_replace('\\', '/', realpath($targetFile));
+            $targetFile = str_replace(str_replace('\\', '/', realpath(__DIR__.'/../../../../upload') . '/'), '', $targetFile);
 
-				$data = array();
-				if($res)
-				{
-					//make somehting with these files
-					$data = array('type'=>'image',
-								  'path'=>$targetFile,
-								  'thumbnailPath'=>$targetFile,
-								  'fileName'=>$_FILES['Filedata']['name']
-					             );
-					$q = "INSERT INTO `tbl_w3bdeveloper_media` (`type`, `path`, `thumbnailPath`, `fileName`) VALUES ('".$data['type']."', '".$data['path']."', '".$data['thumbnailPath']."', '".$data['fileName']."')";
-					$result = $db->query($q);
-					$insertId = $db->lastInsertId();
-					$data['id'] = $insertId;
-				}
-				echo json_encode($data);exit;
-			}
-			else
-			{
-				echo json_encode(array('error'=>'This file is not allowed by extension.'));exit;
-			}
-			
+            $data = array();
+            if($res)
+            {
+                //make somehting with these files
+                $data = array('type'=>$type,
+                              'path'=>$targetFile,
+                              'thumbnailPath'=>$targetFile,
+                              'fileName'=>$_FILES['Filedata']['name']
+                             );
+                $q = "INSERT INTO `tbl_w3bdeveloper_media` (`type`, `path`, `thumbnailPath`, `fileName`) VALUES ('".$data['type']."', '".$data['path']."', '".$data['thumbnailPath']."', '".$data['fileName']."')";
+                $result = $db->query($q);
+                $insertId = $db->lastInsertId();
+                $data['id'] = $insertId;
+            }
+            echo json_encode($data);exit;
+
 		  }	
 	break;
 	case 'delete':

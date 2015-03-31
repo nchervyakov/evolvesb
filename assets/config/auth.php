@@ -55,6 +55,18 @@ return array(
                 'return_url' => '/collections/all',
                 'scope' => 'https://www.googleapis.com/auth/userinfo.profile'
             ),
+            'odnoklassniki' => array(
+                //Google App ID and Secret
+                'app_id' => '1126925312',
+                'app_public' => 'CBAFIMCEEBABABABA',
+                'app_secret' => '4F53CE12E10E17CE28C5D43B',
+                //Permissions to request from the user
+                'permissions' => array(),
+                //'google_id_field' => 'google_id',
+                'okid_field' => 'oauth_uid',
+                //Redirect user here after he logs in
+                'return_url' => '/collections/all',
+            ),
         ),
         //Role driver configuration
         'roles' => array(

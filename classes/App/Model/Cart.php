@@ -23,9 +23,11 @@ use App\Exception\ForbiddenException;
  * @property int|null $shipping_address_id
  * @property int|null $billing_address_id
  * @property int|null $last_step
+ * @property string $buyer_name
  *
  * @property CartItems $items
  * @property Product $products Products residing in cart.
+ * @property User $customer
  */
 class Cart extends BaseModel {
 
@@ -62,6 +64,13 @@ class Cart extends BaseModel {
         'items' => array(
             'model' => 'CartItems',
             'key' => 'cart_id'
+        )
+    );
+
+    protected $belongs_to = array(
+        'customer' => array(
+            'model' => 'User',
+            'key' => 'customer_id'
         )
     );
 
@@ -267,6 +276,7 @@ class Cart extends BaseModel {
             $order->shipping_method = 'post'; //$this->getCart()->shipping_method;
             $order->status = Order::STATUS_WAITING_PAYMENT;
             $order->amount = $this->getCartItemsModel()->getItemsTotal();
+            $order->buyer_name = $this->getCart()->buyer_name;
             $order->save();
             $order->uid = Order::INCREMENT_BASE + $order->id();
             $order->save();

@@ -23,6 +23,7 @@ namespace App\Model;
  * @property number $amount
  * @property string $uid
  * @property int $success_notified
+ * @property string $buyer_name
  */
 class Order extends BaseModel
 {

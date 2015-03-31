@@ -186,11 +186,11 @@ class Vkontakte extends Provider {
      */
     public function login_url($state, $return_url, $display_mode) {
         return "https://oauth.vk.com/authorize?"
-        ."client_id={$this->app_id}"
-        ."&redirect_uri={$return_url}"
-        ."&scope=".implode(',', $this->permissions)
-        ."&display={$display_mode}"
-        ."&v={$this->api_version}";
+            ."client_id={$this->app_id}"
+            ."&redirect_uri={$return_url}"
+            ."&scope=".implode(',', $this->permissions)
+            ."&display={$display_mode}"
+            ."&v={$this->api_version}";
     }
 
     /**

@@ -150,6 +150,21 @@ return array(
         )
     ),
 
+    'admin_receipt_settings' => array(
+        array(
+            '/admin/receipt-settings(/<action>(/<id>))',
+            array(
+                'id' => '\d+'
+            ),
+        ),
+        array(
+            'namespace' => 'App\\Admin\\',
+            'controller' => 'ReceiptSettings',
+            'action' => 'index',
+            'force_hyphens' => true
+        )
+    ),
+
     'admin' => array('/admin(/<controller>(/<action>(/<id>)))',
         array(
             'namespace' => 'App\\Admin\\',

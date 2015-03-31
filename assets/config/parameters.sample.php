@@ -35,12 +35,24 @@ return array(
     'thumb_path' => __DIR__.'/../../web/cache/thumb/',
     'allow_install' => false,
     'use_ssl' => true,
-    'admin_email' => ['admin1@gmail.com', 'admin2@example.com'],
+    'admin_email' => [],//'admin1@gmail.com', 'admin2@example.com'],
     'robot_email' => 'robot@evolveskateboards.ru',
     'root_category_name' => 'Все',
     'social_links' => [
         'twitter' => 'https://twitter.com/EvolveSk8boards',
         'facebook' => 'https://www.facebook.com/EvolveSkateboardsUSA',
         'youtube' => 'https://www.youtube.com/user/evolveSkateboards',
+    ],
+    'wkhtmltopdf_path' => '/var/www/el/bin/wkhtmltopdf',
+    'receipt' => [
+        'bank_name' => 'ОАО "ВУЗ-БАНК" Г. ЕКАТЕРИНБУРГ',
+        'bank_bic' => '046577781',
+        'bank_account' => '30101810600000000781',
+        'company_account' => '40702810500000101928',
+        'company_name' => 'ООО "ИВОЛВ РУС"',
+        'company_address' => '620144, Свердловская обл, Екатеринбург, Куйбышева, дом № 55, офис 509',
+        'company_inn' => '6671468126',
+        'company_kpp' => '667101001',
+        'facsimile' => '/images/receipt_footer.png'
     ]
 );

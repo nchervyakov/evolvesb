@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Core\Config;
+use App\Core\Email;
 use App\Core\Request;
 use App\Core\Response;
 use App\Core\View;
@@ -32,7 +33,7 @@ use VulnModule\VulnInjection;
  * @property-read \PHPixie\ORM $orm ORM module
  * @property-read \PHPixie\Auth $auth Auth module
  * @property-read VulnInjection $vulninjection Vulninjection module
- * @property-read \PHPixie\Email $email Email module
+ * @property-read Email $email Email module
  * @property-read Request $request Request instance
  * @property-read Response $response Request instance
  * @property-read Debug $debug Debug object
@@ -62,7 +63,7 @@ class Pixie extends \PHPixie\Pixie {
         'orm' => '\PHPixie\ORM',
         'auth' => '\PHPixie\Auth',
         'vulninjection' => '\VulnModule\VulnInjection',
-		'email' => '\PHPixie\Email',
+		'email' => '\App\Core\Email',
 		'paginate' => '\PHPixie\Paginate',
 		'paginateDB' => '\App\Paginate\Paginate',
 		'paymentTest' => '\PaymentTest\PaymentTest',

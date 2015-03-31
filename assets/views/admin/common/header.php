@@ -60,3 +60,15 @@
     </div>
     <!-- /.row -->
     <?php endif; ?>
+
+    <?php if ($flash = $this->pixie->session->flash('success')) { ?>
+        <div class="alert alert-success">
+            <?php $_($flash); ?>
+        </div>
+    <?php } ?>
+
+    <?php if ($flash = $this->pixie->session->flash('error')) { ?>
+        <div class="alert alert-error">
+            <?php $_($flash); ?>
+        </div>
+    <?php } ?>

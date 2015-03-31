@@ -2,14 +2,14 @@
 namespace PHPixie\Auth\Controller;
 
 /**
- * Abstract Facebook login controller. To use it you need to extend this class
+ * Abstract Vkontakte login controller. To use it you need to extend this class
  * and override the new_user() method, which handles the situation when a user
- * logs in with your app for the very first time (basically youi need to register him
+ * logs in with your app for the very first time (basically you need to register him
  * at that point).
  *
  * It can be used both for popup login and page login.
  * To use the page login, make a link pointing to the controllers 'index' action,
- * for pupup login open a popup that points to its 'popup' action.
+ * for popup login open a popup that points to its 'popup' action.
  * Optionally you can pass a ?return_url =<url> parameter to specify where to redirect the
  * user after he is logged in. You can also specify a default redirect url in the auth.php config file.
  */

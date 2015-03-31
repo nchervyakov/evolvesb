@@ -55,7 +55,7 @@
         <?php $protocol = $_SERVER['HTTPS'] == 'on' ? 'https' : 'http'; ?>
 
         <!-- Icons -->
-        <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.png">
+        <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
         <link rel="canonical" href="http://evolveskateboards.ru/" />
 
         <!-- Custom Fonts -->

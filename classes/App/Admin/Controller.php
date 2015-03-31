@@ -106,7 +106,14 @@ class Controller extends BaseController
                     $this->root.'/newsletter-template' => ['label' => 'Шаблоны писем', 'link_class' => 'fa fa-code fa-fw'],
                     $this->root.'/newsletter' => ['label' => 'Письма', 'link_class' => 'fa fa-envelope fa-fw'],
                 ]
-            ]
+            ],
+            [
+                'label' => 'Настройки',
+                'link_class' => 'fa fa-gears fa-fw',
+                'items' => [
+                    $this->root.'/receipt-settings' => ['label' => 'Параметры квитанции', 'link_class' => 'fa fa-newspaper-o fa-fw'],
+                ]
+            ],
         ];
     }
 }

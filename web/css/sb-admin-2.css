@@ -491,3 +491,10 @@ table.dataTable thead .sorting:after {
 .label-available {
     background-color: green;
 }
+
+.facsimile-picture {
+    padding: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+    border-radius: 5px;
+}

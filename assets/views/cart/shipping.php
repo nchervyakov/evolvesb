@@ -108,7 +108,7 @@
                 url:'/checkout/shipping',
                 type:"POST",
                 dataType:"json",
-                data: {address_id: $(this).attr('data-id'), _csrf_checkout_step2: $(this).data('token') },
+                data: {address_id: $(this).attr('data-id'), _csrf_checkout_step2: $(this).data('token'), buyer_name: $('#buyer_name').val() },
                 timeout: 10000,
                 success: function(){
                     window.location.href="/checkout/confirmation";
@@ -199,6 +199,18 @@
                         </div>
                     </div>
                 </fieldset>
+
+                <fieldset>
+                    <legend>Наименование покупателя для выставления счета (при оплате по квитанции в банке)</legend>
+                    <div class="form-group">
+                        <div class="col-xs-4"></div>
+                        <div class="col-xs-8">
+                            <input class="form-control" id="buyer_name" name="buyer_name" type="text"
+                                   value="<?php $_($customerName); ?>">
+                        </div>
+                    </div>
+                </fieldset>
+
                 <?php $_token('checkout_step2', false); ?>
                 <input type="hidden" id="address_id" name="address_id" value="<?php $_($shippingAddress['id'], 'address_id'); ?>"/>
             </form>

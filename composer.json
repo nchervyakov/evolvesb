@@ -9,6 +9,7 @@
                 "classes/",
                 "modules/vulninjection/classes/",
                 "classes/PDOV",
+                "classes/PHPixie",
                 "modules/payment_test/classes/"
             ],
             "PHPThumb": "vendor/project/phpthumb/src/",
@@ -51,7 +52,11 @@
         "phpixie/paginate":"2.*@dev",
         "project/phpthumb": "1.0.0",
         "symfony/filesystem": "2.3.23",
-        "fabpot/goutte": "2.*"
+        "fabpot/goutte": "2.*",
+        "andre_487/php_rutils": "~1.1",
+        "knplabs/knp-snappy": "0.3.*",
+        "symfony/process": "~2.6",
+        "endroid/qrcode": "~1.5"
     },
     "extra": {
         "branch-alias": {
