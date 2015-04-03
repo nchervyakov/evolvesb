@@ -133,6 +133,7 @@ class Product extends CRUDController
             'product_code' => [
                 'label' => 'Код продукта',
             ],
+            /*
             'picture' => [
                 'label' => 'Изображение',
                 'type' => 'image',
@@ -143,6 +144,7 @@ class Product extends CRUDController
                 'type' => 'image',
                 'dir_path' => '/products_pictures/'
             ],
+             */
             'meta_title' => [
                 'type' => 'textarea',
             ],
