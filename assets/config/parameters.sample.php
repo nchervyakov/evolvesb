@@ -54,5 +54,7 @@ return array(
         'company_inn' => '6671468126',
         'company_kpp' => '667101001',
         'facsimile' => '/images/receipt_footer.png'
-    ]
+    ],
+    'page_title_base' => 'Электрические скейтборды Evolve / Россия',
+    'default_page_description' => ''
 );

@@ -31,7 +31,16 @@ class Category extends Page
 
         $category = $this->model->loadCategoryByAlias($categoryAlias);
         if ($category instanceof \App\Model\Category) {
-            $this->view->pageTitle = $category->getPrintName();
+            $helper = $this->pixie->view_helper();
+
+            $this->pageTitle = trim($category->meta_title) ? $category->meta_title : $category->getPrintName();
+            $this->pageDescription = trim($category->meta_desc) ? $category->meta_desc : $helper->excerpt($category->description, 300);
+            $this->pageKeywords = $category->meta_keywords;
+
+            $this->view->categoryName = $category->getPrintName();
+            $this->view->h1 = trim($category->h1) ? $category->h1 : $category->getPrintName();
+            $this->view->description = $category->description;
+
             $page = $this->request->get('page', 1);
             $productModel = new Product($this->pixie);
             $productModel->prepareForCategory($category);

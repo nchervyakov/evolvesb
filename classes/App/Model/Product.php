@@ -23,6 +23,9 @@ use PHPixie\ORM;
  * @property int $max_items_per_order
  * @property int $enabled
  * @property int $in_stock
+ * @property string $meta_title
+ * @property string $meta_keywords
+ * @property string $meta_desc
  *
  * @property Pixie pixie
  * @property SpecialOffers $special_offers

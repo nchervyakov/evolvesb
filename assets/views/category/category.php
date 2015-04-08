@@ -5,12 +5,12 @@
                 itemprop="title">Главная</span></a></span> &nbsp; / &nbsp;
         <span itemtype="http://data-vocabulary.org/Breadcrumb" itemscope=""><a
                 itemprop="url" title="All" href="/collections/<?php $_(isset($category->hurl) ? $category->hurl : ''); ?>"><span
-                itemprop="title"><?php $_($pageTitle); ?></span></a></span> &nbsp; / &nbsp;
+                itemprop="title"><?php $_($categoryName); ?></span></a></span> &nbsp; / &nbsp;
         Страница <?php echo $pager->page; ?> из <?php echo $pager->num_pages ?: 1; ?>
     </div>
 
     <div class="sixteen columns">
-        <h1><?php $_($pageTitle); ?></h1>
+        <h1><?php $_($h1); ?></h1>
 
         <?php if (count($products)): ?>
             <?php
@@ -28,4 +28,10 @@
             <p>Эта категория пуста.</p>
         <?php endif; ?>
     </div>
+
+    <?php if (isset($description) && $description) { ?>
+        <div class="sixteen columns category-description">
+            <?php echo $description; ?>
+        </div>
+    <?php } ?>
 </div>

@@ -33,6 +33,13 @@
 </div>
 <div class="homepage_content clearfix">
     <div class="container">
+        <?php if ($page->h1) { ?>
+            <div class="sixteen columns">
+                <div class="section clearfix">
+                    <h1><?php $_($page->h1); ?></h1>
+                </div>
+            </div>
+        <?php } ?>
         <div class="sixteen columns">
             <div class="section clearfix">
                 <?php echo $page->text; ?>

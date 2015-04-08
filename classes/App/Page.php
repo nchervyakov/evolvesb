@@ -16,11 +16,26 @@ class Page extends BaseController
 {
     public $mainView = 'main';
 
+    /**
+     * Basic part of the title which is appended to the target title.
+     * @var string
+     */
+    public $titleBase;
+
+    public $pageTitle = '';
+
+    public $pageDescription = '';
+
+    public $pageKeywords = '';
+
     public function before() {
         parent::before();
         if (!$this->execute) {
             return;
         }
+
+        $params = $this->pixie->config->get('parameters');
+        $this->titleBase = trim($params['page_title_base']);
 
         $this->initView($this->mainView);
 
@@ -59,8 +74,9 @@ class Page extends BaseController
     }
 
     public function after() {
+        $this->prepareViewBeforeRendering();
+        //var_dump($this->view->pageTitle);exit;
         $this->response->body = $this->view->render();
-
         parent::after();
     }
 
@@ -116,11 +132,31 @@ class Page extends BaseController
     }
 
     public function getProductsInCartIds() {
+        /** @var Product[] $items */
         $items = $this->getProductsInCart()->as_array();
         $ids = [];
         foreach ($items as $item) {
             $ids[] = $item->id();
         }
         return $ids;
+    }
+
+    protected function prepareViewBeforeRendering()
+    {
+        $this->view->titleBase = $this->titleBase;
+        $helper = $this->pixie->view_helper();
+
+        foreach (['titleBase', 'pageDescription', 'pageKeywords'] as $prop) {
+            if (!isset($this->view->$prop)) {
+                $this->view->$prop = $helper->escape(trim($this->$prop), null, false);
+            }
+        }
+
+        if (!isset($this->view->pageTitle)) {
+            $this->view->pageTitle = implode(' &mdash; ', [
+                $helper->escape(trim($this->pageTitle), null, false),
+                $helper->escape($this->titleBase, null, false)
+            ]);
+        }
     }
 }

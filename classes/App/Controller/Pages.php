@@ -33,9 +33,14 @@ class Pages extends Page
             throw new NotFoundException;
         }
 
+        $helper = $this->pixie->view_helper();
+
         $this->view->subview = 'pages/page';
         $this->view->page = $page;
-        $this->view->pageTitle = $page->title;
-        $this->view->pageHeader = $this->view->pageTitle;
+        $this->pageTitle = trim($page->meta_title) ? $page->meta_title : $page->title;
+
+        $this->pageDescription = trim($page->meta_description) ? $page->meta_description : $helper->excerpt($page->text, 300);
+        $this->pageKeywords = $page->meta_keywords;
+        $this->view->pageHeader = trim($page->h1) ? $page->h1 : $page->title;
     }
 } 

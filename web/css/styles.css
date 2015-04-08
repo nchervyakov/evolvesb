@@ -4976,3 +4976,7 @@ a.list-group-item.active > .badge,
 .icon-odnoklassniki-rect:before {
     content: "\e600";
 }
+
+.category-description {
+    padding-top: 10px;
+}

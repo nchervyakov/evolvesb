@@ -35,11 +35,13 @@ class Pages extends CRUDController
                     'type' => 'link',
                     'max_length' => '255',
                     'strip_tags' => true,
+                    'title' => 'Алиас',
                 ],
                 'title' => [
                     'type' => 'link',
                     'max_length' => '255',
                     'strip_tags' => true,
+                    'title' => 'Название'
                 ],
             ],
             $this->getEditLinkProp(),
@@ -54,24 +56,33 @@ class Pages extends CRUDController
             'alias' => [
                 'required' => true,
                 'class_names' => 'js-alias-field js-suggest-source',
+                'label' => 'Алиас'
             ],
             'title' => [
                 'type' => 'text',
                 'required' => true,
-                'class_names' => 'js-suggest-source'
+                'class_names' => 'js-suggest-source',
+                'label' => 'Название'
             ],
             'text' => [
                 'type' => 'textarea',
                 'required' => true,
                 'class_names' => 'js-editor',
-                'row' => 6
+                'row' => 6,
+                'label' => 'Текст (HTML)'
             ],
             'tag' => [
                 'type' => 'text',
+                'label' => 'Тег'
+            ],
+            'h1' => [
+                'type' => 'text',
+                'label' => 'H1'
             ],
             'is_active' => [
                 'type' => 'boolean',
-                'default_value' => true
+                'default_value' => true,
+                'label' => 'Активна'
             ],
             'meta_title' => [
                 'type' => 'textarea',
@@ -91,7 +102,7 @@ class Pages extends CRUDController
         if (!$this->execute) {
             return;
         }
-        $this->view->pageHeader = 'Page &laquo;' . htmlspecialchars(trim($this->view->item->title)) . '&raquo;';
+        $this->view->pageHeader = 'Страница &laquo;' . htmlspecialchars(trim($this->view->item->title)) . '&raquo;';
     }
 
     public function action_suggest_alias()

@@ -91,25 +91,25 @@ class Helper extends \PHPixie\View\Helper
     /**
      * @inheritdoc
      */
-    public function escape($str, $fieldName = null)
+    public function escape($str, $fieldName = null, $doubleEncode = true)
     {
-        $service = $this->pixie->getVulnService();
+//        $service = $this->pixie->getVulnService();
+//
+//        if (!$fieldName || !$service) {
+//            return htmlentities($str, ENT_COMPAT, 'UTF-8', $doubleEncode);
+//        }
+//
+//        $vulns = $service->getConfig()->getVulnerabilities();
+//
+//        $xss = $vulns['xss'];
+//        $fields = $service->getConfig()->getFields();
+//        $field = $fields[$fieldName];
+//
+//        if ((!isset($xss['enabled']) || $xss['enabled'] == true) && is_array($field) && in_array('xss', $field)) {
+//            return $str;
+//        }
 
-        if (!$fieldName || !$service) {
-            return htmlspecialchars($str, ENT_COMPAT, 'UTF-8');
-        }
-
-        $vulns = $service->getConfig()->getVulnerabilities();
-
-        $xss = $vulns['xss'];
-        $fields = $service->getConfig()->getFields();
-        $field = $fields[$fieldName];
-
-        if ((!isset($xss['enabled']) || $xss['enabled'] == true) && is_array($field) && in_array('xss', $field)) {
-            return $str;
-        }
-
-        return htmlspecialchars($str, ENT_COMPAT, 'UTF-8');
+        return htmlspecialchars($str, ENT_COMPAT, 'UTF-8', $doubleEncode);
     }
 
     /**
@@ -457,5 +457,23 @@ class Helper extends \PHPixie\View\Helper
     {
         $errors = $this->pixie->config->get('payment_test.errors');
         return trim($resultCode) . '-' . $errors['rc_detail'][(int) trim($resultCode)];
+    }
+
+    /**
+     * @param $text
+     * @param null|int $length
+     * @return mixed|string
+     */
+    public function excerpt($text, $length = null)
+    {
+        $cleanText = trim(strip_tags($text));
+        $cleanText = str_replace(['&nbsp;'], [' '], $cleanText);
+        $cleanText = preg_replace('/\s+/is', ' ', $cleanText);
+
+        if (is_numeric($length) && $length > 0) {
+            return mb_substr($cleanText, 0, $length, 'utf-8');
+        } else {
+            return $cleanText;
+        }
     }
 }

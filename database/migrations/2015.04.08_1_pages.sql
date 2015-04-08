@@ -1,0 +1,1 @@
+ALTER TABLE `tbl_pages` ADD `h1` varchar(255) COLLATE 'utf8_general_ci' NULL DEFAULT '' AFTER `tag`, COMMENT='';

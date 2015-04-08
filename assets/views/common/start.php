@@ -10,10 +10,11 @@
         <meta http-equiv="cleartype" content="on">
         <meta name="robots" content="index,follow">
 
-        <title>Электрические скейтборды Evolve / Россия <?=(isset($pageTitle) && trim($pageTitle) ? " &mdash; " . $pageTitle : "")
-            ?></title>
+        <title><?php echo isset($pageTitle) && $pageTitle ? $pageTitle : $titleBase; ?></title>
 
-        <meta name="description" content="Evolve Electric Skateboards are custom designed and hand crafted for optimal performance and ride. Our Electric Skateboards are assembled in the USA!" />
+        <meta name="description" content="<?php echo $pageDescription; ?>" />
+        <meta name="keywords" content="<?php echo $pageKeywords; ?>"/>
+
         <meta name="author" content="Evolve Skateboards">
         <meta property="og:url" content="http://evolveskateboards.ru/">
         <meta property="og:site_name" content="Evolve Skateboards">
@@ -23,14 +24,7 @@
 
         <meta property="og:image" content="/images/logo.png">
         <meta property="og:image:secure_url" content="/images/logo.png">
-
-
-
         <meta property="og:description" content="Evolve Electric Skateboards are custom designed and hand crafted for optimal performance and ride. Our Electric Skateboards are assembled in the USA!">
-
-
-
-
 
         <meta name="twitter:site" content="@evolvesk8boards">
 

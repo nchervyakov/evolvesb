@@ -81,7 +81,12 @@ class Category extends CRUDController
             ],
             'description' => [
                 'type' => 'textarea',
-                'label' => 'Описание'
+                'label' => 'Описание',
+                'class_names' => 'js-editor',
+                'row' => 6,
+            ],
+            'h1' => [
+                'label' => 'H1',
             ],
             'enabled' => [
                 'type' => 'boolean',

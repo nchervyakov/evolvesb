@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Exception\NotFoundException;
-use \App\Model\SpecialOffers;
 use \App\Model\Category;
 use App\Page;
 use PHPixie\DB\PDOV\Result;
@@ -38,6 +37,8 @@ class Product extends Page
             throw new NotFoundException;
         }
 
+        $helper = $this->pixie->view_helper();
+
         $this->view->product = $product;
         $this->view->category = $category;
         $this->view->productImages = $product->images->find_all()->as_array();
@@ -49,27 +50,36 @@ class Product extends Page
         $prevNext = $this->getPrevAndNextProducts($product, $category);
         $this->view->prevItem = $prevNext[0];
         $this->view->nextItem = $prevNext[1];
-        $this->view->pageTitle = $product->name;
+        $this->pageTitle = trim($product->meta_title) ? $product->meta_title : $product->name;
+        $this->pageDescription = trim($product->meta_desc) ? $product->meta_desc : 'Купить ' . $product->name . ' с доставкой по России. '
+            . $helper->excerpt($product->description, 300);
+        $this->pageKeywords = $product->meta_keywords;
         $this->view->subview = 'product/product';
     }
 
-    private function getBreadcrumbs()
-    {
-        $categories = $this->view->product->categories->find_all();
-        $breadcrumbs = [];
-        foreach ($categories as $cat) {
-            $parents = $cat->parents();
-            $breadcrumbsParts = [];
-            foreach ($parents as $p) {
-                $breadcrumbsParts['/category/view?id='.$p->categoryID] = $p->name;
-            }
-			$breadcrumbsParts['/category/view?id='.$cat->categoryID] = $cat->name;
-            $breadcrumbsParts['/product/view?id='.$this->view->product->productID] = $this->view->product->name;
-            $breadcrumbs[] = array_merge(['/' => 'Home'], $breadcrumbsParts);
-        }
-        return $breadcrumbs;
-    }
+//    private function getBreadcrumbs()
+//    {
+//        $categories = $this->view->product->categories->find_all();
+//        $breadcrumbs = [];
+//        foreach ($categories as $cat) {
+//            $parents = $cat->parents();
+//            $breadcrumbsParts = [];
+//            foreach ($parents as $p) {
+//                $breadcrumbsParts['/category/view?id='.$p->categoryID] = $p->name;
+//            }
+//			$breadcrumbsParts['/category/view?id='.$cat->categoryID] = $cat->name;
+//            $breadcrumbsParts['/product/view?id='.$this->view->product->productID] = $this->view->product->name;
+//            $breadcrumbs[] = array_merge(['/' => 'Home'], $breadcrumbsParts);
+//        }
+//        return $breadcrumbs;
+//    }
 
+    /**
+     * @param \App\Model\Product $product
+     * @param $category
+     * @return array
+     * @throws \Exception
+     */
     public function getPrevAndNextProducts($product, $category)
     {
         $productModel = new \App\Model\Product($this->pixie);
