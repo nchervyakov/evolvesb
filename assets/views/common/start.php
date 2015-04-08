@@ -17,14 +17,14 @@
 
         <meta name="author" content="Evolve Skateboards">
         <meta property="og:url" content="http://evolveskateboards.ru/">
-        <meta property="og:site_name" content="Evolve Skateboards">
+        <meta property="og:site_name" content="<?php echo $titleBase; ?>">
 
         <meta property="og:type" content="website">
         <meta property="og:title" content="Electric Skateboards | Electric Longboards | Evolve Skateboards ">
 
         <meta property="og:image" content="/images/logo.png">
         <meta property="og:image:secure_url" content="/images/logo.png">
-        <meta property="og:description" content="Evolve Electric Skateboards are custom designed and hand crafted for optimal performance and ride. Our Electric Skateboards are assembled in the USA!">
+        <meta property="og:description" content="<?php echo $pageDescription; ?>">
 
         <meta name="twitter:site" content="@evolvesk8boards">
 

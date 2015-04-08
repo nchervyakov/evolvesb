@@ -45,12 +45,15 @@ class Home extends Page {
 
         $this->view->bodyClass = "index";
         $page = $this->pixie->orm->get('page')->where('alias', 'main')->find();
+        $helper = $this->pixie->view_helper();
 
         $this->view->common_path = $this->common_path;
         $this->view->subview = 'home/home';
         $this->view->page = $page;
-        $this->view->pageTitle = $page->title;
-        $this->view->pageHeader = $this->view->pageTitle;        
+        $this->pageTitle = trim($page->meta_title) ? $page->meta_title : '';
+        $this->pageDescription = trim($page->meta_description) ? $page->meta_description : $helper->excerpt($page->text, 300);
+        $this->pageKeywords = $page->meta_keywords;
+        $this->view->pageHeader = $this->pageTitle;
     }
 
     public function action_404() {

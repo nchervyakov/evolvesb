@@ -153,10 +153,10 @@ class Page extends BaseController
         }
 
         if (!isset($this->view->pageTitle)) {
-            $this->view->pageTitle = implode(' &mdash; ', [
+            $this->view->pageTitle = implode(' &mdash; ', array_filter([
                 $helper->escape(trim($this->pageTitle), null, false),
                 $helper->escape($this->titleBase, null, false)
-            ]);
+            ]));
         }
     }
 }
