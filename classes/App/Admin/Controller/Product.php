@@ -155,6 +155,10 @@ class Product extends CRUDController
                 'type' => 'textarea',
                 'label' => 'Meta Description'
             ],
+            'show_in_root' => [
+                'label' => 'Показывать в корневой категории',
+                'type' => 'boolean'
+            ],
             'in_stock' => [
                 'label' => 'В наличии',
                 'type' => 'boolean'
