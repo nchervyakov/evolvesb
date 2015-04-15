@@ -1,0 +1,1 @@
+ALTER TABLE `tbl_categories` ADD `product_priority` int(11) NOT NULL DEFAULT '1000' AFTER `sort_order`, COMMENT='';

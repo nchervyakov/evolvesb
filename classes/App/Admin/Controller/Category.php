@@ -49,7 +49,7 @@ class Category extends CRUDController
 
     protected function tuneModelForList()
     {
-        $this->model->with('parentCategory')->where('categoryID', '<>', 1);
+        //$this->model->with('parentCategory')->where('categoryID', '<>', 1);
     }
 
     public function fieldFormatter($value, $item = null, array $format = [])
@@ -95,6 +95,10 @@ class Category extends CRUDController
             'hidden' => [
                 'type' => 'boolean',
                 'label' => 'Скрыта'
+            ],
+            'product_priority' => [
+                'type' => 'text',
+                'label' => 'Приоритет продуктов в списках (меньше значение - выше в списке)',
             ],
             'picture' => [
                 'type' => 'image',
@@ -152,5 +156,18 @@ class Category extends CRUDController
         $path = self::buildRecursiveName($item->parentCategory, $path);
 
         return $path;
+    }
+
+    /**
+     * @param \App\Model\Category $item
+     * @param array $data
+     */
+    protected function preProcessEdit($item, &$data)
+    {
+        if ($item->id() == 1) {
+            $data['parent'] = 0;
+            $data['enabled'] = 1;
+            $data['name'] = $item->name;
+        }
     }
 } 

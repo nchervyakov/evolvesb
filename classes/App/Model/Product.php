@@ -359,7 +359,7 @@ class Product extends BaseModel
         $this->where('and', $conditions);
 
         $this->with('category')
-            ->order_by('category.sort_order', 'asc')
+            ->order_by('category.product_priority', 'asc')
             ->order_by('categoryID', 'asc')
             ->order_by('productID', 'asc');
     }

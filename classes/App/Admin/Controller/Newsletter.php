@@ -210,7 +210,7 @@ class Newsletter extends CRUDController
      * @param array $data
      * @throws \App\Exception\HttpException
      */
-    protected function preProcessEdit($item, $data)
+    protected function preProcessEdit($item, &$data)
     {
         if ($item->status != \App\Model\Newsletter::STATUS_NEW) {
             throw new HttpException('You can\'t change started newsletter');

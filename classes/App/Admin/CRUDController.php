@@ -749,7 +749,11 @@ class CRUDController extends Controller
             if (is_array($info['model_prop'])) {
                 $resultField = $this->recursiveFormatField($item->$modelName, null, $info['model_prop']);
             } else {
-                $resultField = $this->fieldFormatter($item->$modelName->$modelProp, $item, $info);
+                if (isset($item->$modelName) && $item->$modelName instanceof BaseModel && $item->$modelName->loaded()) {
+                    $resultField = $this->fieldFormatter($item->$modelName->$modelProp, $item, $info);
+                } else {
+                    $resultField = null;
+                }
             }
 
         } else if (isset($item->$field)) {
@@ -765,7 +769,7 @@ class CRUDController extends Controller
     {
     }
 
-    protected function preProcessEdit($item, $data)
+    protected function preProcessEdit($item, &$data)
     {
     }
 }
