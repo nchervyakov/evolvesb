@@ -106,6 +106,7 @@ class Product extends BaseModel
         $this->enabled = false;
         $this->in_stock = true;
         $this->status = self::STATUS_AVAILABLE;
+        $this->show_in_root = true;
     }
 
     public function getProduct($productID){
