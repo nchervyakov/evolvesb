@@ -19,6 +19,7 @@ class Events
     const PAYMENT_PAYED = 'payment.payed';
     const PAYMENT_REFUNDED = 'payment.refunded';
 
+    const ORDER_CREATED = 'order.created';
     const ORDER_PAYED = 'order.payed';
     const ORDER_REFUNDED = 'order.refunded';
     const ORDER_STATUS_CHANGED = 'order.status_changed';

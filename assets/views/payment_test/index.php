@@ -248,8 +248,6 @@ jQuery(function ($) {
                 }
                 $row.removeClass('error');
 
-                console.log(result);
-                console.log($row.find('.real-rc'));
                 $row.find('.real-rc').html(result.RC);
                 $row.find('.real-action').html(result.ACTION);
                 $row.find('.status').html(result.status);

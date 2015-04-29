@@ -15,7 +15,8 @@ use PHPixie\ORM;
  * @property string description
  * @property float Price
  * @property float customers_rating
- * @property string picture
+ * @property string $picture
+ * @property string $big_picture
  * @property int categoryID
  * @property int $customer_votes
  * @property int $show_in_root
@@ -35,6 +36,7 @@ use PHPixie\ORM;
  * @property Category $category
  * @property OptionValue $options
  * @property ProductOptionValue $productOptions
+ * @property ProductImage|ProductImage[] $images
  * @package App\Model
  */
 class Product extends BaseModel

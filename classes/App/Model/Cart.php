@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Model;
+use App\Events\Events;
+use App\Events\OrderEvent;
 use App\Exception\ForbiddenException;
 
 /**
@@ -318,6 +320,8 @@ class Cart extends BaseModel {
             $this->updateLastStep(self::STEP_PAYMENT);
 
             $conn->commit();
+
+            $this->pixie->dispatcher->dispatch(Events::ORDER_CREATED, new OrderEvent($order));
 
         } catch (\Exception $e) {
             $conn->rollBack();

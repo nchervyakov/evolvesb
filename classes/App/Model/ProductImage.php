@@ -18,6 +18,7 @@ namespace App\Model;
  * @property string $title
  * @property string $created_on
  * @property string $updated_on
+ * @property Product $product
  * @package App\Model
  */
 class ProductImage extends BaseModel

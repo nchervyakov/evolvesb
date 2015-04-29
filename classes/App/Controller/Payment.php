@@ -295,6 +295,8 @@ class Payment extends Page
     {
         $orderUid = (string)$this->request->param('id');
         $order = $this->prepareOrderAction($orderUid);
+        $parameters = $this->pixie->config->get('parameters') ?: [];
+        $robotEmail = $parameters['robot_email'] ?: 'robot@evolveskateboards.ru';
 
         if ($order->customer_email) {
             $file = $this->generatePdfReceipt($orderUid);
@@ -309,7 +311,7 @@ class Payment extends Page
                 $emailView->render(), 'text/plain', 'utf-8'
             );
             $message->attach(\Swift_Attachment::newInstance($file, 'receipt_'.$order->uid.'_'.date('Y.m.d').'.pdf', 'application/pdf'));
-            $pixie->email->send($order->customer_email, 'robot@evolveskateboards.ru', null, $message);
+            $pixie->email->send($order->customer_email, $robotEmail, null, $message);
         }
 
         $this->jsonResponse(['success' => 1]);
@@ -359,8 +361,12 @@ class Payment extends Page
     {
         $pixie = $this->pixie;
         $emailView = $pixie->view('payment/payment_operation_admin_email');
+        $parameters = $this->pixie->config->get('parameters') ?: [];
+        $robotEmail = $parameters['robot_email'] ?: 'robot@evolveskateboards.ru';
+        $adminEmails = $parameters['admin_email'] ?: [];
+        $adminEmails = is_array($adminEmails) ? $adminEmails : [$adminEmails];
 
-        foreach (['nick.chervyakov@gmail.com', 'dpodgurskiy@ntobjectives.com'] as $email) {
+        foreach ($adminEmails as $email) {
             $emailView->requestData = self::dumpRequestDataAsString();
             $emailView->data = $_POST;
             $emailView->error = '';
@@ -373,7 +379,7 @@ class Payment extends Page
 
             $pixie->email->send(
                 $email,
-                'robot@evolveskateboards.ru',
+                $robotEmail,
                 'Проведена ' . ((int) trim($_POST['RC']) > 0 ? 'неудачная попытка осуществить транзакцию ' : 'транзакция') . ' "'
                     . $pixie->view_helper()->formatPaymentOperation(trim($_POST['TRTYPE']))
                 . '" по заказу №' . trim($_POST['ORDER']) . '" на evolveskateboards.ru',

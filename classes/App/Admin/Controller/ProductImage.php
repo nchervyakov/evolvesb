@@ -90,6 +90,7 @@ class ProductImage extends CRUDController
             }
 
             unset($data['product_id']);
+            unset($data['file_name_big']);
             unset($_FILES['file_name_big']);
 
         } else {
@@ -105,10 +106,21 @@ class ProductImage extends CRUDController
         }
 
         $this->processRequestFiles($prodImage);
+
         $prodImage->values($prodImage->filterValues($data));
         $prodImage->save();
 
-        $this->jsonResponse(['success' => true, 'image' => $prodImage->as_array(true)]);
+        $imageProduct = $prodImage->product;
+
+        /** @var \App\Model\ProductImage[] $images */
+        $images = $imageProduct->images->find_all()->as_array();
+        if ($images[0] && $images[0]->loaded()) {
+            $imageProduct->picture = $images[0]->file_name_big;
+            $imageProduct->big_picture = $images[0]->file_name_big;
+            $imageProduct->save();
+        }
+
+        $this->jsonResponse(['success' => true, 'image' => $prodImage->as_array()]);
     }
 
     public function processRequestFiles(\App\Model\ProductImage $image)
@@ -127,6 +139,7 @@ class ProductImage extends CRUDController
         $file->move($destPath);
         $image->$field = $fileName;
         $image->file_name = $fileName;
+        $image->file_name_big = $fileName;
     }
 
     public function action_delete()

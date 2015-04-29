@@ -116,6 +116,7 @@ class Pixie extends \PHPixie\Pixie {
         $this->dispatcher->addListener(AppEvents::PAYMENT_OPERATION_FAILED, '\\App\\Events\\PaymentListeners::onOperationFailed');
         $this->dispatcher->addListener(AppEvents::PAYMENT_PAYED, '\\App\\Events\\PaymentListeners::onPaymentPayed');
         $this->dispatcher->addListener(AppEvents::PAYMENT_PAYED, '\\App\\Events\\PaymentListeners::onPaymentRefunded');
+        $this->dispatcher->addListener(AppEvents::ORDER_CREATED, '\\App\\Events\\OrderListeners::onOrderCreated');
         $this->dispatcher->addListener(AppEvents::ORDER_PAYED, '\\App\\Events\\PaymentListeners::onOrderPayed');
         $this->dispatcher->addListener(AppEvents::ORDER_REFUNDED, '\\App\\Events\\PaymentListeners::onOrderRefunded');
         $this->dispatcher->addListener(AppEvents::ORDER_STATUS_CHANGED, '\\App\\Events\\PaymentListeners::onOrderStatusChanged');

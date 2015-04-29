@@ -77,9 +77,11 @@ class Newsletter extends Page
 
     public function sendSubscribeEmail(NewsletterSignup $subscription)
     {
+        $parameters = $this->pixie->config->get('parameters') ?: [];
+        $robotEmail = $parameters['robot_email'] ?: 'robot@evolveskateboards.ru';
         $view = $this->pixie->view('newsletter/signup_email');
         $view->siteUrl = $this->request->getSiteUrl();
         $view->subscription = $subscription;
-        $this->pixie->email->send($subscription->email, 'RobotHackazon@hackazon.com', 'Newsletter Subscription', $view->render());
+        $this->pixie->email->send($subscription->email, $robotEmail, 'Newsletter Subscription', $view->render());
     }
 }

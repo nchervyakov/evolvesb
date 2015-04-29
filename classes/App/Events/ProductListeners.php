@@ -60,11 +60,12 @@ class ProductListeners
     {
         $emailView = $pixie->view('order/all_products_available_email');
         $emailView->order = $order;
-        $params = $pixie->config->get('parameters');
+        $params = $pixie->config->get('parameters') ?: [];
+        $robotEmail = $params['robot_email'] ?: 'robot@evolveskateboards.ru';
         $emailView->siteUrl = $_SERVER['HTTP_HOST'] ? 'http://' . $_SERVER['HTTP_HOST'] : $params['host'];
         $pixie->email->send(
             $order->customer_email,
-            'robot@evolveskateboards.ru',
+            $robotEmail,
             'Вы можете оплатить ваш заказ №' . $order->uid . ' - evolveskateboards.ru',
             $emailView->render(), true
         );

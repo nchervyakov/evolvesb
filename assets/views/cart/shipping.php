@@ -221,7 +221,7 @@
 				<b><?php echo $_($address->full_name, 'full_name') ?></b><br />
 				<?php echo $_($address->address_line_1, 'address_line_1') ?><br />
 				<?php echo $_($address->address_line_2, 'address_line_2') ?><br />
-				<?php echo $_($address->city, 'city')  . ' ' .  $_($address->region, 'region')  . ' ' .  $_($address->zip, 'zip'); ?><br />
+				<?php $_($address->city, 'city'); echo ', '; $_($address->region, 'region'); echo ', '; $_($address->zip, 'zip'); ?><br />
 				<?php echo $_($address->country_id, 'country_id') ?><br />
 				<?php echo $_($address->phone, 'phone') ?><br />
 				<div class="row">

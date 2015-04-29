@@ -7,7 +7,6 @@
         function remove(arr, item) {
             for (var i = arr.length; i--; ) {
                 if (arr[i] == item) {
-                    console.log(arr[i])
                     arr.splice(i, 1);
                 }
             }

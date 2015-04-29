@@ -264,6 +264,8 @@ class Newsletter extends CRUDController
     {
         $template = $newsletter->template;
         $tplHtml = $template->text;
+        $parameters = $this->pixie->config->get('parameters') ?: [];
+        $robotEmail = $parameters['robot_email'] ?: 'robot@evolveskateboards.ru';
 
         if (strpos($tplHtml, '%content%') != false) {
             $tplHtml = str_replace('%content%', $newsletter->content, $tplHtml);
@@ -289,7 +291,7 @@ class Newsletter extends CRUDController
 
         $this->pixie->email->send(
             $instance->subscriber->email,
-            'robot@evolveskateboards.ru',
+            $robotEmail,
             $newsletter->subject,
             $result,
             $template->type == 'html'

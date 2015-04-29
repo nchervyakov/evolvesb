@@ -358,7 +358,7 @@
                 id: '',
                 title: ''
             };
-              console.log(data);
+
             if ('object' === typeof data && data) {
                 $.extend(populate, data);
                 populate.title = data.title_full;

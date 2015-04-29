@@ -131,9 +131,12 @@ class User extends BaseModel {
             $host = $host ?: $this->pixie->config->get('parameters.host');
             $host = $host ?: 'http://evolveskateboards.ru';
 
+            $parameters = $this->pixie->config->get('parameters') ?: [];
+            $robotEmail = $parameters['robot_email'] ?: 'robot@evolveskateboards.ru';
+
             return array(
                 'to' => $email,
-                'from' => 'robot@evolveskateboards.ru',
+                'from' => $robotEmail,
                 'subject' => 'Восстановление пароля',
                 'text' => 'Привет, ' . $user->username . ".\nВот ваша ссылка для восстановления пароля: "
                     . $host . '/user/recover?recover=' . $this->getTempPassword($user),
