@@ -165,7 +165,7 @@
                 <p class="subtotal_amount">
                     <strong><?php echo $_format_price($totalPrice, '<span id="total_price_span">%PRICE%</span> %SYMBOL%'); ?></strong>
                     <small style="display:none" id="estimated-shipping">+ <em>$0.00 - примерная стоимость доставки</em></small>
-                    <small class="excluding_tax"><em>Без учета доставки</em></small>
+                    <small class="excluding_tax"><em>Доставка по России бесплатно</em></small>
                 </p>
 
                 <label for="note">Информация для Evolve Skateboards:</label>
