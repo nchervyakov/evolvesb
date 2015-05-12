@@ -50,7 +50,6 @@
 
         <!-- Icons -->
         <link rel="shortcut icon" type="image/x-icon" href="/images/favicon.ico">
-        <link rel="canonical" href="http://evolveskateboards.ru/" />
 
         <!-- Custom Fonts -->
         <link href='<?php echo $protocol; ?>://fonts.googleapis.com/css?family=.|Lato:light,normal,bold|Lato:light,normal,bold|PT+Sans+Narrow:light,normal,bold|Merriweather:light,normal,bold' rel='stylesheet' type='text/css'>
