@@ -4069,6 +4069,12 @@ you can use the generic selector below, but it's slower:
 .icon-youtube:before {
   content: "\e013";
 }
+.icon-vk:before {
+    font-family: FontAwesome;
+    content: "\f189";
+    vertical-align: 1px;
+
+}
 
 /* #Font-Face
 ================================================== */

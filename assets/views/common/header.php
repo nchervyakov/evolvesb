@@ -64,6 +64,7 @@
                                 <li><a href="/pages/warranty" title="Гарантийные обязательства">Гарантийные обязательства</a></li>
                                 <li><a href="/pages/guide" title="Руководства по эксплуатации">Руководства по эксплуатации</a></li>
                                 <li><a href="/pages/troubleshooting" title="Устранение неисправностей">Устранение неисправностей</a></li>
+                                <li><a href="/pages/video-instructions" title="Устранение неисправностей">Видео-инструкции</a></li>
 
                                 <?php /*<!--li><a href="/pages/frequently-asked-questions" title="FAQ">FAQ</a></li-->
                                 <li><a href="/pages/rider-tips-maintenance" title="Tips & Maintenance">Советы</a></li>
