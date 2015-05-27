@@ -4,7 +4,7 @@
                 itemprop="url" title="Evolve Skateboards" href="<?php echo $host; ?>"><span
                 itemprop="title">Главная</span></a></span> &nbsp; / &nbsp;
         <span itemtype="http://data-vocabulary.org/Breadcrumb" itemscope=""><a
-                itemprop="url" title="All" href="/collections/<?php $_(isset($category->hurl) ? $category->hurl : ''); ?>"><span
+                itemprop="url" title="All" href="/collections/<?php $_($category->id() == 1 ? 'all' : (isset($category->hurl) && trim($category->hurl) ? $category->hurl : '')); ?>"><span
                 itemprop="title"><?php $_($categoryName); ?></span></a></span> &nbsp; / &nbsp;
         Страница <?php echo $pager->page; ?> из <?php echo $pager->num_pages ?: 1; ?>
     </div>
